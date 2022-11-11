@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>欢迎注册</title>
+    <link href="../css/login.css" rel="stylesheet">
+    <script src="../js/login.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<body>
+<h1>欢迎注册</h1>
+
+<span >已有账号？</span><a href="login.html">登录</a>
+<br><br>
+<span>填写学号后将向您的教育邮箱发送验证码以完成注册</span>
+<p>密码为6~16位字母和数字的组合</p>
+<br>
+<table>
+  <tr>
+    <td>学号</td>
+    <td class="input">
+    <input name="stuId" type="text" id="stuId" onblur="isStuIdValid()">
+    <br/>
+    <td style="display: none" id="stuIdError" class="error">请输入正确的学号</td>
+  </tr>
+    <br>
+    <tr>
+        <td>密码</td>
+        <td class="input">
+            <input name="password" type="password" id="password" onblur="isPasswordValid()">
+        </td>
+        <td style="display: none" id="passwordError" class="error" id="passwordError">请输入正确密码</td>
+    </tr>
+    <tr>
+        <td>确认密码</td>
+        <td class="input">
+            <input name="confirmPassword" type="password" id="confirmPassword" onblur="confirmPasswordValid()">
+        </td>
+        <td style="display: none" id="confirmPasswordError" class="error" id="confirmPasswordError">两次输入密码不一致</td>
+    </tr>
+    <tr>
+        <td>验证码</td>
+        <td>
+            <input class="input" type="text" id="verificationCode">
+        </td>
+        <td>
+            <input class="button" type="submit" value="获取验证码">
+        </td>
+    </tr>
+</table>
+<input type="submit" id = "signIn" class="button" value="注册" onclick="sifnIn()">
+
+<script>
+    let canSignIn = false; // 当账号符合规则且未注册，并且密码合规时才可以注册
+    function sifnIn(){
+        if (canSignIn){
+            alert("注册成功")
+        }else {
+            alert("请输入正确的学号和密码")
+        }
+    }
+
+    // 学号合法验证
+    isStuIdValid = function(){
+        let stuId = document.getElementById("stuId").value.trim();
+        let reg = /^[UM][0-9]{9}$/;
+
+
+        let stuIdError = document.getElementById("stuIdError");
+        if (reg.test(stuId)){
+            stuIdError.style.display = "none";
+            // 判断学号是否注册
+            axios.get("http://localhost:80/webTest/isUserExistServlet?stuId=" + stuId).
+            then(function(resp){
+                if (resp.data){
+                    stuIdError.innerHTML = "学号已注册";
+                    stuIdError.style.display = "";
+                    canSignIn = false;
+                }else{
+                    canSignIn = true;
+                }
+            })
+        }else{
+            stuIdError.style.display = "";
+        }
+    }
+
+    // 密码验证
+    isPasswordValid = function(){
+        let password = document.getElementById("password").value.trim();
+
+        let reg = /^[A-Za-z0-9]{6,16}$/;
+        let passwordError = document.getElementById("passwordError");
+        if (reg.test(password)){
+            passwordError.style.display = "none";
+            canSignIn = true;
+        }else{
+            passwordError.style.display = "";
+            canSignIn = false;
+        }
+    }
+
+    // 再次输入密码验证
+    function confirmPasswordValid(){
+        let password = document.getElementById("password").value.trim();
+        let confirmPassword = document.getElementById("confirmPassword").value.trim();
+        let confirmPasswordError = document.getElementById("confirmPasswordError");
+        if (password == confirmPassword){
+            confirmPasswordError.style.display = "none";
+            canSignIn = true;
+        }else {
+            confirmPasswordError.style.display = "";
+            canSignIn = false;
+        }
+    }
+</script>
+</body>
+</html>

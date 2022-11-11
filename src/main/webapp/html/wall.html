@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>征友墙</title>
+    <link href="../css/wall.css" rel="stylesheet">
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<body>
+<h2>征友墙</h2>
+<a href="myWall.html">我的空间</a>
+<div>
+    <p id="title" class="input" style="width:708px;min-height: 20px;z-index: 0" contenteditable="true"></p>
+</div>
+<div id="content" class="input" style="width:708px;min-height: 220px;z-index: 0" contenteditable="true"></div>
+<br>
+<input type="button" id = "post" value="发布卡片" class="button" onclick="postCard()">
+<input type="button" id = "getCards" value="获取卡片" class="button" onclick="getOnePageCards()">
+</body>
+
+<script>
+    // 发布卡片
+    postCard = function (){
+        let param = new URLSearchParams();
+        param.append("content", document.getElementById("content").innerText);
+        param.append("title", document.getElementById("title").innerText);
+        axios.post("http://localhost:80/webTest/addCardServlet", param).
+        then(function (resp) {
+            alert("发帖成功");
+            document.getElementById("content").innerText="";
+            document.getElementById("title").innerText="";
+            getOnePageCards();
+        })
+    }
+
+    // 页面加载完成后，返回一页卡片
+    window.onload(getOnePageCards)
+
+    function getOnePageCards() {
+        axios.get("http://localhost:80/webTest/selectCardsServlet").
+        then(function (resp) {
+            for (let card in resp.data){
+                alert(card.title)
+            }
+        })
+    }
+</script>
+</html>
