@@ -1,43 +1,32 @@
 package service;
 
-import dao.CardMapper;
-import org.apache.ibatis.io.Resources;
-import org.apache.ibatis.session.SqlSession;
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import pojo.Card;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.util.List;
 
-public class CardService implements CardMapper {
-    private static CardMapper cardMapper;
+public interface CardService {
+    /**
+     * 获取所有该学号用户发的卡片中的某一页
+     *
+     * @param stuId
+     * @param page
+     * @return
+     */
+    public List<Card> getOnePageCardsByStuId(String stuId, int page);
 
-    static {
-        String resource = "mybatis-config.xml";
-        InputStream inputStream = null;
-        try {
-            inputStream = Resources.getResourceAsStream(resource);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
-        SqlSession sqlSession = sqlSessionFactory.openSession(true);
-        cardMapper = sqlSession.getMapper(CardMapper.class);
-    }
+    /**
+     * 添加卡片
+     *
+     * @param card
+     * @return
+     */
+    public boolean add(Card card);
 
-    @Override
-    public Card[] selectCardByStuId(String stuId) {
-        return cardMapper.selectCardByStuId(stuId);
-    }
-
-    @Override
-    public void addCard(Card card) {
-        cardMapper.addCard(card);
-    }
-
-    @Override
-    public Card[] selectOnePageCards() {
-        return cardMapper.selectOnePageCards();
-    }
+    /**
+     * 获取指定一页卡片，一页十张，按发布时间顺序排列
+     *
+     * @param page 页数
+     * @return
+     */
+    public List<Card> getOnePageCards(int page);
 }

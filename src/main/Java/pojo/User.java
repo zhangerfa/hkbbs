@@ -6,7 +6,7 @@ public class User {
     private String stuId; // 学号
     private String username; // 用户名
     private String password; // 密码
-    Date createTime; // 创建时间
+    private Date createTime; // 创建时间
 
     @Override
     public String toString() {
@@ -16,10 +16,20 @@ public class User {
                 '}';
     }
 
+    public User(){}
+
     public User(String stuId, String username, String password){
         this.password = password;
         this.username = username;
         this.stuId = stuId;
+    }
+
+    public void setStuId(String stuId) {
+        this.stuId = stuId;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getStuId() {

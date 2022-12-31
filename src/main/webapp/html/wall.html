@@ -9,22 +9,37 @@
 <body>
 <h2>征友墙</h2>
 <a href="myWall.html">我的空间</a>
-<div>
-    <p id="title" class="input" style="width:708px;min-height: 20px;z-index: 0" contenteditable="true"></p>
-</div>
-<div id="content" class="input" style="width:708px;min-height: 220px;z-index: 0" contenteditable="true"></div>
+
+<div>帖名</div>
+<div id="title" class="input" style="width:708px;min-height: 20px;z-index: 0" contenteditable="true"></div>
+<div>内容</div>
+<div id="content" class="input" style="width:708px;min-height: 100px;z-index: 0" contenteditable="true"></div>
 <br>
 <input type="button" id = "post" value="发布卡片" class="button" onclick="postCard()">
-<input type="button" id = "getCards" value="获取卡片" class="button" onclick="getOnePageCards()">
+<table border="1" width="90%" cellspacing="0" cellpadding="0">
+    <h3>最新发帖</h3>
+    <hr>
+    <thead>
+    <tr>
+        <th>发帖人</th>
+        <th>帖名</th>
+        <th>内容</th>
+        <th>发帖时间</th>
+    </tr>
+    </thead>
+    <tbody id="tBody" align="center"></tbody>
+</table>
 </body>
 
 <script>
     // 发布卡片
     postCard = function (){
-        let param = new URLSearchParams();
-        param.append("content", document.getElementById("content").innerText);
-        param.append("title", document.getElementById("title").innerText);
-        axios.post("http://localhost:80/webTest/addCardServlet", param).
+        let param = {
+            "posterId": "M202271503",
+            "content": document.getElementById("content").innerText,
+            "title": document.getElementById("title").innerText
+        };
+        axios.post("http://localhost/cards", param).
         then(function (resp) {
             alert("发帖成功");
             document.getElementById("content").innerText="";
@@ -34,14 +49,35 @@
     }
 
     // 页面加载完成后，返回一页卡片
-    window.onload(getOnePageCards)
+    window.onload = getOnePageCards;
 
     function getOnePageCards() {
-        axios.get("http://localhost:80/webTest/selectCardsServlet").
+        let page = 1;
+        axios.get("http://localhost/cards/" + page).
         then(function (resp) {
-            for (let card in resp.data){
-                alert(card.title)
+            // 返回卡片对象数组
+            let cards = resp.data.data;
+            let htmlStr = ""; // 通过字符拼接写一个HTML表格
+            for(let i = 0;i < cards.length;i++) {
+                let card = cards[i];
+                htmlStr += "<tr>";
+                htmlStr += "<td>" + card.posterName + "</td>";
+                htmlStr += "<td>" + card.title + "</td>";
+                htmlStr += "<td>" + card.content + "</td>";
+                // 将时间戳转换为日期格式
+                let date = new Date(card.createTime);
+                Y = date.getFullYear() + '-';
+                M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
+                D = date.getDate() + ' ';
+                h = date.getHours() + ':';
+                m = date.getMinutes() + ':';
+                s = date.getSeconds();
+                let time = Y+M+D+h+m+s;
+                htmlStr += "<td>" + time + "</td>";
+                htmlStr += "</tr>";
             }
+            //将拼接的字符串放进tbody里
+            document.getElementById("tBody").innerHTML = htmlStr;
         })
     }
 </script>

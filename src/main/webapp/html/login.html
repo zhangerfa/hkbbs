@@ -8,7 +8,7 @@
 </head>
 <body>
 <div id="loginDiv">
-    <form action="http://localhost:80/webTest/checkPasswordServlet" method="post" id="loginForm">
+    <form action="http://localhost/users" method="post" id="loginForm">
         <h1>欢迎登录</h1>
         <p>学号<input id="stuId" name="stuId" type="text" onblur="checkStuId()">
             <span class="error" id="stuIdError" style="display: none">请输入正确的学号</span>
@@ -32,9 +32,10 @@
         if (isStuIdValid(stuId)){
             stuIdError.style.display = "none";
             // 判断学号是否注册
-            axios.get("http://localhost:80/webTest/isUserExistServlet?stuId=" + stuId).
+            axios.get("http://localhost/users/isExist?stuId=" + stuId).
             then(function(resp){
-                if (resp.data){
+                let res = resp.data;
+                if (res.data){
                     canSignUp = true;
                 }else{
                     stuIdError.innerHTML = "学号未注册";
@@ -63,11 +64,9 @@
             let param = new URLSearchParams();
             param.append("stuId", document.getElementById("stuId").value.trim());
             param.append("password", document.getElementById("password").value.trim());
-            console.log(param)
-            axios.post("http://localhost:80/webTest/checkPasswordServlet", param).then(function (resp) {
-                if (resp.data){
-                    window.close();
-                    window.open("http://localhost:80/webTest/html/wall.html");
+            axios.post("http://localhost:80/users/checkPassword", param).then(function (resp) {
+                if (resp.data.data){
+                    window.location = "http://localhost/html/wall.html";
                 }else{
                     document.getElementById("passwordError").style.display="";
                 }
