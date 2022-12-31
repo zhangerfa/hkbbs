@@ -114,6 +114,7 @@ public class UserController {
 
         EmailService.sendFileMail(subject, content, stuId);
         codeMap.put(stuId, code);
+        System.out.println(code);
         return new Result(Code.SAVE_OK, code, "验证码已发送");
     }
 

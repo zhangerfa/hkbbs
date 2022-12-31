@@ -24,6 +24,8 @@
 </div>
 
 <script>
+    let site = "https://zhangerfa.site";
+
     let canSignUp = false; // 当学号合规且未注册时为true
     // 学号验证
     checkStuId = function(){
@@ -32,7 +34,7 @@
         if (isStuIdValid(stuId)){
             stuIdError.style.display = "none";
             // 判断学号是否注册
-            axios.get("http://localhost/users/isExist?stuId=" + stuId).
+            axios.get(site + "/users/isExist?stuId=" + stuId).
             then(function(resp){
                 let res = resp.data;
                 if (res.data){
@@ -64,9 +66,9 @@
             let param = new URLSearchParams();
             param.append("stuId", document.getElementById("stuId").value.trim());
             param.append("password", document.getElementById("password").value.trim());
-            axios.post("http://localhost:80/users/checkPassword", param).then(function (resp) {
+            axios.post(site + "/users/checkPassword", param).then(function (resp) {
                 if (resp.data.data){
-                    window.location = "http://localhost/html/wall.html";
+                    window.location = site + "/html/wall.html";
                 }else{
                     document.getElementById("passwordError").style.display="";
                 }

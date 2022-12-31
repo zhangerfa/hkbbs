@@ -53,7 +53,7 @@
 
     function getOnePageCards() {
         let page = 1;
-        axios.get("http://localhost/cards/" + page).
+        axios.get(site + "/cards/" + page).
         then(function (resp) {
             // 返回卡片对象数组
             let cards = resp.data.data;
