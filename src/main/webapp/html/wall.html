@@ -32,7 +32,6 @@
 </body>
 
 <script>
-    let site = "http://zhangerfa.site";
     // 发布卡片
     postCard = function (){
         let param = {
@@ -40,7 +39,7 @@
             "content": document.getElementById("content").innerText,
             "title": document.getElementById("title").innerText
         };
-        axios.post(site + "/cards", param).
+        axios.post("/cards", param).
         then(function (resp) {
             alert("发帖成功");
             document.getElementById("content").innerText="";
@@ -54,7 +53,7 @@
 
     function getOnePageCards() {
         let page = 1;
-        axios.get(site + "/cards/" + page).
+        axios.get("/cards/" + page).
         then(function (resp) {
             // 返回卡片对象数组
             let cards = resp.data.data;

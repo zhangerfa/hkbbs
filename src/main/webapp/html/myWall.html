@@ -23,14 +23,13 @@
 </body>
 
 <script>
-    let site = "http://zhangerfa.site";
     // 页面加载完成后，返回一页卡片
     window.onload = getOnePageMyCards;
 
     function getOnePageMyCards() {
         let stuId = "M202271503";
         let page = 1;
-        axios.get(site + "/cards/" + stuId + "/" + page).
+        axios.get("/cards/" + stuId + "/" + page).
         then(function (resp) {
             // 返回卡片对象数组
             let cards = resp.data.data;

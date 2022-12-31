@@ -29,6 +29,7 @@ public class ProjectExceptionAdvice {
     }
 
     // 处理其他异常（由后端bug引起的异常）
+    // 未被两个自定义异常处理器处理的其他所有异常将有该处理器处理
     @ExceptionHandler(Exception.class)
     public Result doException(Exception ex){
         // 记录日志

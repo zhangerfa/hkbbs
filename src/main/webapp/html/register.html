@@ -61,7 +61,6 @@
 <input type="submit" id = "signIn" class="button" value="注册" onclick="signIn()">
 
 <script>
-    let site = "http://zhangerfa.site";
     let canSignIn = false; // 当账号符合规则且未注册，并且密码合规时才可以注册
     let stuIdValid = false;
     let passwordValid = false;
@@ -76,7 +75,7 @@
                 "password": document.getElementById("password").value.trim(),
                 "username": document.getElementById("username").value.trim()
             };
-            axios.post(site + "/users", param).then(function (resp) {
+            axios.post("/users", param).then(function (resp) {
                 if (resp.data.data){
                     alert("注册成功！")
                 }else{
@@ -98,7 +97,7 @@
         if (reg.test(stuId)){
             stuIdError.style.display = "none";
             // 判断学号是否注册
-            axios.get(site + "/users/isExist?stuId=" + stuId).
+            axios.get("/users/isExist?stuId=" + stuId).
             then(function(resp){
                 if (resp.data.data){
                     stuIdError.innerHTML = "学号已注册";
@@ -146,7 +145,7 @@
     function sendCode(){
         let param = new URLSearchParams();
         param.append("stuId", document.getElementById("stuId").value.trim());
-        axios.post(site + "/users/sendCode", param).then(function (resp) {
+        axios.post("/users/sendCode", param).then(function (resp) {
             code = resp.data.data;
             alert("验证码已发送")
         })
