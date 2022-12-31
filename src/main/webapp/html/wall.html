@@ -32,6 +32,7 @@
 </body>
 
 <script>
+    let site = "http://zhangerfa.site";
     // 发布卡片
     postCard = function (){
         let param = {
@@ -39,7 +40,7 @@
             "content": document.getElementById("content").innerText,
             "title": document.getElementById("title").innerText
         };
-        axios.post("http://localhost/cards", param).
+        axios.post(site + "/cards", param).
         then(function (resp) {
             alert("发帖成功");
             document.getElementById("content").innerText="";
