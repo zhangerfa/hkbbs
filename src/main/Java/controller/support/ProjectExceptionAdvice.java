@@ -1,7 +1,7 @@
 package controller.support;
 
-import exception.BusinessException;
-import exception.SystemException;
+import controller.exception.BusinessException;
+import controller.exception.SystemException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 

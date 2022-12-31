@@ -1,4 +1,4 @@
-package exception;
+package controller.exception;
 
 // 系统异常（不是用户和后端老哥的问题引发的异常）
 // 继承RuntimeException就可以在运行时自动向上抛，无需手动抛

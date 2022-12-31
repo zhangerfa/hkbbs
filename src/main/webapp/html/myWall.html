@@ -29,7 +29,7 @@
     function getOnePageMyCards() {
         let stuId = "M202271503";
         let page = 1;
-        axios.get("/cards/" + stuId + "/" + page).
+        axios.get("/cards/my/" + page).
         then(function (resp) {
             // 返回卡片对象数组
             let cards = resp.data.data;

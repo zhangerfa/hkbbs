@@ -24,8 +24,9 @@ public class CardController {
         return new Result(code, cards);
     }
 
-    @GetMapping("/{stuId}/{page}")
-    public Result getOnePageCardsByStuId(@PathVariable("stuId") String stuId, @PathVariable("page") int page){
+    @GetMapping("my/{page}")
+    public Result getOnePageCardsByStuId(@PathVariable("page") int page,
+                                         @SessionAttribute("stuId") String stuId){
         List<Card> cards = cardService.getOnePageCardsByStuId(stuId, page);
         Integer code = cards != null? Code.GET_OK: Code.GET_ERR;
         return new Result(code, cards);
@@ -33,7 +34,9 @@ public class CardController {
 
     // 新增一个卡片
     @PostMapping
-    public Result addCard(@RequestBody Card card){
+    public Result addCard(@RequestBody Card card,
+                          @SessionAttribute("stuId") String stuId){
+        card.setPosterId(stuId);
         boolean flag = cardService.add(card);
         return new Result(flag? Code.SAVE_OK: Code.SAVE_ERR, flag);
     }

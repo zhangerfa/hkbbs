@@ -23,6 +23,7 @@ public class CardServiceImpl implements CardService {
     @Override
     public boolean add(Card card) {
         int addNum = cardMapper.addCard(card);
+        System.out.println(card);
         return addNum != 0;
     }
 

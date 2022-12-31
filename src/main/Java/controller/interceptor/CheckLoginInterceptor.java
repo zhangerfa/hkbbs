@@ -13,7 +13,6 @@ public class CheckLoginInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         // 当用户访问登录、注册页面时放行，其他页面通过session进行是否登录验证
-        System.out.println("111");
         String requestURI = request.getRequestURI();
         String[] pass = {"users", "login", "register"};
         for (String s : pass) {

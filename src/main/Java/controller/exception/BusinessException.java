@@ -1,4 +1,4 @@
-package exception;
+package controller.exception;
 
 public class BusinessException extends RuntimeException{
     private final Integer code;

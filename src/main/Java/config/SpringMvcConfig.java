@@ -1,6 +1,6 @@
 package config;
 
-import controller.interceptor.ProjectInterceptor;
+import controller.interceptor.CheckLoginInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -11,13 +11,13 @@ import org.springframework.web.servlet.config.annotation.*;
 @EnableWebMvc
 public class SpringMvcConfig implements WebMvcConfigurer {
     @Autowired
-    private ProjectInterceptor projectInterceptor;
+    private CheckLoginInterceptor checkLoginInterceptor;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry){
         // 将自定义拦截器添加到SpringMVC容器中，并设置拦截路径,可以使用通配符
-        registry.addInterceptor(projectInterceptor).
-                addPathPatterns("/users", "users/*");
+        registry.addInterceptor(checkLoginInterceptor).
+                addPathPatterns("/**", "/");
     }
 
     @Override
