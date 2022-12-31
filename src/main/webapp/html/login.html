@@ -18,13 +18,12 @@
         </p>
     </form>
     <div id="subDiv">
-        <input type="button" id = "signUp" class="button" value="登录" onclick="checkPassword()">
+        <input type="button" id = "signUp" class="button" value="登录" onclick="login()">
         <a href="register.html">点击注册</a>
     </div>
 </div>
 
 <script>
-    let site = "http://zhangerfa.site";
     let canSignUp = false; // 当学号合规且未注册时为true
     // 学号验证
     checkStuId = function(){
@@ -57,17 +56,17 @@
         return reg.test(stuId);
     }
 
-    // 密码验证
-    function checkPassword(){
+    // 登录：其他信息合理并进行密码验证
+    function login(){
         if (!canSignUp){
             alert("请输入正确的学号和密码");
         }else{
             let param = new URLSearchParams();
             param.append("stuId", document.getElementById("stuId").value.trim());
             param.append("password", document.getElementById("password").value.trim());
-            axios.post("/users/checkPassword", param).then(function (resp) {
+            axios.post("/users/login", param).then(function (resp) {
                 if (resp.data.data){
-                    window.location = site + "/html/wall.html";
+                    window.location = document.domain + "/html/wall.html";
                 }else{
                     document.getElementById("passwordError").style.display="";
                 }

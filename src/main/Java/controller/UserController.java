@@ -8,6 +8,7 @@ import pojo.User;
 import service.EmailService;
 import service.UserService;
 
+import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -37,13 +38,16 @@ public class UserController {
 
     /**
      * 检查指定学号的用户的输入密码是否正确
+     * 如果正确将用户stuId存储session中
      * @param stuId
      * @param password
      * @return
      */
-    @PostMapping("/checkPassword")
-    public Result checkPassword(String stuId, String password){
+    @PostMapping("/login")
+    public Result login(String stuId, String password, HttpSession session){
         boolean flag = userService.checkPassword(stuId, password);
+        // session中存储该用户的学号
+        if (flag) session.setAttribute("stuId", stuId);
         return new Result(flag? Code.GET_OK: Code.GET_ERR, flag);
     }
 
