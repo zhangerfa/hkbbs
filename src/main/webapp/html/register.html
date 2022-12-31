@@ -147,7 +147,7 @@
         let param = new URLSearchParams();
         param.append("stuId", document.getElementById("stuId").value.trim());
         axios.post(site + "/users/sendCode", param).then(function (resp) {
-            code = resp.data.data.code;
+            code = resp.data.data;
             alert("验证码已发送")
         })
     }
