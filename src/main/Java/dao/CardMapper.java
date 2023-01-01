@@ -17,7 +17,7 @@ public interface CardMapper {
     @Select("select username as postername, u.stu_id, title, content, c.create_at as createTime " +
             "from user u join card c on u.stu_id = c.stu_id " +
             "where u.stu_id = #{stuId} " +
-            "order by createTime limit 0, 10")
+            "order by createTime desc limit 0, 9")
     public List<Card> selectOnePageCardsByStuId(@Param("stuId") String stuId, int page);
 
     /*
@@ -32,7 +32,7 @@ public interface CardMapper {
     @Select("select u.stu_id as posterId, username as posterName, title, content," +
             "    c.create_at as createTime" +
             "    from user u join card c on u.stu_id = c.stu_id " +
-            "order by createTime limit 0, 9")
+            "order by createTime desc limit 0, 9")
     public List<Card> selectOnePageCards(int page);
 }
 
