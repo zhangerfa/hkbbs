@@ -8,6 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class HomeController {
     @RequestMapping
     public String go(){
-        return "forward:/html/login.html";
+        return "forward:/html/wall.html";
     }
 }
