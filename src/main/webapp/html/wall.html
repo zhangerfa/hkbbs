@@ -38,6 +38,11 @@
             "content": document.getElementById("content").innerText,
             "title": document.getElementById("title").innerText
         };
+        // 发布卡片前检测卡片是否为空
+        if (param.title.length == 0 || param.content.length == 0){
+            alert("请输入要发送的内容");
+            return
+        }
         axios.post("/cards", param).
         then(function (resp) {
             alert("发帖成功");
