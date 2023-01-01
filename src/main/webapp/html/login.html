@@ -24,7 +24,6 @@
 </div>
 
 <script>
-    let canSignUp = false; // 当学号合规且未注册时为true
     // 学号验证
     checkStuId = function(){
         let stuId = document.getElementById("stuId").value.trim();
@@ -35,19 +34,15 @@
             axios.get("/users/isExist?stuId=" + stuId).
             then(function(resp){
                 let res = resp.data;
-                if (res.data){
-                    canSignUp = true;
-                }else{
+                if (!res.data){
                     stuIdError.innerHTML = "学号未注册";
                     stuIdError.style.display = "";
-                    canSignUp = false;
                 }
             })
         }else{
             // 学号不符合规则
             stuIdError.innerHTML = "请输入正确的学号";
             stuIdError.style.display = "";
-            canSignUp = false;
         }
     }
 
@@ -58,21 +53,20 @@
 
     // 登录：其他信息合理并进行密码验证
     function login(){
-        if (!canSignUp){
-            alert("请输入正确的学号和密码");
-        }else{
-            let param = new URLSearchParams();
-            param.append("stuId", document.getElementById("stuId").value.trim());
-            param.append("password", document.getElementById("password").value.trim());
-            axios.post("/users/login", param).then(function (resp) {
-                if (resp.data.data){
-                    let url = "http://" + document.domain + "/html/wall.html";
-                    window.location = url;
-                }else{
-                    document.getElementById("passwordError").style.display="";
-                }
-            })
-        }
+        // 学号检测
+        checkStuId();
+        // 验证密码
+        let param = new URLSearchParams();
+        param.append("stuId", document.getElementById("stuId").value.trim());
+        param.append("password", document.getElementById("password").value.trim());
+        axios.post("/users/login", param).then(function (resp) {
+            if (resp.data.data){
+                let url = "http://" + document.domain + "/html/wall.html";
+                window.location = url;
+            }else{
+                document.getElementById("passwordError").style.display="";
+            }
+        })
     }
 </script>
 </body>

@@ -61,37 +61,31 @@
 <input type="submit" id = "signIn" class="button" value="注册" onclick="signIn()">
 
 <script>
-    let canSignIn = false; // 当账号符合规则且未注册，并且密码合规时才可以注册
-    let stuIdValid = false;
-    let passwordValid = false;
-    let confirmPasswordFalg = false;
-    let codeValid = false;
     let code = ""; // 验证码
     function signIn(){
-        canSignIn = stuIdValid && passwordValid && confirmPasswordFalg && codeValid;
-        if (canSignIn){
-            let param = {
-                "stuId": document.getElementById("stuId").value.trim(),
-                "password": document.getElementById("password").value.trim(),
-                "username": document.getElementById("username").value.trim()
-            };
-            axios.post("/users", param).then(function (resp) {
-                if (resp.data.data){
-                    alert("注册成功！")
-                }else{
-                    alert("注册失败")
-                }
-            })
-        }else {
-            alert("请输入正确的信息")
+        // 学号是否合理且注册、两次密码是否一致、验证码是否正确
+        if (!isStuIdValid() || !confirmPasswordValid() || checkCode()){
+            alert("请输入正确信息");
+            return;
         }
+        let param = {
+            "stuId": document.getElementById("stuId").value.trim(),
+            "password": document.getElementById("password").value.trim(),
+            "username": document.getElementById("username").value.trim()
+        };
+        axios.post("/users", param).then(function (resp) {
+            if (resp.data.data){
+                alert("注册成功！")
+            }else{
+                alert("注册失败")
+            }
+        })
     }
 
     // 学号合法验证
     isStuIdValid = function(){
         let stuId = document.getElementById("stuId").value.trim();
         let reg = /^[UM][0-9]{9}$/;
-
 
         let stuIdError = document.getElementById("stuIdError");
         if (reg.test(stuId)){
@@ -102,14 +96,15 @@
                 if (resp.data.data){
                     stuIdError.innerHTML = "学号已注册";
                     stuIdError.style.display = "";
-                    stuIdValid = false;
-                }else{
-                    stuIdValid = true;
+                    return false;
                 }
+                return true;
             })
         }else{
             stuIdError.style.display = "";
+            return false;
         }
+        return true;
     }
 
     // 密码验证
@@ -120,10 +115,10 @@
         let passwordError = document.getElementById("passwordError");
         if (reg.test(password)){
             passwordError.style.display = "none";
-            passwordValid = true;
+            return true;
         }else{
             passwordError.style.display = "";
-            passwordValid = false;
+            return false;
         }
     }
 
@@ -134,15 +129,20 @@
         let confirmPasswordError = document.getElementById("confirmPasswordError");
         if (password == confirmPassword){
             confirmPasswordError.style.display = "none";
-            confirmPasswordFalg = true;
+            return true;
         }else {
             confirmPasswordError.style.display = "";
-            confirmPasswordFalg = false;
+            return false;
         }
     }
 
     // 获取验证码
     function sendCode(){
+        // 学号是否合理且注册、两次密码是否一致
+        if (!isStuIdValid() || !confirmPasswordValid()){
+            alert("请输入正确信息");
+            return;
+        }
         let param = new URLSearchParams();
         param.append("stuId", document.getElementById("stuId").value.trim());
         axios.post("/users/sendCode", param).then(function (resp) {
@@ -156,10 +156,9 @@
         let curCode = document.getElementById("code").value.trim(); // 用户输入验证码
         if (code != curCode){
             alert("验证码错误")
-            codeValid = false;
-        }else{
-            codeValid = true;
+            return false;
         }
+        return true;
     }
 </script>
 </body>
