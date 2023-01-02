@@ -18,7 +18,6 @@ public class CheckLoginInterceptor implements HandlerInterceptor {
             if (url.contains(s)) return true;
         }
 
-        System.out.println("111");
         // 验证用户是否登录
         HttpSession session = request.getSession();
         String stuId = (String) session.getAttribute("stuId");

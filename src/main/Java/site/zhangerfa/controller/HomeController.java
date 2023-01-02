@@ -7,7 +7,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class HomeController {
     @RequestMapping("/")
-    public String homeForward(){
-        return "forward: /wall";
+    public String homeRedirect(){
+        System.out.println(111);
+        return "redirect:/wall";
     }
 }
