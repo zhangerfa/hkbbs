@@ -1,6 +1,9 @@
 server:
   port: 80
 
+servlet:
+  context-path: /
+
 spring:
   datasource:
     # 换数据源（JDBC连接池）

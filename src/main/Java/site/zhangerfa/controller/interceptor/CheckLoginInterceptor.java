@@ -12,10 +12,10 @@ public class CheckLoginInterceptor implements HandlerInterceptor {
                              jakarta.servlet.http.HttpServletResponse response,
                              Object handler) throws Exception {
         // 当用户访问登录、注册页面时放行，其他页面通过session进行是否登录验证
-        String requestURI = request.getRequestURI();
+        String url = request.getRequestURL().toString();
         String[] pass = {"users", "login", "register"};
         for (String s : pass) {
-            if (requestURI.contains(s)) return true;
+            if (url.contains(s)) return true;
         }
 
         // 验证用户是否登录
@@ -24,8 +24,7 @@ public class CheckLoginInterceptor implements HandlerInterceptor {
         if (stuId != null) return true;
 
         // 没有登录的用户重定向到登录页面
-        response.sendRedirect(request.getContextPath()+"/html/login.html");
-        System.out.println(request.getContextPath());
+        response.sendRedirect("/html/login.html");
         return false;
     }
 }
