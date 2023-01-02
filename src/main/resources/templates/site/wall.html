@@ -179,6 +179,8 @@
         document.getElementById("message-text").value = "";
         document.getElementById("recipient-name").value = "";
         $('#publishModal').modal('show');
+        // 发布成功后刷新页面
+        window.location = window.reload();
     }
 </script>
 </body>
