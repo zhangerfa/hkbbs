@@ -1,3 +1,8 @@
 .main .container {
 	width: 720px;
+
+}
+
+.error{
+	color: red;
 }
