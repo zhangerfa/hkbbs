@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>欢迎注册</title>
-    <script src="../js/login.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
 <body>
 <h1>欢迎注册</h1>
 
-<span >已有账号？</span><a href="login.html">登录</a>
+<span >已有账号？</span><a href="/login">登录</a>
 <br><br>
 <span>填写学号后将向您的教育邮箱发送验证码以完成注册</span>
 <p>密码为6~16位字母和数字的组合</p>
@@ -25,10 +24,7 @@
     <tr>
         <td>用户名</td>
         <td class="input">
-            <input name="stuId" type="text" id="username" onblur="function isUsernameIdValid() {
-                return true;
-            }
-            isUsernameIdValid()">
+            <input name="stuId" type="text" id="username">
             <br/>
         <td style="display: none" id="usernameError" class="error">请输入正确的用户名</td>
     </tr>
@@ -38,14 +34,14 @@
         <td class="input">
             <input name="password" type="password" id="password" onblur="isPasswordValid()">
         </td>
-        <td style="display: none" id="passwordError" class="error" id="passwordError">请输入正确密码</td>
+        <td style="display: none" id="passwordError" class="error">请输入正确密码</td>
     </tr>
     <tr>
         <td>确认密码</td>
         <td class="input">
             <input name="confirmPassword" type="password" id="confirmPassword" onblur="confirmPasswordValid()">
         </td>
-        <td style="display: none" id="confirmPasswordError" class="error" id="confirmPasswordError">两次输入密码不一致</td>
+        <td style="display: none" id="confirmPasswordError" class="error">两次输入密码不一致</td>
     </tr>
     <tr>
         <td>验证码</td>

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class RegisterController {
     @RequestMapping
     public String register(){
+        System.out.println("111");
         return "site/register.html";
     }
 }
