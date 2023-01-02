@@ -18,13 +18,14 @@ public class CheckLoginInterceptor implements HandlerInterceptor {
             if (url.contains(s)) return true;
         }
 
+        System.out.println("111");
         // 验证用户是否登录
         HttpSession session = request.getSession();
         String stuId = (String) session.getAttribute("stuId");
         if (stuId != null) return true;
 
         // 没有登录的用户重定向到登录页面
-        response.sendRedirect("/html/login.html");
+        response.sendRedirect("/login");
         return false;
     }
 }
