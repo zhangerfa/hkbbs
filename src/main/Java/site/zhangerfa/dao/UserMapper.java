@@ -5,20 +5,23 @@ import site.zhangerfa.pojo.User;
 
 @Mapper
 public interface UserMapper {
-    @Select("select stu_id as stuId, username, password, create_at as createTime " +
-            "from user where stu_id = #{stuId}")
-    public User selectByStuId(String stuId);
-    
-    @Insert("insert into user(stu_id, username, password) " +
-            "values(#{stuId}, #{username}, #{password})")
-    public int add(User user);
+    /**
+     * 根据学号查用户除了密码外的所有信息
+     * @param stuId
+     * @return
+     */
+    User selectUserByStuId(String stuId);
 
-    @Update("update user set username = #{username} where stu_id = #{stuId}")
-    public int updateUsername(@Param("stuId") String stuId, @Param("username") String username);
+    /**
+     * 添加用户
+     * @param user
+     * @return
+     */
+    int add(User user);
 
-    @Update("update user set password = #{password} where stu_id = #{stuId}")
-    public int updatePassword(@Param("stuId") String stuId, @Param("password") String password);
+    int updateUsername(String stuId, String username);
 
-    @Delete("delete from user where stu_id = #{stuId}")
-    public int delete(String stuId);
+    int updatePassword(String stuId, String password);
+
+    int delete(String stuId);
 }

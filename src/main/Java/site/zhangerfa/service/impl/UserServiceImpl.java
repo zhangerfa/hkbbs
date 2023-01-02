@@ -18,20 +18,20 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean isExist(String stuId) {
-        User user = userMapper.selectByStuId(stuId);
+        User user = userMapper.selectUserByStuId(stuId);
         return user != null;
     }
 
     @Override
     public boolean checkPassword(String stuId, String password) {
-        User user = userMapper.selectByStuId(stuId);
+        User user = userMapper.selectUserByStuId(stuId);
         return user != null ? user.getPassword().equals(password) : false;
     }
 
     @Override
     public Map<String, String> getUsernameAndCreateTimeByStuId(String stuId) {
         Map<String, String> map = new HashMap<>();
-        User user = userMapper.selectByStuId(stuId);
+        User user = userMapper.selectUserByStuId(stuId);
         Result result;
         if (user != null){
             map.put("username", user.getUsername());
@@ -43,13 +43,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String getUsernameByStuId(String stuId) {
-        User user = userMapper.selectByStuId(stuId);
+        User user = userMapper.selectUserByStuId(stuId);
         return user != null? user.getUsername(): null;
     }
 
     @Override
     public Date getCreateTimeByStuId(String stuId) {
-        User user = userMapper.selectByStuId(stuId);
+        User user = userMapper.selectUserByStuId(stuId);
         return user != null? user.getCreateTime(): null;
     }
 
