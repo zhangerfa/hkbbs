@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>欢迎登录</title>
-    <link href="../css/login.css" rel="stylesheet">
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
 <body>
@@ -67,7 +66,7 @@
 
         axios.post("/users/login", param).then(function (resp) {
             if (resp.data.data){
-                let url = "http://" + document.domain + "/html/wall.html";
+                let url = "http://" + document.domain + "/wall";
                 window.location = url;
             }else{
                 document.getElementById("passwordError").style.display="";

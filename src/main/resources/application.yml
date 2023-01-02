@@ -8,6 +8,8 @@ server:
 servlet:
   context-path: /
 
+
+
 spring:
   datasource:
     # 换数据源（JDBC连接池）
@@ -17,9 +19,10 @@ spring:
     url: jdbc:mysql://localhost:3306/friends
     username: root
     password: M202271503
-
+  # 开发阶段关闭浏览器缓存
   thymeleaf:
     cache: false
+
 
 mybatis:
   # 设置映射文件（mapper.xml）的路径

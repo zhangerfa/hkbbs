@@ -11,7 +11,6 @@ import site.zhangerfa.pojo.User;
 import site.zhangerfa.service.EmailService;
 import site.zhangerfa.service.UserService;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
