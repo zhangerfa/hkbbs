@@ -8,6 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class HomeController {
     @RequestMapping("/")
     public String homeForward(){
-        return "redirect:/html/wall.html";
+        return "redirect: http/html/wall.html";
     }
 }

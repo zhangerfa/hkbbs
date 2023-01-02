@@ -1,5 +1,7 @@
 package site.zhangerfa.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -9,6 +11,7 @@ import site.zhangerfa.pojo.User;
 import site.zhangerfa.service.EmailService;
 import site.zhangerfa.service.UserService;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -49,6 +52,20 @@ public class UserController {
         // session中存储该用户的学号
         if (flag) session.setAttribute("stuId", stuId);
         return new Result(flag? Code.GET_OK: Code.GET_ERR, flag);
+    }
+
+    /**
+     * 注销登录，发送请求后删除session，并重定向到网站首页
+     * @param session
+     * @return
+     */
+    @RequestMapping("/logout")
+    public Result logout(HttpSession session,
+                         HttpServletRequest request,
+                         HttpServletResponse response) throws Exception {
+        session.removeAttribute("stuId");
+        request.getRequestDispatcher("/").forward(request, response);
+        return new Result(Code.DELETE_OK, null);
     }
 
     /**
@@ -129,7 +146,6 @@ public class UserController {
     @RequestMapping("/checkCode")
     public Result checkCode(String stuId, String code){
         boolean flag = codeMap.containsKey(stuId) && codeMap.get(stuId) == code;
-        Result result = new Result(Code.GET_OK, flag);
-        return result;
+        return new Result(Code.GET_OK, flag);
     }
 }

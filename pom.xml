@@ -39,6 +39,13 @@
     </dependency>
 
     <dependency>
+      <groupId>org.webjars.npm</groupId>
+      <artifactId>axios</artifactId>
+      <version>1.2.0</version>
+    </dependency>
+
+
+    <dependency>
       <groupId>com.sun.mail</groupId>
       <artifactId>javax.mail</artifactId>
       <version>1.5.2</version>

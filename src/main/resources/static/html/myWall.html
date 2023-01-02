@@ -8,6 +8,7 @@
 <body>
 <h2>我的空间</h2>
 <a href="wall.html">征友墙</a>
+<input type="button" id="exit" value="退出登录" onclick="logout()">
 <table border="1" width="90%" cellspacing="0" cellpadding="0">
     <h3>我发的帖子</h3>
     <hr>
@@ -27,7 +28,6 @@
     window.onload = getOnePageMyCards;
 
     function getOnePageMyCards() {
-        let stuId = "M202271503";
         let page = 1;
         axios.get("/cards/my/" + page).
         then(function (resp) {
@@ -54,6 +54,11 @@
             //将拼接的字符串放进tbody里
             document.getElementById("tBody").innerHTML = htmlStr;
         });
+    }
+
+    // 推出登录
+    logout = function (){
+        axios.get("/users/logout");
     }
 </script>
 </html>
