@@ -15,7 +15,7 @@ public class CardServiceImpl implements CardService {
     private CardMapper cardMapper;
 
     @Override
-    public List<Card> getOnePageCardsByStuId(String stuId, int page) {
+    public List<Card> getOnePageCards(String stuId, int page) {
         int offset = (page - 1) * NumOfPageOnPage;
         int limit = offset + NumOfPageOnPage;
         return cardMapper.selectOnePageCards(stuId, offset, limit);
@@ -26,12 +26,5 @@ public class CardServiceImpl implements CardService {
         int addNum = cardMapper.addCard(card);
         System.out.println(card);
         return addNum != 0;
-    }
-
-    @Override
-    public List<Card> getOnePageCards(int page) {
-        int offset = (page - 1) * NumOfPageOnPage;
-        int limit = offset + NumOfPageOnPage;
-        return cardMapper.selectOnePageCards("0", offset, limit);
     }
 }

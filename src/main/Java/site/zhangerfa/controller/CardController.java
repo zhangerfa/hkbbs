@@ -1,6 +1,7 @@
 package site.zhangerfa.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.annotation.Resource;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import site.zhangerfa.controller.tool.Code;
 import site.zhangerfa.controller.tool.Result;
@@ -13,13 +14,12 @@ import java.util.List;
 @RestController
 @RequestMapping("/cards")
 public class CardController {
-    @Autowired
+    @Resource
     private CardService cardService;
 
-    // 前端发送需要第几页（一页10张卡片），后端传回第几页的所有卡片
     @GetMapping("/{page}")
     public Result getOnePageCards(@PathVariable int page){
-        List<Card> cards = cardService.getOnePageCards(page);
+        List<Card> cards = cardService.getOnePageCards("0", page);
         Integer code = cards != null? Code.GET_OK: Code.GET_ERR;
         return new Result(code, cards);
     }
@@ -27,7 +27,7 @@ public class CardController {
     @GetMapping("my/{page}")
     public Result getOnePageCardsByStuId(@PathVariable("page") int page,
                                          @SessionAttribute("stuId") String stuId){
-        List<Card> cards = cardService.getOnePageCardsByStuId(stuId, page);
+        List<Card> cards = cardService.getOnePageCards(stuId, page);
         Integer code = cards != null? Code.GET_OK: Code.GET_ERR;
         return new Result(code, cards);
     }
