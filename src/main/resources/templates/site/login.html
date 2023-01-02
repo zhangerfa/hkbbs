@@ -55,11 +55,9 @@
 
     // 登录：其他信息合理并进行密码验证
     function login(){
-        console.log("1")
         // 学号检测
         if (!checkStuId()) return;
         // 验证密码
-        console.log(document.getElementById("password").value.trim());
         let param = new URLSearchParams();
         param.append("stuId", document.getElementById("stuId").value.trim());
         param.append("password", document.getElementById("password").value.trim());
