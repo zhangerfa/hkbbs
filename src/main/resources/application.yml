@@ -1,5 +1,9 @@
 server:
   port: 80
+  # 开发阶段浏览器不设置缓存，静态资源更新后立马就能访问到
+  tomcat:
+    processor-cache: 0
+
 
 servlet:
   context-path: /
@@ -13,3 +17,17 @@ spring:
     url: jdbc:mysql://localhost:3306/friends
     username: root
     password: M202271503
+
+  thymeleaf:
+    cache: false
+
+mybatis:
+  # 设置映射文件（mapper.xml）的路径
+  mapper-locations: classpath:mapper/*.xml
+  # 向pojo对象封装数据的时要扫描的包，这里定义后配置文件中就可以省略包名
+  type-aliases-package: site.zhangerfa.pojo
+  configuration:
+    # 自动完成MySQL中下划线和Java中驼峰命名的转换
+    map-underscore-to-camel-case: true
+    # 启用属性自增的组件
+    use-generated-keys: true
