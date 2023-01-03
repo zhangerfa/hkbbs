@@ -21,6 +21,8 @@ public interface CardMapper {
      */
     List<Card> selectOnePageCards(String stuId, int offset, int limit);
 
+    int getNumOfCards();
+
     /*
     发帖
      */

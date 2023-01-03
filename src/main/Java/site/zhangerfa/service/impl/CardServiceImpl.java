@@ -10,15 +10,17 @@ import java.util.List;
 
 @Service
 public class CardServiceImpl implements CardService {
-    static final int NumOfPageOnPage = 10; // 一页卡片的数量
     @Autowired
     private CardMapper cardMapper;
 
     @Override
-    public List<Card> getOnePageCards(String stuId, int page) {
-        int offset = (page - 1) * NumOfPageOnPage;
-        int limit = offset + NumOfPageOnPage;
+    public List<Card> getOnePageCards(String stuId, int offset, int limit) {
         return cardMapper.selectOnePageCards(stuId, offset, limit);
+    }
+
+    @Override
+    public int getNumOfCards() {
+        return cardMapper.getNumOfCards();
     }
 
     @Override

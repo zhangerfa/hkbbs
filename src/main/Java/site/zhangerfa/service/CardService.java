@@ -6,14 +6,18 @@ import java.util.List;
 
 public interface CardService {
     /**
-     * 学号为0时获取一页卡片
-     * 学号不为0时获取所有该学号用户发的卡片中的某一页
+     * 学号为 0时获取一页卡片
+     * 学号不为 0时获取所有该学号用户发的卡片中的某一页
+     * 一页卡片是指 从第 offset 张到第 limit 张
      *
      * @param stuId
-     * @param page 要查询的页数
+     * @param offset 起始卡片
+     * @param limit 终止卡片
      * @return
      */
-    public List<Card> getOnePageCards(String stuId, int page);
+    List<Card> getOnePageCards(String stuId, int offset, int limit);
+
+    int getNumOfCards();
 
     /**
      * 添加卡片
@@ -21,5 +25,5 @@ public interface CardService {
      * @param card
      * @return
      */
-    public boolean add(Card card);
+    boolean add(Card card);
 }
