@@ -1,5 +1,6 @@
 package site.zhangerfa.controller;
 
+import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,12 +14,15 @@ import site.zhangerfa.service.UserService;
 
 import java.util.List;
 
+/**
+ * 导航栏跳转控制器
+ */
 @Controller
-public class WallController {
-    @Autowired
+public class NavigationController {
+    @Resource
     private CardService cardService;
 
-    @Autowired
+    @Resource
     private UserService userService;
 
     /**
@@ -58,4 +62,13 @@ public class WallController {
         model.addAttribute("cards", cards);
         return "site/wall.html";
     }
+
+    /**
+     * 访问树洞
+     */
+    @RequestMapping("role")
+    public String role(){
+        return "site/role.html";
+    }
+
 }
