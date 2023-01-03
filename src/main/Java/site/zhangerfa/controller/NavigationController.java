@@ -1,9 +1,11 @@
 package site.zhangerfa.controller;
 
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttribute;
 import site.zhangerfa.pojo.Card;
@@ -80,12 +82,17 @@ public class NavigationController {
     }
 
     /**
-     * 跳转到登录页面
+     * 未传入学号进行登录页面跳转
+     * 传入学号则进行密码检测
+     *    如果正确，登录成功，将用户stuId存储session中
+     *    跳转到卡片墙页面
+     * @param stuId
+     * @param password
      * @return
      */
     @RequestMapping("/login")
-    public String login(){
-        return "site/login.html";
+    public String login(String stuId, String password, HttpSession session){
+        return "site/login";
     }
 
     /**

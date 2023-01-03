@@ -49,7 +49,9 @@ public class UserController {
     public Result login(String stuId, String password, HttpSession session){
         boolean flag = userService.checkPassword(stuId, password);
         // session中存储该用户的学号
-        if (flag) session.setAttribute("stuId", stuId);
+        if (flag) {
+            session.setAttribute("stuId", stuId);
+        }
         return new Result(flag? Code.GET_OK: Code.GET_ERR, flag);
     }
 
