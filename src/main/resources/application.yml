@@ -22,6 +22,20 @@ spring:
   # 开发阶段关闭浏览器缓存
   thymeleaf:
     cache: false
+  # 邮箱配置
+  mail:
+    default-encoding: utf-8
+    # 邮箱主机
+    host: smtp.qq.com
+    # 发送邮件的邮箱的账号密码
+    username: 877319363@qq.com
+    password: ehypoybrqxbebdjf # 这里设置开启SMTP的激活码
+    protocol: smtps # smtps 是加了SSL的smtp
+    properties:
+      mail:
+        smtp:
+          ssl:
+            enable: true # 开启SSL
 
 
 mybatis:
@@ -34,3 +48,7 @@ mybatis:
     map-underscore-to-camel-case: true
     # 启用属性自增的组件
     use-generated-keys: true
+
+logging:
+  level:
+    web: error

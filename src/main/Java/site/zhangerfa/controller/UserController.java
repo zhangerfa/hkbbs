@@ -1,15 +1,17 @@
 package site.zhangerfa.controller;
 
+import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 import site.zhangerfa.controller.tool.Code;
 import site.zhangerfa.controller.tool.Result;
 import site.zhangerfa.pojo.User;
-import site.zhangerfa.service.EmailService;
 import site.zhangerfa.service.UserService;
+import site.zhangerfa.util.MailClient;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,8 +21,14 @@ import java.util.Random;
 @RestController
 @RequestMapping("/users")
 public class UserController {
-    @Autowired
+    @Resource
     private UserService userService;
+
+    @Resource
+    private TemplateEngine templateEngine;
+
+    @Resource
+    private MailClient mailClient;
     private static Map<String, String> codeMap; // 存储用户最后一次获取的验证码
 
     static {
@@ -125,16 +133,19 @@ public class UserController {
      */
     @RequestMapping("/sendCode")
     public Result getEmail(String stuId){
-        String subject = "欢迎注册xx，请查收验证码";
+        String subject = "张二发给您发的验证码";
         String code = "";
         Random random = new Random();
         for (int i = 0; i < 6; i++){
             code += random.nextInt(0, 10);
         }
-        String content = "您好！/n    您正在注册xx，验证码为" + code +
-                "。如果不是您本人操作请忽略。";
-
-        EmailService.sendFileMail(subject, content, stuId);
+        // 设置thymeleaf参数
+        Context context = new Context();
+        context.setVariable("code", code);
+        // 生成动态HTML
+        String content = templateEngine.process("mail/forget.html", context);
+        // 发送邮件
+        mailClient.send(stuId + "@hust.edu.cn", subject, content);
         codeMap.put(stuId, code);
         System.out.println(code);
         return new Result(Code.SAVE_OK, code, "验证码已发送");
