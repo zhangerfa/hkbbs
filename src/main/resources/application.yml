@@ -46,7 +46,7 @@ mybatis:
   configuration:
     # 自动完成MySQL中下划线和Java中驼峰命名的转换
     map-underscore-to-camel-case: true
-    # 启用属性自增的组件
+    # 启用属性自增的组件、自增的属性会回填到pojo对象中
     use-generated-keys: true
 
 logging:
