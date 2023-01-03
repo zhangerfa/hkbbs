@@ -1,60 +1,118 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Hugo 0.108.0">
     <title>欢迎注册</title>
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <link rel="stylesheet" th:href="@{/css/login.css}">
-</head>
-<body>
-<h1>欢迎注册</h1>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <style>
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+        }
 
-<span >已有账号？</span><a href="/login">登录</a>
-<br><br>
-<span>填写学号后将向您的教育邮箱发送验证码以完成注册</span>
-<p>密码为6~16位字母和数字的组合</p>
-<br>
-<table>
-  <tr>
-    <td>学号</td>
-    <td class="input">
-    <input name="stuId" type="text" id="stuId" onblur="isStuIdValid()">
-    <br/>
-    <td style="display: none" id="stuIdError" class="error">请输入正确的学号</td>
-  </tr>
-    <tr>
-        <td>用户名</td>
-        <td class="input">
-            <input name="stuId" type="text" id="username">
-            <br/>
-        <td style="display: none" id="usernameError" class="error">请输入正确的用户名</td>
-    </tr>
-    <br>
-    <tr>
-        <td>密码</td>
-        <td class="input">
-            <input name="password" type="password" id="password" onblur="isPasswordValid()">
-        </td>
-        <td style="display: none" id="passwordError" class="error">请输入正确密码</td>
-    </tr>
-    <tr>
-        <td>确认密码</td>
-        <td class="input">
-            <input name="confirmPassword" type="password" id="confirmPassword" onblur="confirmPasswordValid()">
-        </td>
-        <td style="display: none" id="confirmPasswordError" class="error">两次输入密码不一致</td>
-    </tr>
-    <tr>
-        <td>验证码</td>
-        <td>
-            <input class="input" type="text" id="code" onblur="checkCode()">
-        </td>
-        <td>
-            <input class="button" type="submit" value="获取验证码" onclick="sendCode()">
-        </td>
-    </tr>
-</table>
-<input type="submit" id = "signIn" class="button" value="注册" onclick="signIn()">
+        @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+
+        .b-example-divider {
+            height: 3rem;
+            background-color: rgba(0, 0, 0, .1);
+            border: solid rgba(0, 0, 0, .15);
+            border-width: 1px 0;
+            box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+        }
+
+        .b-example-vr {
+            flex-shrink: 0;
+            width: 1.5rem;
+            height: 100vh;
+        }
+
+        .bi {
+            vertical-align: -.125em;
+            fill: currentColor;
+        }
+
+        .nav-scroller {
+            position: relative;
+            z-index: 2;
+            height: 2.75rem;
+            overflow-y: hidden;
+        }
+
+        .nav-scroller .nav {
+            display: flex;
+            flex-wrap: nowrap;
+            padding-bottom: 1rem;
+            margin-top: -1px;
+            overflow-x: auto;
+            text-align: center;
+            white-space: nowrap;
+            -webkit-overflow-scrolling: touch;
+        }
+    </style>
+
+
+    <!-- Custom styles for this template -->
+    <link th:href="@{/css/sign-in.css}" rel="stylesheet">
+</head>
+<body class="text-center">
+
+<main class="form-signin w-100 m-auto">
+    <form>
+        <!--logo-->
+        <img class="mb-4" th:src="@{/img/logo.png}" alt="" width="72" height="72">
+        <h1 class="h3 mb-3 fw-normal">欢迎注册</h1>
+        <p>已有账号？<a href="/login">点击登录</a></p>
+        <p>密码为6~16位字母和数字的组合</p>
+        <p>点击注册将向您的教育邮箱发送验证码以完成注册</p>
+
+        <div class="form-floating">
+            <input type="text" class="form-control" id="stuId" placeholder="学号" onblur="isStuIdValid()">
+            <label for="stuId">学号</label>
+            <span class="error" id="stuIdError" style="display: none">请输入正确的学号</span>
+        </div>
+        <div class="form-floating">
+            <input type="text" class="form-control" id="username" placeholder="用户名">
+            <label for="username">用户名</label>
+            <span class="error" id="usernameError" style="display: none">请输入正确的用户名</span>
+        </div>
+        <div class="form-floating">
+            <input type="password" class="form-control" id="password" placeholder="密码为6~16位字母和数字的组合" onblur="isPasswordValid()">
+            <label for="password">密码</label>
+            <span class="error" id="passwordError" style="display: none">密码错误</span>
+        </div>
+        <div class="form-floating">
+            <input type="password" class="form-control" id="confirmPassword" placeholder="确认密码" onblur="confirmPasswordValid()">
+            <label for="confirmPassword">确认密码</label>
+            <span class="error" id="confirmPasswordError" style="display: none">两次输入密码不一致</span>
+        </div>
+        <div class="form-floating">
+            <input type="password" class="form-control" id="code" placeholder="验证码" onblur="checkCode()">
+            <label for="code">验证码</label>
+            <span class="error" id="codeError" style="display: none">验证码错误</span>
+        </div>
+        <div>
+            <button class="w-100 btn btn-block btn-small" type="button">获取验证码</button>
+        </div>
+        <div class="checkbox mb-3">
+            <label>
+                <input type="checkbox" value="remember-me"> 记住密码
+            </label>
+        </div>
+        <button class="w-100 btn btn-lg btn-primary" type="button" onclick="signIn()">注册</button>
+    </form>
+</main>
+</body>
 
 <script>
     let code = ""; // 验证码
@@ -84,14 +142,16 @@
         let reg = /^[UM][0-9]{9}$/;
 
         let stuIdError = document.getElementById("stuIdError");
+        let res;
         if (reg.test(stuId)){
             stuIdError.style.display = "none";
             // 判断学号是否注册
-            axios.get("/users/isExist?stuId=" + stuId).
+            res = axios.get("/users/isExist?stuId=" + stuId).
             then(function(resp){
                 if (resp.data.data){
                     stuIdError.innerHTML = "学号已注册";
                     stuIdError.style.display = "";
+                    console.log(111)
                     return false;
                 }
                 return true;
@@ -100,7 +160,7 @@
             stuIdError.style.display = "";
             return false;
         }
-        return true;
+        return res;
     }
 
     // 密码验证
@@ -151,11 +211,14 @@
     function checkCode(){
         let curCode = document.getElementById("code").value.trim(); // 用户输入验证码
         if (code != curCode){
-            alert("验证码错误")
+            document.getElementById("codeError").style.display = "";
             return false;
+        }else{
+            document.getElementById("codeError").style.display = "none";
         }
         return true;
     }
 </script>
-</body>
+
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </html>
