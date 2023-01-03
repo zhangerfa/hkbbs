@@ -7,6 +7,8 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import site.zhangerfa.util.MailClient;
 
+import java.util.UUID;
+
 
 @SpringBootTest
 class HkbbsApplicationTests {
@@ -25,5 +27,10 @@ class HkbbsApplicationTests {
         // 生成动态HTML
         String content = templateEngine.process("mail/forget.html", context);
         mailClient.send("M202271503@hust.edu.cn", "测试", content);
+    }
+
+    @Test
+    public void test(){
+        System.out.println(UUID.randomUUID());
     }
 }

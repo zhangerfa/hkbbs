@@ -5,17 +5,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.web.bind.annotation.*;
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.Context;
 import site.zhangerfa.controller.tool.Code;
 import site.zhangerfa.controller.tool.Result;
 import site.zhangerfa.pojo.User;
 import site.zhangerfa.service.UserService;
-import site.zhangerfa.util.MailClient;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
 
 @RestController
@@ -23,17 +18,6 @@ import java.util.Random;
 public class UserController {
     @Resource
     private UserService userService;
-
-    @Resource
-    private TemplateEngine templateEngine;
-
-    @Resource
-    private MailClient mailClient;
-    private static Map<String, String> codeMap; // 存储用户最后一次获取的验证码
-
-    static {
-        codeMap = new HashMap<>();
-    }
 
     /**
      * 判断用户是否已经注册
@@ -47,20 +31,20 @@ public class UserController {
     }
 
     /**
-     * 检查指定学号的用户的输入密码是否正确
+     * 检查指定学号的用户的输入密码、验证码是否正确
      * 如果正确将用户stuId存储session中
      * @param stuId
      * @param password
      * @return
      */
     @PostMapping("/login")
-    public Result login(String stuId, String password, HttpSession session){
-        boolean flag = userService.checkPassword(stuId, password);
-        // session中存储该用户的学号
-        if (flag) {
-            session.setAttribute("stuId", stuId);
+    public Result login(User user, HttpSession session){
+        if (!userService.checkPassword(user.getStuId(), user.getPassword())){
+            return new Result(Code.GET_ERR, false, "密码错误");
         }
-        return new Result(flag? Code.GET_OK: Code.GET_ERR, flag);
+        // session中存储该用户的学号
+        session.setAttribute("stuId", user.getStuId());
+        return new Result(Code.GET_OK, true, "登录成功");
     }
 
     /**
@@ -78,14 +62,19 @@ public class UserController {
     }
 
     /**
-     * 新增用户
+     * 注册新用户
      * @param user
+     * @param code 用户输入的验证码
      * @return
      */
-    @PostMapping
-    public Result register(@RequestBody User user){
+    @PostMapping("/register")
+    public Result register(User user, @RequestParam("code") String code){
+        System.out.println(code);
+        if (!userService.checkCode(user.getStuId(), code)){
+            return new Result(Code.GET_ERR, false, "验证码错误");
+        }
         boolean flag = userService.add(user);
-        return new Result(flag? Code.SAVE_OK: Code.SAVE_ERR, flag);
+        return new Result(flag? Code.SAVE_OK: Code.SAVE_ERR, flag, "注册成功");
     }
 
     /**
@@ -132,32 +121,10 @@ public class UserController {
      * @return 返回验证码
      */
     @RequestMapping("/sendCode")
-    public Result getEmail(String stuId){
-        String subject = "张二发给您发的验证码";
-        String code = "";
-        Random random = new Random();
-        for (int i = 0; i < 6; i++){
-            code += random.nextInt(0, 10);
-        }
-        // 设置thymeleaf参数
-        Context context = new Context();
-        context.setVariable("code", code);
-        // 生成动态HTML
-        String content = templateEngine.process("mail/register.html", context);
-        // 发送邮件
-        mailClient.send(stuId + "@hust.edu.cn", subject, content);
-        codeMap.put(stuId, code);
-        System.out.println(code);
-        return new Result(Code.SAVE_OK, code, "验证码已发送");
-    }
-
-    /**
-     * 检查验证码是否正确
-     * @return
-     */
-    @RequestMapping("/checkCode")
-    public Result checkCode(String stuId, String code){
-        boolean flag = codeMap.containsKey(stuId) && codeMap.get(stuId) == code;
-        return new Result(Code.GET_OK, flag);
+    public Result sendCode(String stuId){
+        boolean flag = userService.sendCode(stuId);
+        int code = flag? Code.GET_OK: Code.GET_ERR;
+        String msg = flag? "验证码已发送": "请检查您的学号后重试";
+        return new Result(code, flag, msg);
     }
 }

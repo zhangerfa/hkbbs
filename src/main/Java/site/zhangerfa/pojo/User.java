@@ -41,16 +41,12 @@ public class User {
     }
 
     // 修改密码
-    public void changePassword(String password) {
+    public void setPassword(String password) {
         this.password = password;
     }
 
     public String getUsername() {
         return username;
-    }
-
-    public void changeUsername(String username) {
-        this.username = username;
     }
 
     public Date getCreateTime() {

@@ -30,7 +30,7 @@ public class MailClient {
      * @param subject
      * @param content
      */
-    public void send(String to, String subject, String content){
+    public boolean send(String to, String subject, String content){
         MimeMessage mimeMessage = javaMailSender.createMimeMessage(); // 封装会话内容的对象
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage);
         try {
@@ -41,8 +41,10 @@ public class MailClient {
             mimeMessageHelper.setText(content, true); // 发送HTML文本
             // 发送邮件
             javaMailSender.send(mimeMessageHelper.getMimeMessage());
+            return true;
         } catch (MessagingException e) {
             logger.error("邮件发送失败" + e.getMessage());
+            return false;
         }
     }
 }

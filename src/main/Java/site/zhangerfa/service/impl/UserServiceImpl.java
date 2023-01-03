@@ -1,20 +1,29 @@
 package site.zhangerfa.service.impl;
 
+import jakarta.annotation.Resource;
+import org.springframework.stereotype.Service;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 import site.zhangerfa.controller.tool.Result;
 import site.zhangerfa.dao.UserMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import site.zhangerfa.pojo.User;
 import site.zhangerfa.service.UserService;
+import site.zhangerfa.util.MailClient;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService {
-    @Autowired
+
+    private Map<String, String> codeMap = new HashMap<>(); // 存储用户最后一次获取的验证码
+    @Resource
     private UserMapper userMapper;
+
+    @Resource
+    private TemplateEngine templateEngine;
+
+    @Resource
+    private MailClient mailClient;
 
     @Override
     public boolean isExist(String stuId) {
@@ -75,5 +84,29 @@ public class UserServiceImpl implements UserService {
     public boolean updatePassword(String stuId, String password) {
         int updateNum = userMapper.updatePassword(stuId, password);
         return updateNum != 0;
+    }
+
+    public boolean checkCode(String stuId, String code){
+        return codeMap.containsKey(stuId) && code.equals(codeMap.get(stuId));
+    }
+
+    @Override
+    public boolean sendCode(String stuId) {
+        String subject = "张二发给您发的验证码";
+        String code = "";
+        Random random = new Random();
+        for (int i = 0; i < 6; i++){
+            code += random.nextInt(0, 10);
+        }
+        // 保存验证码
+        codeMap.put(stuId, code);
+        System.out.println(code);
+        // 设置thymeleaf参数
+        Context context = new Context();
+        context.setVariable("code", code);
+        // 生成动态HTML
+        String content = templateEngine.process("mail/register.html", context);
+        // 发送邮件
+        return mailClient.send(stuId + "@hust.edu.cn", subject, content);
     }
 }

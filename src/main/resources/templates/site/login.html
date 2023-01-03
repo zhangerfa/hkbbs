@@ -136,6 +136,7 @@
       param.append("stuId", document.getElementById(STUID).value.trim());
       param.append("password", document.getElementById(PASSWORD).value.trim());
       axios.post("/users/login", param).then(function (resp) {
+        alert(resp.data.msg);
         if (resp.data.data){
           let url = "http://" + document.domain + "/wall";
           window.location = url;
