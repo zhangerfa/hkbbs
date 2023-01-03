@@ -143,7 +143,7 @@ public class UserController {
         Context context = new Context();
         context.setVariable("code", code);
         // 生成动态HTML
-        String content = templateEngine.process("mail/forget.html", context);
+        String content = templateEngine.process("mail/register.html", context);
         // 发送邮件
         mailClient.send(stuId + "@hust.edu.cn", subject, content);
         codeMap.put(stuId, code);
