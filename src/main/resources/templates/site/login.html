@@ -139,6 +139,7 @@
         alert(resp.data.msg);
         if (resp.data.data){
           let url = "http://" + document.domain + "/wall";
+          document.getElementById("passwordError").style.display="none";
           window.location = url;
         }else{
           document.getElementById("passwordError").style.display="";
