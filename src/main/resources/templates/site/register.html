@@ -129,9 +129,12 @@
         };
         axios.post("/users", param).then(function (resp) {
             if (resp.data.data){
-                alert("注册成功！")
+                alert("注册成功！");
+                // 注册成功跳转到登录页面
+                let url = "http://" + document.domain + "/login";
+                window.location = url;
             }else{
-                alert("注册失败")
+                alert("注册失败");
             }
         })
     }
