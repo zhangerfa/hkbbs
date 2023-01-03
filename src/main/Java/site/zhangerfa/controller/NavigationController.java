@@ -1,7 +1,6 @@
 package site.zhangerfa.controller;
 
 import jakarta.annotation.Resource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -50,8 +49,8 @@ public class NavigationController {
      * @return
      */
     @GetMapping("/wall")
-    public String getIndexPage(@SessionAttribute("stuId") String stuId,
-                               Page page, Model model){
+    public String wall(@SessionAttribute("stuId") String stuId,
+                       Page page, Model model){
         page.setRows(cardService.getNumOfCards());
         page.setPath("/wall");
 
@@ -66,9 +65,36 @@ public class NavigationController {
     /**
      * 访问树洞
      */
-    @RequestMapping("role")
-    public String role(){
-        return "site/role.html";
+    @RequestMapping("/hole")
+    public String hole(){
+        return "site/hole.html";
+    }
+
+    /**
+     * 访问域名时资源跳转
+     * @return
+     */
+    @RequestMapping("/")
+    public String homeRedirect(){
+        return "forward:/wall";
+    }
+
+    /**
+     * 跳转到登录页面
+     * @return
+     */
+    @RequestMapping("/login")
+    public String login(){
+        return "site/login.html";
+    }
+
+    /**
+     * 跳转到注册页面
+     * @return
+     */
+    @RequestMapping("/register")
+    public String register(){
+        return "site/register.html";
     }
 
 }
