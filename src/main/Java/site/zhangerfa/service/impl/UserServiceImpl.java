@@ -166,4 +166,20 @@ public class UserServiceImpl implements UserService {
         LoginTicket loginTicket = getTicket(ticket);
         return loginTicket.getStuId();
     }
+
+    @Override
+    public boolean checkTicket(String ticket) {
+        LoginTicket loginTicket = getTicket(ticket);
+        if (loginTicket.getStatus() == 1){
+            // 有效，判断是否过期
+            if (loginTicket.getExpired().compareTo(new Date(System.currentTimeMillis())) == 1){
+                // 未过期
+                return true;
+            }else {
+                // 过期，更改登录凭证状态
+                updateTicket(ticket, 0);
+            }
+        }
+        return false;
+    }
 }

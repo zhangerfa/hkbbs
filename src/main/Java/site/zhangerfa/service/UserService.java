@@ -131,4 +131,15 @@ public interface UserService {
      * @return
      */
     String getStuIdByTicket(String ticket);
+
+    /**
+     * 检查登陆凭证是否有效
+     *      判断状态码是否有效
+     *      有效还要判断是否过期
+     *      有效且未过期返回true
+     *      有效但已过期，将状态改为无效，返回false
+     * @param ticket
+     * @return
+     */
+    boolean checkTicket(String ticket);
 }
