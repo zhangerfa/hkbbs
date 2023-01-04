@@ -3,6 +3,7 @@ package site.zhangerfa.controller;
 import com.google.code.kaptcha.impl.DefaultKaptcha;
 import jakarta.annotation.Resource;
 import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -11,24 +12,31 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 import site.zhangerfa.controller.tool.Code;
 import site.zhangerfa.controller.tool.Result;
+import site.zhangerfa.dao.LoginTicketMapper;
+import site.zhangerfa.pojo.LoginTicket;
 import site.zhangerfa.pojo.User;
 import site.zhangerfa.service.UserService;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.Date;
 import java.util.Map;
+import java.util.UUID;
 
 
 @RestController
 @RequestMapping("/users")
 public class UserController {
-    private Logger logger = LoggerFactory.getLogger(UserController.class);
+    private static Logger logger = LoggerFactory.getLogger(UserController.class);
     @Resource
     private DefaultKaptcha defaultKaptcha;
 
     @Resource
     private UserService userService;
+
+    @Resource
+    private LoginTicketMapper loginTicketMapper;
 
     /**
      * 判断用户是否已经注册
@@ -43,30 +51,41 @@ public class UserController {
 
     /**
      * 检查指定学号的用户的输入密码、验证码是否正确
-     * 如果正确将用户stuId存储session中
+     *      如果正确生成登录凭证以cookie返回给用户
+     * @param rememberMe 是否勾选记住密码
      * @return
      */
     @PostMapping("/login")
-    public Result login(User user, HttpSession session){
-        if (!userService.checkPassword(user.getStuId(), user.getPassword())){
-            return new Result(Code.GET_ERR, false, "密码错误");
+    public Result login(User user, boolean rememberMe, HttpServletResponse response){
+        Map<String, Object> map = userService.login(user, rememberMe);
+        if (!(boolean) map.get("result")){
+            return new Result(Code.SAVE_ERR, null, (String) map.get("msg"));
         }
-        // session中存储该用户的学号
-        session.setAttribute("stuId", user.getStuId());
-        return new Result(Code.GET_OK, true, "登录成功");
+        // 登录凭证作为cookie凭证发送给客户端
+        LoginTicket ticket = (LoginTicket) map.get("ticket");
+        Cookie cookie = new Cookie("ticket", ticket.getTicket());
+        // 计算登录凭证有效时间（秒）
+        long expired = (ticket.getExpired().getTime() - new Date(System.currentTimeMillis()).getTime()) / 1000;
+        cookie.setMaxAge((int) expired);
+        cookie.setPath("/"); // 访问所有页面需要携带登录凭证
+        response.addCookie(cookie);
+        return new Result(Code.SAVE_OK, ticket.getTicket(), (String) map.get("msg"));
     }
 
     /**
-     * 注销登录，发送请求后删除session，并重定向到网站首页
-     * @param session
+     * 注销登录，发送请求后将登录凭证状态修改为不可用，并重定向到登录页面
+     * @param ticket 登录凭证
      * @return
      */
     @RequestMapping("/logout")
-    public Result logout(HttpSession session,
-                         HttpServletRequest request,
-                         HttpServletResponse response) throws Exception {
-        session.removeAttribute("stuId");
-        request.getRequestDispatcher("/").forward(request, response);
+    public Result logout(String ticket, HttpServletRequest request,
+                         HttpServletResponse response) {
+        loginTicketMapper.updateStatus(ticket, 0);
+        try {
+            request.getRequestDispatcher("/login").forward(request, response);
+        } catch (Exception e) {
+            logger.error("注销登录后重定向错误-->" + e.getMessage());
+        }
         return new Result(Code.DELETE_OK, null);
     }
 

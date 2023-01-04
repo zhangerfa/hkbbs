@@ -1,6 +1,7 @@
 package site.zhangerfa.service;
 
 import org.springframework.transaction.annotation.Transactional;
+import site.zhangerfa.pojo.LoginTicket;
 import site.zhangerfa.pojo.User;
 
 import java.util.Date;
@@ -90,8 +91,44 @@ public interface UserService {
     boolean sendCode(String stuId);
 
     /**
-     * 检查验证码是否正确
+     * 检查指定学号的用户的输入密码、图像验证码是否正确
+     *      如果正确生成登录凭证返回
+     * @param rememberMe 是否勾选记住密码
+     * @return {"result": boolean, // 存储是否登录成功
+     *          ”msg“: String      // 存储给用户反馈的信息
+     *          "ticket": LoginTicket // 如果登录成功存储ticket对象
+     *          }
+     */
+    Map<String, Object> login(User user, boolean rememberMe);
+
+    /**
+     * 检查用户注册时传入的验证码是否正确
+     * @param stuId
+     * @param code
      * @return
      */
     boolean checkCode(String stuId, String code);
+
+    /**
+     * 根据传入的登录凭证码查询登录凭证信息
+     * @param ticket 登录凭证码
+     * @return
+     */
+    LoginTicket getTicket(String ticket);
+
+    /**
+     * 根据传入的登录凭证码修改登录凭证状态
+     *
+     * @param ticket 登录凭证码
+     * @param status
+     * @return
+     */
+    boolean updateTicket(String ticket, int status);
+
+    /**
+     * 通过登陆凭证码获取用户学号
+     * @param ticket 登录凭证码
+     * @return
+     */
+    String getStuIdByTicket(String ticket);
 }
