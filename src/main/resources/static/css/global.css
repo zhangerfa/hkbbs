@@ -47,6 +47,14 @@ footer {
 	width: 100%;
 }
 
+.my-footer{
+	padding: 20px 0;
+	font-size: 12px;
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+}
+
 footer .qrcode {
 	text-align: center;
 }
