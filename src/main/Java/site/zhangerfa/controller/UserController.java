@@ -82,7 +82,7 @@ public class UserController {
                          HttpServletResponse response) {
         loginTicketMapper.updateStatus(ticket, 0);
         try {
-            request.getRequestDispatcher("/login").forward(request, response);
+            response.sendRedirect("/login");
         } catch (Exception e) {
             logger.error("注销登录后重定向错误-->" + e.getMessage());
         }
