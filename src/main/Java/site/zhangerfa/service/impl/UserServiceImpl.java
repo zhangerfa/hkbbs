@@ -193,4 +193,9 @@ public class UserServiceImpl implements UserService {
         User user = userMapper.selectUserByStuId(stuId);
         return user;
     }
+
+    @Override
+    public User getUserByStuId(String stuId) {
+        return userMapper.selectUserByStuId(stuId);
+    }
 }

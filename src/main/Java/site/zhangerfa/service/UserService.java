@@ -1,5 +1,6 @@
 package site.zhangerfa.service;
 
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.zhangerfa.pojo.LoginTicket;
 import site.zhangerfa.pojo.User;
@@ -7,7 +8,6 @@ import site.zhangerfa.pojo.User;
 import java.util.Date;
 import java.util.Map;
 
-@Transactional
 public interface UserService {
 
     /**
@@ -50,6 +50,8 @@ public interface UserService {
      * @return 返回注册时间，如果传入学号未注册则返回null
      */
     Date getCreateTimeByStuId(String stuId);
+
+    User getUserByStuId(String stuId);
 
     /**
      * 添加用户
