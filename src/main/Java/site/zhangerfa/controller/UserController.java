@@ -78,11 +78,11 @@ public class UserController {
      * @return
      */
     @RequestMapping("/logout")
-    public Result logout(String ticket, HttpServletRequest request,
+    public Result logout(@CookieValue("ticket") String ticket, HttpServletRequest request,
                          HttpServletResponse response) {
         loginTicketMapper.updateStatus(ticket, 0);
         try {
-            request.getRequestDispatcher("/login").forward(request, response);
+            response.sendRedirect("/login");
         } catch (Exception e) {
             logger.error("注销登录后重定向错误-->" + e.getMessage());
         }

@@ -134,6 +134,7 @@ public interface UserService {
 
     /**
      * 检查登陆凭证是否有效
+     *   传入ticket为空返回false
      *      判断状态码是否有效
      *      有效还要判断是否过期
      *      有效且未过期返回true
@@ -142,4 +143,11 @@ public interface UserService {
      * @return
      */
     boolean checkTicket(String ticket);
+
+    /**
+     * 根据 ticket返回用户信息
+     * @param ticket
+     * @return
+     */
+    User getUserByTicket(String ticket) throws IllegalAccessException;
 }

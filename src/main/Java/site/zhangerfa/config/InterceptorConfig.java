@@ -1,24 +1,30 @@
 package site.zhangerfa.config;
 
 import jakarta.annotation.Resource;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 import site.zhangerfa.controller.interceptor.CheckLoginInterceptor;
 
-@Configuration
-public class InterceptorConfig implements WebMvcConfigurer {
+@Component
+public class InterceptorConfig extends WebMvcConfigurationSupport {
     @Resource
     private CheckLoginInterceptor checkLoginInterceptor;
 
     @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        // 设置放行路径
-        String[] excludePath = {"/**/*.css", "/**/*.png", "/**/*.jpg",
-                "/**/*.svg", "/**/*.js"};
+    protected void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(checkLoginInterceptor)
-                // 不写拦截路径默认拦截所有请求
-//                .addPathPatterns("/")
-                .excludePathPatterns(excludePath);
+                .addPathPatterns("/")
+                .excludePathPatterns("/static/**");
+    }
+
+    // 自定义配置类覆盖了SpringBoot默认配置类
+    // 必须重新将静态资源请求拦截到static路径下
+    @Override
+    protected void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/**").addResourceLocations("classpath:/static/");
+        super.addResourceHandlers(registry);
+
     }
 }
