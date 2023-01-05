@@ -9,9 +9,11 @@ import site.zhangerfa.pojo.Card;
 import site.zhangerfa.pojo.Page;
 import site.zhangerfa.service.CardService;
 import site.zhangerfa.service.UserService;
+import site.zhangerfa.util.CardUtil;
 import site.zhangerfa.util.HostHolder;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 导航栏跳转控制器
@@ -23,6 +25,9 @@ public class NavigationController {
 
     @Resource
     private UserService userService;
+
+    @Resource
+    private CardUtil cardUtil;
 
     // 同一次会话中共享的用户数据存放在这里
     @Resource
@@ -38,17 +43,19 @@ public class NavigationController {
         page.setPath("/my");
 
         String stuId = hostHolder.getUser().getStuId();
-        String username = userService.getUsernameByStuId(stuId);
-        model.addAttribute("username", username);
         List<Card> cards = cardService.getOnePageCards(stuId,
                 page.getOffset(), page.getLimit());// 获取一页卡片
+        String username = hostHolder.getUser().getUsername();
+
+        model.addAttribute("username", username);
         model.addAttribute("cards", cards);
-        return "site/myWall";
+
+        return "site/my-wall";
     }
 
     /**
      * 访问卡片墙
-     * @param ticket
+     * @param page 分页对象
      * @param model
      * @return
      */
@@ -57,12 +64,10 @@ public class NavigationController {
         page.setRows(cardService.getNumOfCards());
         page.setPath("/wall");
 
-        String stuId = hostHolder.getUser().getStuId();
-        String username = userService.getUsernameByStuId(stuId);
-        model.addAttribute("username", username);
         List<Card> cards = cardService.getOnePageCards("0",
                 page.getOffset(), page.getLimit());// 获取一页卡片
-        model.addAttribute("cards", cards);
+        List<Map> maps = cardUtil.completeCard(cards);
+        model.addAttribute("maps", maps);
         return "site/wall";
     }
 

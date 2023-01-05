@@ -104,7 +104,7 @@
                         <div class="modal-header">
                             <h5 class="modal-title" id="hintModalLabel">提示</h5>
                         </div>
-                        <div class="modal-body" id="hintBody">
+                        <div class="modal-body" id="hintBody" style="color: red">
                             发布完毕!
                         </div>
                     </div>
@@ -114,7 +114,7 @@
             <!-- 帖子列表 -->
             <ul class="list-unstyled">
                 <!--循环拼接该元素，遍历的数据是 cards，每次取到数据存在变量card中-->
-                <li class="media pb-3 pt-3 mb-3 border-bottom" th:each="card:${cards}">
+                <li class="media pb-3 pt-3 mb-3 border-bottom" th:each="map:${maps}">
                     <!--点击头像跳转未添加-->
                     <a href="#">
                         <!--用户头像暂时写死-->
@@ -123,11 +123,11 @@
                     <div class="media-body">
                         <h6 class="mt-0 mb-3">
                             <!--帖子详情页面未实现-->
-                            <a href="#" th:utext="${card.title}">标题</a>
+                            <a href="#" th:utext="${map.card.title}">标题</a>
                         </h6>
-                        <p th:utext="${card.content}">帖子内容</p>
+                        <p th:utext="${map.card.content}">帖子内容</p>
                         <div class="text-muted font-size-12">
-                            <u class="mr-3" th:utext="${card.posterName}">作者</u> 发布于 <b th:text="${#dates.format(card.createTime,'yyyy-MM-dd HH:mm:ss')}">2019-04-15 15:32:18</b>
+                            <u class="mr-3" th:utext="${map.username}">作者</u> 发布于 <b th:text="${#dates.format(map.card.createTime,'yyyy-MM-dd HH:mm:ss')}">2019-04-15 15:32:18</b>
                             <ul class="d-inline float-right">
                                 <!--									<li class="d-inline ml-2">赞 11</li>-->
                                 <!--									<li class="d-inline ml-2">|</li>-->
@@ -177,8 +177,8 @@
             "title": document.getElementById("recipient-name").value
         };
         // 发布卡片前检测卡片是否为空
-        if (param.title.length == 0 || param.content.length == 0){
-            alert("请输入要发送的内容");
+        if (param.title.length === 0 || param.content.length === 0){
+            $('#hintModal').modal('show');
             return
         }
         axios.post("/cards", param).
@@ -196,5 +196,8 @@
         $('#publishModal').modal('show');
     }
 </script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" crossorigin="anonymous"></script>
 </body>
 </html>

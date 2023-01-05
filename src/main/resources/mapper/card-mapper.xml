@@ -11,7 +11,7 @@
         from card
         <where>
             <if test='stuId != "0"'>
-                u.stu_id = #{stuId}
+                stu_id = #{stuId}
             </if>
         </where>
         order by createTime desc

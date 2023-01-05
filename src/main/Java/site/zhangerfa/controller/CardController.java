@@ -9,8 +9,11 @@ import site.zhangerfa.pojo.LoginTicket;
 import site.zhangerfa.pojo.Page;
 import site.zhangerfa.service.CardService;
 import site.zhangerfa.service.UserService;
+import site.zhangerfa.util.CardUtil;
+import site.zhangerfa.util.HostHolder;
 
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -25,12 +28,26 @@ public class CardController {
     @Resource
     private UserService userService;
 
+    @Resource
+    private HostHolder hostHolder;
+
+    @Resource
+    private CardUtil cardUtil;
+
     @GetMapping
     public Result getOnePageCards(Page page){
         List<Card> cards = cardService.getOnePageCards("0", page.getOffset(),
                 page.getLimit());
-        Integer code = cards != null? Code.GET_OK: Code.GET_ERR;
-        return new Result(code, cards);
+        List<Map> res;
+        Integer code;
+        if (cards == null){
+            res = null;
+            code = Code.GET_ERR;
+        }else {
+            res = cardUtil.completeCard(cards);
+            code = Code.GET_OK;
+        }
+        return new Result(code, res);
     }
 
     @GetMapping("/my")
@@ -45,9 +62,8 @@ public class CardController {
 
     // 新增一个卡片
     @PostMapping
-    public Result addCard(@RequestBody Card card,
-                          @CookieValue("ticket") String ticket){
-        String stuId = userService.getStuIdByTicket(ticket);
+    public Result addCard(@RequestBody Card card){
+        String stuId = hostHolder.getUser().getStuId();
         card.setPosterId(stuId);
         boolean flag = cardService.add(card);
         return new Result(flag? Code.SAVE_OK: Code.SAVE_ERR, flag);
