@@ -41,9 +41,11 @@ public class CheckLoginInterceptor implements HandlerInterceptor {
             if (url.contains(s)){
                 // 访问与注册、登录有关请求，放行
                 if (userService.checkTicket(ticket)){
-                    // ticket有效，跳转到卡片墙
-                    response.sendRedirect("/wall");
-                    return false;
+                    // ticket有效，且不访问注销登录请求，跳转卡片墙
+                    if (!url.contains("logout")){
+                        response.sendRedirect("/wall");
+                        return false;
+                    }
                 }else {
                     // ticket无效，放行
                     return true;

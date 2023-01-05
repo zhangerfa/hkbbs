@@ -78,7 +78,7 @@ public class UserController {
      * @return
      */
     @RequestMapping("/logout")
-    public Result logout(String ticket, HttpServletRequest request,
+    public Result logout(@CookieValue("ticket") String ticket, HttpServletRequest request,
                          HttpServletResponse response) {
         loginTicketMapper.updateStatus(ticket, 0);
         try {
