@@ -3,13 +3,13 @@ package site.zhangerfa.controller;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import site.zhangerfa.pojo.Card;
 import site.zhangerfa.pojo.Page;
 import site.zhangerfa.service.CardService;
 import site.zhangerfa.service.UserService;
+import site.zhangerfa.util.HostHolder;
 
 import java.util.List;
 
@@ -24,19 +24,20 @@ public class NavigationController {
     @Resource
     private UserService userService;
 
+    // 同一次会话中共享的用户数据存放在这里
+    @Resource
+    private HostHolder hostHolder;
+
     /**
      * 跳转到我的主页
      */
     @RequestMapping("/my")
-    public String my(@CookieValue("ticket") String ticket,
-                     Page page, Model model){
+    public String my(Page page, Model model){
         // page对象被自动注入到model对象中
         page.setRows(cardService.getNumOfCards());
         page.setPath("/my");
 
-        // 通过登录凭证获取用户学号
-        String stuId = userService.getStuIdByTicket(ticket);
-
+        String stuId = hostHolder.getUser().getStuId();
         String username = userService.getUsernameByStuId(stuId);
         model.addAttribute("username", username);
         List<Card> cards = cardService.getOnePageCards(stuId,
@@ -52,12 +53,11 @@ public class NavigationController {
      * @return
      */
     @GetMapping("/wall")
-    public String wall(@CookieValue("ticket") String ticket,
-                       Page page, Model model){
+    public String wall(Page page, Model model){
         page.setRows(cardService.getNumOfCards());
         page.setPath("/wall");
 
-        String stuId = userService.getStuIdByTicket(ticket);
+        String stuId = hostHolder.getUser().getStuId();
         String username = userService.getUsernameByStuId(stuId);
         model.addAttribute("username", username);
         List<Card> cards = cardService.getOnePageCards("0",
@@ -70,8 +70,8 @@ public class NavigationController {
      * 访问树洞
      */
     @RequestMapping("/hole")
-    public String hole(@CookieValue("ticket") String ticket,
-                       Page page, Model model){
+    public String hole(Page page, Model model){
+        String stuId = hostHolder.getUser().getStuId();
         return "site/hole";
     }
 
