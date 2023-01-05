@@ -6,20 +6,13 @@ import java.util.Date;
 征友墙上的卡片的抽象
  */
 public class Card {
+    private int id;
     private String posterId; // 发帖人ID（学号）
     private String title;
     private String content; // 帖子中文字
     private int commentNum = 0; // 评论数量
     private Date createTime; // 发帖时间
     private int hot = 0; // 帖子热度
-
-    public int getCommentNum() {
-        return commentNum;
-    }
-
-    public void setCommentNum(int commentNum) {
-        this.commentNum = commentNum;
-    }
 
     public Card(){}
 
@@ -36,6 +29,22 @@ public class Card {
         this.posterId = posterId;
         this.title = title;
         this.content = content;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getCommentNum() {
+        return commentNum;
+    }
+
+    public void setCommentNum(int commentNum) {
+        this.commentNum = commentNum;
     }
 
     public Card(String posterId,String title, String content, Date createTime){
