@@ -7,7 +7,7 @@
         insert into card (stu_id, title, content) values(#{posterId}, #{title}, #{content})
     </insert>
     <select id="selectOnePageCards" resultType="Card">
-        select stu_id, title, content, create_at as createTime, comment_num
+        select stu_id, title, content, create_at as createTime, comment_num, hot
         from card
         <where>
             <if test='stuId != "0"'>

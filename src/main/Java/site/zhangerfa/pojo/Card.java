@@ -9,8 +9,9 @@ public class Card {
     private String posterId; // 发帖人ID（学号）
     private String title;
     private String content; // 帖子中文字
-    private int commentNum; // 评论数量
+    private int commentNum = 0; // 评论数量
     private Date createTime; // 发帖时间
+    private int hot = 0; // 帖子热度
 
     public int getCommentNum() {
         return commentNum;
@@ -21,6 +22,14 @@ public class Card {
     }
 
     public Card(){}
+
+    public int getHot() {
+        return hot;
+    }
+
+    public void setHot(int hot) {
+        this.hot = hot;
+    }
 
     // 不传入卡片创建时间，视为新卡片以当前时间作为创建时间
     public Card(String posterId, String title, String content){
