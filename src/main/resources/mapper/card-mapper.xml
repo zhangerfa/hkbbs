@@ -3,11 +3,15 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="site.zhangerfa.dao.CardMapper">
+    <sql id="select">
+        id, stu_id, title, content, create_at as createTime, comment_num, hot
+    </sql>
+
     <insert id="addCard">
         insert into card (stu_id, title, content) values(#{posterId}, #{title}, #{content})
     </insert>
     <select id="selectOnePageCards" resultType="Card">
-        select stu_id, title, content, create_at as createTime, comment_num, hot
+        select <include refid="select"/>
         from card
         <where>
             <if test='stuId != "0"'>
@@ -19,5 +23,10 @@
     </select>
     <select id="getNumOfCards" resultType="java.lang.Integer">
         select count(*) from card;
+    </select>
+    <select id="selectCardById" resultType="Card">
+        select <include refid="select"/>
+        from card
+        where id = #{id}
     </select>
 </mapper>

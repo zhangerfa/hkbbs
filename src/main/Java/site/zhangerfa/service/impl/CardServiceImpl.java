@@ -38,4 +38,9 @@ public class CardServiceImpl implements CardService {
         int addNum = cardMapper.addCard(card);
         return addNum != 0;
     }
+
+    @Override
+    public Card getCardById(int id) {
+        return cardMapper.selectCardById(id);
+    }
 }

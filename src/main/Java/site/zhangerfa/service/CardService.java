@@ -26,4 +26,6 @@ public interface CardService {
      * @return
      */
     boolean add(Card card);
+
+    Card getCardById(int id);
 }

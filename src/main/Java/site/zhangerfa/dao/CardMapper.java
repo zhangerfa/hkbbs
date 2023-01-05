@@ -27,5 +27,7 @@ public interface CardMapper {
     发帖
      */
     int addCard(Card card);
+
+    Card selectCardById(int id);
 }
 
