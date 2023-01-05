@@ -26,7 +26,6 @@ public interface CardMapper {
     /*
     发帖
      */
-    @Insert("insert into card (stu_id, title, content) values(#{posterId}, #{title}, #{content})")
     int addCard(Card card);
 }
 

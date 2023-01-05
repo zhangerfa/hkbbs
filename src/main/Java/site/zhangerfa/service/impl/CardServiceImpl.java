@@ -1,5 +1,6 @@
 package site.zhangerfa.service.impl;
 
+import org.springframework.web.util.HtmlUtils;
 import site.zhangerfa.dao.CardMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,9 @@ public class CardServiceImpl implements CardService {
 
     @Override
     public List<Card> getOnePageCards(String stuId, int offset, int limit) {
+        if (stuId == null){
+            throw new IllegalArgumentException("未输入学号");
+        }
         return cardMapper.selectOnePageCards(stuId, offset, limit);
     }
 
@@ -25,8 +29,13 @@ public class CardServiceImpl implements CardService {
 
     @Override
     public boolean add(Card card) {
+        if (card == null){
+            throw new IllegalArgumentException("输入为空");
+        }
+        // 转义HTML标记，防止HTML注入
+        card.setTitle(HtmlUtils.htmlEscape(card.getTitle()));
+        card.setContent(HtmlUtils.htmlEscape(card.getContent()));
         int addNum = cardMapper.addCard(card);
-        System.out.println(card);
         return addNum != 0;
     }
 }

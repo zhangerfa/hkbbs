@@ -3,9 +3,12 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="site.zhangerfa.dao.CardMapper">
+    <insert id="addCard">
+        insert into card (stu_id, title, content) values(#{posterId}, #{title}, #{content})
+    </insert>
     <select id="selectOnePageCards" resultType="Card">
-        select username as postername, u.stu_id, title, content, c.create_at as createTime
-        from user u join card c on u.stu_id = c.stu_id
+        select stu_id, title, content, create_at as createTime, comment_num
+        from card
         <where>
             <if test='stuId != "0"'>
                 u.stu_id = #{stuId}
