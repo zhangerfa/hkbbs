@@ -169,10 +169,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean checkTicket(String ticket) {
+        if (ticket == null) return false;
         LoginTicket loginTicket = getTicket(ticket);
         if (loginTicket.getStatus() == 1){
             // 有效，判断是否过期
-            if (loginTicket.getExpired().compareTo(new Date(System.currentTimeMillis())) == 1){
+            if (loginTicket.getExpired().after(new Date())){
                 // 未过期
                 return true;
             }else {
@@ -181,5 +182,15 @@ public class UserServiceImpl implements UserService {
             }
         }
         return false;
+    }
+
+    @Override
+    public User getUserByTicket(String ticket) throws IllegalAccessException {
+        if (ticket == null) {
+            throw new IllegalAccessException("登录凭证为空");
+        }
+        String stuId = getStuIdByTicket(ticket);
+        User user = userMapper.selectUserByStuId(stuId);
+        return user;
     }
 }
