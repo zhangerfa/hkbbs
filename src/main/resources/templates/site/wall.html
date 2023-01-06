@@ -104,7 +104,7 @@
                         <div class="modal-header">
                             <h5 class="modal-title" id="hintModalLabel">提示</h5>
                         </div>
-                        <div class="modal-body" id="hintBody" style="color: red">
+                        <div class="modal-body" id="hintBody">
                             发布完毕!
                         </div>
                     </div>
@@ -178,11 +178,15 @@
         };
         // 发布卡片前检测卡片是否为空
         if (param.title.length === 0 || param.content.length === 0){
+            document.getElementById("hintModal").style.color="red";
+            document.getElementById("hintBody").innerText="请输入要发送的内容";
             $('#hintModal').modal('show');
             return
         }
         axios.post("/cards", param).
         then(function (resp) {
+            document.getElementById("hintModal").style.color="black";
+            document.getElementById("hintBody").innerText="发帖成功";
             $('#hintModal').modal('show');
             $('#publishModal').modal('hide');
             // 发布成功后刷新页面
