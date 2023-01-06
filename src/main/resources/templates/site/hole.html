@@ -10,53 +10,9 @@
 <body>
 <div class="nk-container">
     <!-- 头部 -->
-    <header class="bg-dark sticky-top">
-        <div class="container">
-            <!-- 导航 -->
-            <nav class="navbar navbar-expand-lg navbar-dark">
-                <!-- logo -->
-                <!--                <a class="navbar-brand" href="#"></a>-->
-                <!--                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">-->
-                <!--                    <span class="navbar-toggler-icon"></span>-->
-                <!--                </button>-->
-                <!-- 功能 -->
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav mr-auto">
-                        <li class="nav-item ml-3 btn-group-vertical">
-                            <a class="nav-link" href="/wall">卡片墙</a>
-                        </li>
-                        <li class="nav-item ml-3 btn-group-vertical">
-                            <a class="nav-link" href="/hole">树洞</a>
-                        </li>
-                        <!--                        <li class="nav-item ml-3 btn-group-vertical">-->
-                        <!--                            <a class="nav-link position-relative" href="#">消息<span class="badge badge-danger">12</span></a>-->
-                        <!--                        </li>-->
-                        <li class="nav-item ml-3 btn-group-vertical dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <img src="https://picx.zhimg.com/v2-9bc1971a6e1d2acc1ea8698f2bb1b88c_xll.jpg?source=32738c0c" class="rounded-circle" style="width:30px;">
-                            </a>
-                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item text-center" href="/my">个人主页</a>
-                                <a class="dropdown-item text-center" href="#">账号设置</a>
-                                <a class="dropdown-item text-center" href="/users/logout">退出登录</a>
-                                <div class="dropdown-divider"></div>
-                            </div>
-                        </li>
-                    </ul>
-                    <!-- 搜索 -->
-                    <!--                    <form class="form-inline my-2 my-lg-0" action="#">-->
-                    <!--                        <input class="form-control mr-sm-2" type="search" aria-label="Search">-->
-                    <!--                        <button class="btn btn-outline-light my-2 my-sm-0" type="submit">搜索</button>-->
-                    <!--                    </form>-->
-                </div>
-            </nav>
-        </div>
-    </header>
+    <header class="bg-dark sticky-top" th:replace="site/wall::header"></header>
     <!-- 尾部 -->
-    <footer class="my-footer">
-        <img src="http://static.nowcoder.com/company/images/res/ghs.png" style="width:18px;" />
-        <a href="http://beian.miit.gov.cn/">鄂ICP备2022018191号</a>
-    </footer>
+    <footer class="my-footer" th:replace="site/wall::footer"></footer>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.3.1.min.js" crossorigin="anonymous"></script>
