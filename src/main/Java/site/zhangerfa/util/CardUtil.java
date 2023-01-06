@@ -37,8 +37,8 @@ public class CardUtil {
      * 补全评论信息
      * @param comments 评论对象集合
      * @return 最终返回一个list，每个值是一个map，包含一个评论的信息
-     *            每个map包含，username、content、createTime、comments
-     *               分别是谁评论的、评论了什么、什么时候评论的，评论的评论集合
+     *            每个map包含，username、content、createTime、comments、commentNum
+     *               分别是谁评论的、评论了什么、什么时候评论的，评论的评论集合、评论数量
      *               comments是该评论的评论集合，是一个list，每个值为map
      */
     public List<Map> completeComments(List<Comment> comments){
@@ -59,6 +59,8 @@ public class CardUtil {
                     comment.getId(), 0, Integer.MAX_VALUE); // 查询所有评论该评论的评论
             List<Map> completedComments = completeComments(comments4Comment); // 补全评论信息
             map.put("comments", completedComments);
+            // 评论数量
+            map.put("commentNum", completedComments.size());
             }
         return res;
     }

@@ -77,29 +77,31 @@ public class CardController {
     /**
      * 返回帖子详情界面
      * @param cardId
-     * @return 最终返回一个list，每个值是一个map，包含一个评论的信息
-     *            每个map包含，username、content、createTime、comments
-     *               分别是谁评论的、评论了什么、什么时候评论的，评论的评论集合
-     *               comments是该评论的评论集合，是一个list，每个值为map
+     * @return 向模板引擎发送数据 card、user、comments、commentsNum
+     *         分别是卡片信息、用户信息、评论集合、评论数量
+     *            其中，comments是一个list，每个值是一个map，包含一个评论的信息
+     *               每个map包含，username、content、createTime、comments、commentNum
+     *                  分别是谁评论的、评论了什么、什么时候评论的，评论的评论集合、评论数量
+     *                  comments是该评论的评论集合，是一个list，每个值为map
      */
     @GetMapping("/details/{cardId}")
-    @ResponseBody
     public String getDetails(@PathVariable int cardId, Model model, Page page){
-        // 查帖子
+        // 帖子信息
         Card card = cardService.getCardById(cardId);
         model.addAttribute("card", card);
-        // 查作者信息
+        // 作者信息
         User user = hostHolder.getUser();
         model.addAttribute("user", user);
-        // 查分页信息
+        // 分页信息
         page.setRows(card.getCommentNum());
         page.setPath("/details/" + cardId);
-        // 查询所有回帖
+        // 评论集合
         List<Comment> comments = commentService.getCommentsForEntity(Constant.ENTITY_TYPE_CARD, cardId,
                 page.getOffset(), page.getLimit());
-        // 补全回帖信息
         List<Map> res = cardUtil.completeComments(comments);
         model.addAttribute("comments", res);
+        // 评论数量
+        model.addAttribute("commentsNum", res.size());
 
         return "site/card-detail";
     }
