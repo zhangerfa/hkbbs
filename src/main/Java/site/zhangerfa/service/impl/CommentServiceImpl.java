@@ -16,11 +16,16 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public List<Comment> getCommentsForEntity(int entityType, int entityId, int offset, int limit) {
-        return commentMapper.selectByEntity(entityType, entityId, offset, limit);
+        return commentMapper.selectCommentsByEntity(entityType, entityId, offset, limit);
     }
 
     @Override
     public int getNumOfCommentsForEntity(int entityType, int entityId) {
         return commentMapper.getNumOfCommentsForEntity(entityType, entityId);
+    }
+
+    @Override
+    public Comment getCommentById(int id) {
+        return commentMapper.selectCommentById(id);
     }
 }

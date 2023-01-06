@@ -7,6 +7,9 @@ import site.zhangerfa.pojo.Card;
 
 import java.util.List;
 
+/**
+ * 卡片墙卡片的数据层接口
+ */
 @Mapper
 public interface CardMapper {
 
@@ -23,8 +26,10 @@ public interface CardMapper {
 
     int getNumOfCards();
 
-    /*
-    发帖
+    /**
+     * 新增卡片
+     * @param card
+     * @return
      */
     int addCard(Card card);
 

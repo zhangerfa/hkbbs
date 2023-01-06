@@ -23,4 +23,11 @@ public interface CommentService {
      * @return
      */
     int getNumOfCommentsForEntity(int entityType, int entityId);
+
+    /**
+     * 通过评论id获取评论信息
+     * @param id
+     * @return
+     */
+    Comment getCommentById(int id);
 }

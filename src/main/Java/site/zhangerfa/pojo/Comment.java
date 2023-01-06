@@ -7,7 +7,6 @@ public class Comment {
     private String stuId;
     private int entityType;
     private int entityId;
-    private String targetId;
     private String content;
     private Date createTime;
 
@@ -43,14 +42,6 @@ public class Comment {
         this.entityId = entityId;
     }
 
-    public String getTargetId() {
-        return targetId;
-    }
-
-    public void setTargetId(String targetId) {
-        this.targetId = targetId;
-    }
-
     public String getContent() {
         return content;
     }
@@ -74,7 +65,6 @@ public class Comment {
                 ", stuId='" + stuId + '\'' +
                 ", entityType=" + entityType +
                 ", entityId=" + entityId +
-                ", targetId=" + targetId +
                 ", content='" + content + '\'' +
                 ", createTime=" + createTime +
                 '}';

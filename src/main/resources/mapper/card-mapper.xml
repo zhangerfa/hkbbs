@@ -8,7 +8,8 @@
     </sql>
 
     <insert id="addCard">
-        insert into card (stu_id, title, content) values(#{posterId}, #{title}, #{content})
+        insert into card (stu_id, title, content)
+        values(#{posterId}, #{title}, #{content})
     </insert>
     <select id="selectOnePageCards" resultType="Card">
         select <include refid="select"/>

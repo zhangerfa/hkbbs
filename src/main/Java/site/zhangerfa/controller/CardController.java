@@ -77,9 +77,13 @@ public class CardController {
     /**
      * 返回帖子详情界面
      * @param cardId
-     * @return
+     * @return 最终返回一个list，每个值是一个map，包含一个评论的信息
+     *            每个map包含，username、content、createTime、comments
+     *               分别是谁评论的、评论了什么、什么时候评论的，评论的评论集合
+     *               comments是该评论的评论集合，是一个list，每个值为map
      */
     @GetMapping("/details/{cardId}")
+    @ResponseBody
     public String getDetails(@PathVariable int cardId, Model model, Page page){
         // 查帖子
         Card card = cardService.getCardById(cardId);
@@ -93,12 +97,9 @@ public class CardController {
         // 查询所有回帖
         List<Comment> comments = commentService.getCommentsForEntity(Constant.ENTITY_TYPE_CARD, cardId,
                 page.getOffset(), page.getLimit());
-        // comments是一个list，每个值是一个map
-        // 每个map包含，content、username、comment4comment
-        //      comment是回复该回复的回复，是一个list，每个值为map
-        //      每个map包含，content、username、target、numOfComment
-        //          其中，target是发出被回复对象的用户信息
-        model.addAttribute("comments", cardUtil.completeComment(comments));
+        // 补全回帖信息
+        List<Map> res = cardUtil.completeComments(comments);
+        model.addAttribute("comments", res);
 
         return "site/card-detail";
     }
