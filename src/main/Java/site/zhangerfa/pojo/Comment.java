@@ -8,7 +8,7 @@ public class Comment {
     private int entityType;
     private int entityId;
     private String content;
-    private Date createTime;
+    private Date createTime = new Date();
 
     public int getId() {
         return id;
