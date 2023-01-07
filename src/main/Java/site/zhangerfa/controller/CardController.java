@@ -98,7 +98,7 @@ public class CardController {
         // 评论集合
         List<Comment> comments = commentService.getCommentsForEntity(Constant.ENTITY_TYPE_CARD, cardId,
                 page.getOffset(), page.getLimit());
-        List<Map> res = cardUtil.completeComments(comments);
+        List<Map> res = cardUtil.serializeComments(cardUtil.completeComments(comments));
         model.addAttribute("comments", res);
         // 评论数量
         model.addAttribute("commentsNum", res.size());

@@ -7,10 +7,7 @@ import site.zhangerfa.pojo.Comment;
 import site.zhangerfa.service.CommentService;
 import site.zhangerfa.service.UserService;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class CardUtil {
@@ -62,6 +59,48 @@ public class CardUtil {
             // 评论数量
             map.put("commentNum", completedComments.size());
             }
+        return res;
+    }
+
+    /**
+     * 序列化评论树（深度优先遍历）
+     * @param completedComments
+     * @return 最终返回一个list，每个值是一个map，包含一个评论的信息
+     *            每个map包含，username、content、createTime、commentNum
+     *         节点顺序是树的深度优先遍历
+     */
+
+    public List<Map> serializeComments(List<Map> completedComments){
+        if (completedComments == null) return null;
+        List<Map> res = new ArrayList<>();
+        for (Map comment : completedComments) {
+            Deque<Map> deque = new ArrayDeque<>();
+            // 第一层评论作为根节点入队
+            deque.addLast(comment);
+            int count = 1; // 记录当前层还有几条评论未遍历
+            int deep = 0; // 记录当前节点位于第几层
+            while (!deque.isEmpty()){
+                Map<String, Object> curComment = deque.getFirst();
+                // 子节点入队
+                List<Map> subComments = (List<Map>) curComment.get("comments");
+                if (subComments.size() > 0){
+                    for (Map subComment : subComments) {
+                        deque.addLast(subComment);
+                    }
+                }
+                // 遍历当前节点
+                curComment.remove("comments");
+                curComment.put("deep", deep); // 该评论是第几层评论
+                res.add(curComment);
+                // 当前节点出队
+                deque.removeFirst();
+                if (--count == 0){
+                    // 这层节点遍历完毕时，队列中全部为下层节点
+                    deep++;
+                    count = deque.size();
+                }
+            }
+        }
         return res;
     }
 }
