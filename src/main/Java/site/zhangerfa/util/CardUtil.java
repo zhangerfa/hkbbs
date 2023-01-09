@@ -69,38 +69,28 @@ public class CardUtil {
      * @param completedComments
      * @return 最终返回一个list，每个值是一个map，包含一个评论的信息
      *            每个map包含，commentId、username、content、createTime、commentNum、deep
+     *            deep为节点所在的深度
      *         节点顺序是树的深度优先遍历
      */
 
     public List<Map> serializeComments(List<Map> completedComments){
-        if (completedComments == null) return null;
+        return serializeComments(completedComments, 0);
+    }
+
+    private List<Map> serializeComments(List<Map> completedComments, int deep){
+        if (completedComments == null || completedComments.size() == 0){
+            return new ArrayList<>();
+        }
         List<Map> res = new ArrayList<>();
         for (Map comment : completedComments) {
-            Deque<Map> deque = new ArrayDeque<>();
-            // 第一层评论作为根节点入队
-            deque.addLast(comment);
-            int count = 1; // 记录当前层还有几条评论未遍历
-            int deep = 0; // 记录当前节点位于第几层
-            while (!deque.isEmpty()){
-                Map<String, Object> curComment = deque.getFirst();
-                // 子节点入队
-                List<Map> subComments = (List<Map>) curComment.get("comments");
-                if (subComments.size() > 0){
-                    for (Map subComment : subComments) {
-                        deque.addLast(subComment);
-                    }
-                }
-                // 遍历当前节点
-                curComment.remove("comments");
-                curComment.put("deep", deep); // 该评论是第几层评论
-                res.add(curComment);
-                // 当前节点出队
-                deque.removeFirst();
-                if (--count == 0){
-                    // 这层节点遍历完毕时，队列中全部为下层节点
-                    deep++;
-                    count = deque.size();
-                }
+            // 将当前节点添加到返回集合中
+            comment.put("deep", deep);
+            List<Map> subComments = (List<Map>) comment.remove("comments");
+            res.add(comment);
+            // 将当前节点的所有子节点以深度优先的顺序序列化添加到返回集合中
+            List<Map> comments = serializeComments(subComments, deep + 1);
+            for (Map map : comments) {
+                res.add(map);
             }
         }
         return res;
