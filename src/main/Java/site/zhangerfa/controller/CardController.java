@@ -105,4 +105,21 @@ public class CardController {
 
         return "site/card-detail";
     }
+
+    @PostMapping("/reply")
+    @ResponseBody
+    public Result reply(Integer entityType, int commentId, String content){
+        Comment comment = new Comment();
+        comment.setEntityType(entityType);
+        comment.setEntityId(commentId);
+        comment.setContent(content);
+        comment.setStuId(hostHolder.getUser().getStuId());
+
+        boolean flag = commentService.addComment(comment);
+        int code = flag? Code.SAVE_OK: Code.SAVE_ERR;
+        String msg = flag? "评论成功": "评论失败请重试";
+
+
+        return new Result(code, null, msg);
+    }
 }
