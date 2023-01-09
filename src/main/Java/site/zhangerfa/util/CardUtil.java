@@ -44,6 +44,8 @@ public class CardUtil {
         for (Comment comment : comments) {
             HashMap<String, Object> map = new HashMap<>();
             res.add(map);
+            // 评论id
+            map.put("commentId", comment.getId());
             // 评论人的用户名
             String username = userService.getUsernameByStuId(comment.getStuId());
             map.put("username", username);
