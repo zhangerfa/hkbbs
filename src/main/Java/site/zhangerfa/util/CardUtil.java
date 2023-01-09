@@ -68,7 +68,7 @@ public class CardUtil {
      * 序列化评论树（深度优先遍历）
      * @param completedComments
      * @return 最终返回一个list，每个值是一个map，包含一个评论的信息
-     *            每个map包含，username、content、createTime、commentNum
+     *            每个map包含，commentId、username、content、createTime、commentNum、deep
      *         节点顺序是树的深度优先遍历
      */
 
