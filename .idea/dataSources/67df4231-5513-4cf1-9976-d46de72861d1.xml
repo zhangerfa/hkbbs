@@ -5019,7 +5019,7 @@ mysql&gt; SELECT VERSION(), sys.version_patch();
       <CollationName>utf8mb3_general_ci</CollationName>
     </table>
     <column id="684" parent="298" name="id">
-      <AutoIncrement>23</AutoIncrement>
+      <AutoIncrement>25</AutoIncrement>
       <DataType>smallint|0s</DataType>
       <NotNull>1</NotNull>
       <Position>1</Position>
@@ -5077,7 +5077,7 @@ mysql&gt; SELECT VERSION(), sys.version_patch();
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
     <column id="695" parent="299" name="id">
-      <AutoIncrement>1</AutoIncrement>
+      <AutoIncrement>8</AutoIncrement>
       <DataType>int|0s</DataType>
       <NotNull>1</NotNull>
       <Position>1</Position>
@@ -5133,7 +5133,7 @@ mysql&gt; SELECT VERSION(), sys.version_patch();
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
     <column id="705" parent="300" name="id">
-      <AutoIncrement>18</AutoIncrement>
+      <AutoIncrement>21</AutoIncrement>
       <DataType>int|0s</DataType>
       <NotNull>1</NotNull>
       <Position>1</Position>
