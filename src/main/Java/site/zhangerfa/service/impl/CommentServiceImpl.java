@@ -28,4 +28,10 @@ public class CommentServiceImpl implements CommentService {
     public Comment getCommentById(int id) {
         return commentMapper.selectCommentById(id);
     }
+
+    @Override
+    public boolean addComment(Comment comment) {
+        int addNum = commentMapper.insertComment(comment);
+        return addNum != 0;
+    }
 }

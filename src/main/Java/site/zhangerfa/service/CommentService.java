@@ -1,6 +1,5 @@
 package site.zhangerfa.service;
 
-import org.springframework.stereotype.Service;
 import site.zhangerfa.pojo.Comment;
 
 import java.util.List;
@@ -30,4 +29,6 @@ public interface CommentService {
      * @return
      */
     Comment getCommentById(int id);
+
+    boolean addComment(Comment comment);
 }
