@@ -9,7 +9,7 @@
 </head>
 <body>
     <!-- 头部 -->
-    <header class="bg-dark sticky-top" th:replace="site/wall::header"></header>
+    <header class="bg-dark sticky-top" th:replace="~{site/wall::header}"></header>
     <!-- 帖子列表 -->
     <ul class="list-unstyled">
         <!--循环拼接该元素，遍历的数据是 cards，每次取到数据存在变量card中-->
@@ -26,7 +26,7 @@
                 </h6>
                 <div class="mt-1 font-size-14" th:utext="${card.content}">帖子内容</div>
                 <div class="text-muted font-size-12">
-                    <u class="mr-3" th:utext="${username}">作者</u> 发布于 <b th:text="${#dates.format(card.createTime,'yyyy-MM-dd HH:mm:ss')}">2019-04-15 15:32:18</b>
+                    <b th:text="${#dates.format(card.createTime,'yyyy-MM-dd HH:mm:ss')}">2019-04-15 15:32:18</b>
                     <ul class="d-inline float-right">
                         <!--									<li class="d-inline ml-2">赞 11</li>-->
                         <!--									<li class="d-inline ml-2">|</li>-->
@@ -36,8 +36,9 @@
             </div>
         </li>
     </ul>
+
     <!-- 尾部 -->
-    <footer class="my-footer" th:replace="site/wall::footer"></footer>
+    <footer class="my-footer" th:replace="~{site/wall::footer}"></footer>
 </body>
 
 <script src="https://code.jquery.com/jquery-3.3.1.min.js" crossorigin="anonymous"></script>

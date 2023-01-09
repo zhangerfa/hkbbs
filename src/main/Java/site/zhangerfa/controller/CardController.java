@@ -91,8 +91,8 @@ public class CardController {
         Card card = cardService.getCardById(cardId);
         model.addAttribute("card", card);
         // 作者信息
-        User user = hostHolder.getUser();
-        model.addAttribute("user", user);
+        User user = userService.getUserByStuId(card.getPosterId());
+        model.addAttribute("username", user.getUsername());
         // 分页信息
         page.setRows(card.getCommentNum());
         page.setPath("/details/" + cardId);
