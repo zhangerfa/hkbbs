@@ -34,5 +34,7 @@ public interface CardMapper {
     int addCard(Card card);
 
     Card selectCardById(int id);
+
+    boolean commentNumPlusOne(int id);
 }
 
