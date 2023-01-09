@@ -1,9 +1,5 @@
 package site.zhangerfa.service;
 
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import site.zhangerfa.pojo.Card;
 
 import java.util.List;
@@ -31,8 +27,12 @@ public interface CardService {
      */
     boolean add(Card card);
 
-    // isolation 隔离级别
-    // propagation 事务传播机制
-    @Transactional(isolation= Isolation.READ_COMMITTED, propagation = Propagation.NESTED)
     Card getCardById(int id);
+
+    /**
+     * 将指定id卡片的评论数量加一
+     * @param id
+     * @return
+     */
+    boolean commentNumPlusOne(int id);
 }

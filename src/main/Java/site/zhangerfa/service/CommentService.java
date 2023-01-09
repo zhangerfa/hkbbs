@@ -1,5 +1,8 @@
 package site.zhangerfa.service;
 
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import site.zhangerfa.pojo.Comment;
 
 import java.util.List;
@@ -30,5 +33,11 @@ public interface CommentService {
      */
     Comment getCommentById(int id);
 
+    /**
+     * 增加评论，并更新卡片表中的评论数量
+     * @param comment
+     * @return
+     */
+    @Transactional(isolation= Isolation.READ_COMMITTED, propagation = Propagation.NESTED)
     boolean addComment(Comment comment);
 }

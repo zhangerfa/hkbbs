@@ -1,6 +1,7 @@
 package site.zhangerfa.controller;
 
 import jakarta.annotation.Resource;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -106,20 +107,16 @@ public class CardController {
         return "site/card-detail";
     }
 
-    @PostMapping("/reply")
-    @ResponseBody
-    public Result reply(Integer entityType, int commentId, String content){
-        Comment comment = new Comment();
-        comment.setEntityType(entityType);
-        comment.setEntityId(commentId);
-        comment.setContent(content);
+    /**
+     * 添加评论，添加成功后重定向到当前卡片的详情页面
+     * @param comment
+     * @return
+     */
+    @PostMapping("/reply/{cardId}")
+    public String reply(Comment comment, @PathVariable int cardId){
         comment.setStuId(hostHolder.getUser().getStuId());
 
         boolean flag = commentService.addComment(comment);
-        int code = flag? Code.SAVE_OK: Code.SAVE_ERR;
-        String msg = flag? "评论成功": "评论失败请重试";
-
-
-        return new Result(code, null, msg);
+        return "redirect:/cards/details/" + cardId;
     }
 }

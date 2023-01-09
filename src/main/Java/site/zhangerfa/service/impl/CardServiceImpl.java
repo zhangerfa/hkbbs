@@ -43,4 +43,10 @@ public class CardServiceImpl implements CardService {
     public Card getCardById(int id) {
         return cardMapper.selectCardById(id);
     }
+
+    @Override
+    public boolean commentNumPlusOne(int id) {
+        int flag = cardMapper.commentNumPlusOne(id);
+        return flag > 0;
+    }
 }
