@@ -13,3 +13,14 @@ function like(btn, entityType, entityId, entityUserId, postId) {
         }
     );
 }
+
+// 删除卡片
+deleteCard = function (path){
+    axios.delete(path).
+    then(function (resp){
+        alert(resp.data.msg)
+        if (resp.data.data){
+            location.reload();
+        }
+    });
+}

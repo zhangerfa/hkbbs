@@ -29,8 +29,14 @@
                     <b th:text="${#dates.format(card.createTime,'yyyy-MM-dd HH:mm:ss')}">2019-04-15 15:32:18</b>
                     <ul class="d-inline float-right">
                         <!--									<li class="d-inline ml-2">赞 11</li>-->
-                        <!--									<li class="d-inline ml-2">|</li>-->
+                        <!--                                									<li class="d-inline ml-2">|</li>-->
                         <li class="d-inline ml-2">回帖 <span th:text="${card.commentNum}"></span></li>
+                        <li class="d-inline ml-2">|</li>
+                        <!--当帖子为当前用户所发时显示删除按钮-->
+                        <li class="d-inline ml-2">
+                            <input type="button" value="删除"
+                                   th:onclick="|deleteCard('/cards/delete/${card.id}')|">
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -45,4 +51,5 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" crossorigin="anonymous"></script>
 <script th:src="@{/js/global.js}"></script>
+<script th:src="@{/js/card.js}"></script>
 </html>

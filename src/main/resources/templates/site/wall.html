@@ -177,6 +177,7 @@
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" crossorigin="anonymous"></script>
 <script th:src="@{/js/global.js}"></script>
+<script th:src="@{/js/card.js}"></script>
 <script>
     // 发布卡片
     postCard = function (){
@@ -206,17 +207,6 @@
         document.getElementById("message-text").value = "";
         document.getElementById("recipient-name").value = "";
         $('#publishModal').modal('show');
-    }
-
-    // 删除卡片
-    deleteCard = function (path){
-        axios.delete(path).
-        then(function (resp){
-            alert(resp.data.data)
-            if (resp.data.data){
-                location.reload();
-            }
-        });
     }
 </script>
 </body>
