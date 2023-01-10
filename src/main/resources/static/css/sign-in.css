@@ -17,16 +17,6 @@ body {
   min-height:100%;
 }
 
-
-.my-footer{
-  padding: 20px 0;
-  font-size: 12px;
-  position: absolute;
-  text-align: center;
-  bottom: 0;
-  width: 100%;
-}
-
 .form-signin {
   max-width: 330px;
   padding: 15px;
