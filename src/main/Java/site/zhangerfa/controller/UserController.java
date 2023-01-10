@@ -22,7 +22,6 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Map;
-import java.util.UUID;
 
 
 @RestController
@@ -96,8 +95,8 @@ public class UserController {
      * @return
      */
     @PostMapping("/register")
-    public Result register(User user, @RequestParam("code") String code){
-        if (!userService.checkCode(user.getStuId(), code)){
+    public Result register(User user, @RequestParam("code") String code, HttpSession session){
+        if (!userService.checkCode(code, session)){
             return new Result(Code.GET_ERR, false, "验证码错误");
         }
         boolean flag = userService.add(user);
@@ -148,8 +147,8 @@ public class UserController {
      * @return 返回验证码
      */
     @RequestMapping("/sendCode")
-    public Result sendCode(String stuId){
-        boolean flag = userService.sendCode(stuId);
+    public Result sendCode(String stuId, HttpSession session){
+        boolean flag = userService.sendCode(stuId, session);
         int code = flag? Code.GET_OK: Code.GET_ERR;
         String msg = flag? "验证码已发送": "请检查您的学号后重试";
         return new Result(code, flag, msg);

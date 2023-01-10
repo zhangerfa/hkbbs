@@ -1,6 +1,7 @@
 package site.zhangerfa.service.impl;
 
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -16,8 +17,6 @@ import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService {
-
-    private Map<String, String> codeMap = new HashMap<>(); // 存储用户最后一次获取的验证码
     @Resource
     private UserMapper userMapper;
 
@@ -125,20 +124,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean checkCode(String stuId, String code){
-        return codeMap.containsKey(stuId) && code.equals(codeMap.get(stuId));
+    public boolean checkCode(String code, HttpSession session){
+        return session.getAttribute("code").equals(code);
     }
 
     @Override
-    public boolean sendCode(String stuId) {
+    public boolean sendCode(String stuId, HttpSession session) {
         String subject = "张二发给您发的验证码";
         String code = "";
         Random random = new Random();
         for (int i = 0; i < 6; i++){
             code += random.nextInt(0, 10);
         }
-        // 保存验证码
-        codeMap.put(stuId, code);
+        // 存储用户最后一次获取的验证码
+        session.setAttribute("code", code);
         System.out.println(code);
         // 设置thymeleaf参数
         Context context = new Context();

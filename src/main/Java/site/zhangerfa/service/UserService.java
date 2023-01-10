@@ -1,7 +1,6 @@
 package site.zhangerfa.service;
 
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import jakarta.servlet.http.HttpSession;
 import site.zhangerfa.pojo.LoginTicket;
 import site.zhangerfa.pojo.User;
 
@@ -89,8 +88,9 @@ public interface UserService {
     /**
      * 给传入学号的教育邮箱发送验证码
      * @param stuId
+     * @param session
      */
-    boolean sendCode(String stuId);
+    boolean sendCode(String stuId, HttpSession session);
 
     /**
      * 检查指定学号的用户的输入密码、图像验证码是否正确
@@ -105,11 +105,10 @@ public interface UserService {
 
     /**
      * 检查用户注册时传入的验证码是否正确
-     * @param stuId
      * @param code
      * @return
      */
-    boolean checkCode(String stuId, String code);
+    boolean checkCode(String code, HttpSession session);
 
     /**
      * 根据传入的登录凭证码查询登录凭证信息
