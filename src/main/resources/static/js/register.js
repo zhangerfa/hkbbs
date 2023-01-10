@@ -80,7 +80,7 @@ sendCode = function (){
     // 设置60s后才能再次发送验证码的定时器
     let btn = document.getElementById("code_button");
     let code_prompt = document.getElementById("code_prompt")
-    let TIME = 20; // 再次发送验证码间隔时间
+    let TIME = 60; // 再次发送验证码间隔时间
     let time = TIME;
     // 学号是否合理且注册、两次密码是否一致
     if (isStuIdValid() && confirmPasswordValid()){
