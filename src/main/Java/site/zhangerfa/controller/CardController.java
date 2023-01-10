@@ -87,6 +87,8 @@ public class CardController {
      */
     @GetMapping("/details/{cardId}")
     public String getDetails(@PathVariable int cardId, Model model, Page page){
+        // 登录用户的学号
+        model.addAttribute("stuId", hostHolder.getUser().getStuId());
         // 帖子信息
         Card card = cardService.getCardById(cardId);
         model.addAttribute("card", card);
@@ -107,22 +109,9 @@ public class CardController {
         return "site/card-detail";
     }
 
-    /**
-     * 添加评论，添加成功后重定向到当前卡片的详情页面
-     * @param comment
-     * @return
-     */
-    @PostMapping("/reply/{cardId}")
-    public String reply(Comment comment, @PathVariable int cardId){
-        comment.setStuId(hostHolder.getUser().getStuId());
-
-        boolean flag = commentService.addComment(comment);
-        return "redirect:/cards/details/" + cardId;
-    }
-
     @DeleteMapping("/delete/{cardId}")
     @ResponseBody
-    public Result deleteCard(@PathVariable int cardId, Page page){
+    public Result deleteCard(@PathVariable int cardId){
         String stuId = hostHolder.getUser().getStuId();
         Map<String, Object> map = cardService.deleteCard(cardId, stuId);
         return new Result(Code.DELETE_OK, map.get("result"), (String) map.get("msg"));

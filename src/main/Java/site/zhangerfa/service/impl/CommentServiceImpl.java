@@ -8,7 +8,9 @@ import site.zhangerfa.service.CardService;
 import site.zhangerfa.service.CommentService;
 import site.zhangerfa.util.Constant;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class CommentServiceImpl implements CommentService {
@@ -49,14 +51,28 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public boolean deleteComment(int id) {
+    public Map<String, Object> deleteComment(int id, String stuId) {
+        // 权限验证 只有发帖者可以删除自己发的帖子
+        Comment comment = commentMapper.selectCommentById(id);
+        if (!stuId.equals(comment.getStuId())){
+            Map<String, Object> map = new HashMap<>();
+            map.put("result", false);
+            map.put("msg", "您没有权限删除");
+            return map;
+        }
         // 删除所有评论的评论
         List<Comment> comments = commentMapper.getCommentsForEntity(Constant.ENTITY_TYPE_COMMENT, id);
-        for (Comment comment : comments) {
-            deleteComment(comment.getId());
+        for (Comment cur : comments) {
+            deleteComment(cur.getId(), stuId);
         }
         // 删除评论
         commentMapper.deleteCommentById(id);
-        return true;
+        // 卡片的评论数量减一
+        cardService.commentNumMinusOne(comment.getEntityId());
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("result", true);
+        map.put("msg", "删除成功");
+        return map;
     }
 }

@@ -178,36 +178,5 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" crossorigin="anonymous"></script>
 <script th:src="@{/js/global.js}"></script>
 <script th:src="@{/js/card.js}"></script>
-<script>
-    // 发布卡片
-    postCard = function (){
-        let param = {
-            "content": document.getElementById("message-text").value,
-            "title": document.getElementById("recipient-name").value
-        };
-        // 发布卡片前检测卡片是否为空
-        if (param.title.length === 0 || param.content.length === 0){
-            document.getElementById("hintModal").style.color="red";
-            document.getElementById("hintBody").innerText="请输入要发送的内容";
-            $('#hintModal').modal('show');
-            return
-        }
-        axios.post("/cards", param).
-        then(function (resp) {
-            document.getElementById("hintModal").style.color="black";
-            document.getElementById("hintBody").innerText="发帖成功";
-            $('#hintModal').modal('show');
-            $('#publishModal').modal('hide');
-            // 发布成功后刷新页面
-            location.reload();
-        })
-    }
-
-    function whenPublish(){
-        document.getElementById("message-text").value = "";
-        document.getElementById("recipient-name").value = "";
-        $('#publishModal').modal('show');
-    }
-</script>
 </body>
 </html>

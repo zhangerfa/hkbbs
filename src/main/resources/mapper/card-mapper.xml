@@ -15,6 +15,10 @@
         update card set comment_num = comment_num + 1
         where id = #{id}
     </update>
+    <update id="commentNumMinusOne">
+        update card set comment_num = comment_num - 1
+        where id = #{id}
+    </update>
     <delete id="deleteCardById">
         delete from card
         where id = #{id}

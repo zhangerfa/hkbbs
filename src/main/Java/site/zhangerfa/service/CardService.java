@@ -37,6 +37,8 @@ public interface CardService {
      */
     boolean commentNumPlusOne(int id);
 
+    boolean commentNumMinusOne(int id);
+
     /**
      * 删除卡片，并所有该卡片的评论
      * @param id

@@ -37,6 +37,8 @@ public interface CardMapper {
 
     int commentNumPlusOne(int id);
 
+    int commentNumMinusOne(int id);
+
     int deleteCardById(int id);
 }
 

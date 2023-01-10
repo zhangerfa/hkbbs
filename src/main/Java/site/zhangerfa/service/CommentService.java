@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import site.zhangerfa.pojo.Comment;
 
 import java.util.List;
+import java.util.Map;
 
 public interface CommentService {
     /**
@@ -46,5 +47,6 @@ public interface CommentService {
      * @param id
      * @return
      */
-    boolean deleteComment(int id);
+    @Transactional(isolation= Isolation.READ_COMMITTED, propagation = Propagation.NESTED)
+    Map<String, Object> deleteComment(int id, String stuId);
 }

@@ -65,6 +65,12 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
+    public boolean commentNumMinusOne(int id) {
+        int flag = cardMapper.commentNumMinusOne(id);
+        return flag > 0;
+    }
+
+    @Override
     public Map<String, Object> deleteCard(int id, String stuId) {
         // 权限验证 只有发帖者可以删除自己发的帖子
         Card card = cardMapper.selectCardById(id);
@@ -77,7 +83,7 @@ public class CardServiceImpl implements CardService {
         // 删除卡片的评论
         List<Comment> comments = commentService.getCommentsForEntity(Constant.ENTITY_TYPE_CARD, id, 0, Integer.MAX_VALUE);
         for (Comment comment : comments) {
-            commentService.deleteComment(comment.getId());
+            commentService.deleteComment(comment.getId(), stuId);
         }
         // 删除卡片
         cardMapper.deleteCardById(id);
