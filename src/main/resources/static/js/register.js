@@ -1,34 +1,3 @@
-// 设置60s后才能再次发送验证码的定时器
-let btn = document.getElementById("code_button");
-let code_prompt = document.getElementById("code_prompt")
-let TIME = 10; // 再次发送验证码间隔时间
-let time = TIME;
-// 先判断能否获取验证码
-// 学号是否合理且注册、两次密码是否一致
-if (!isStuIdValid() || !confirmPasswordValid()){
-    // 发送验证码
-    sendCode();
-    // 添加定时器，TIME s后能够重新获取验证码
-    btn.addEventListener('click', function () {
-        btn.disabled = true;
-        code_prompt.style.display = "";
-        let timer = setInterval(function () {
-            if (time == 0) {
-                time = TIME;
-                btn.innerHTML = '获取验证码';
-                // 清除定时器
-                clearInterval(timer);
-                timer = null;
-                btn.disabled = false;
-                code_prompt.style.display = "none";
-            }else{
-                btn.innerHTML = time + "s后重新获取";
-                time--;
-            }
-        }, 1000);
-    })
-}
-
 function signIn(){
     // 学号是否合理且注册、两次密码是否一致、验证码是否正确
     if (!isStuIdValid() || !confirmPasswordValid()){
@@ -106,10 +75,35 @@ function confirmPasswordValid(){
     }
 }
 
-// 获取验证码
-function sendCode(){
-    let param = new URLSearchParams();
-    param.append("stuId", document.getElementById("stuId").value.trim());
-    axios.post("/users/sendCode", param);
-    return true;
+
+sendCode = function (){
+    // 设置60s后才能再次发送验证码的定时器
+    let btn = document.getElementById("code_button");
+    let code_prompt = document.getElementById("code_prompt")
+    let TIME = 20; // 再次发送验证码间隔时间
+    let time = TIME;
+    // 学号是否合理且注册、两次密码是否一致
+    if (isStuIdValid() && confirmPasswordValid()){
+        btn.disabled = true;
+        // 添加定时器，TIME s后能够重新获取验证码
+        let timer = setInterval(function () {
+            if (time === 0) {
+                time = TIME;
+                btn.innerHTML = '获取验证码';
+                // 清除定时器
+                clearInterval(timer);
+                timer = null;
+                btn.disabled = false;
+                code_prompt.style.display = "none";
+            }else{
+                btn.innerHTML = time + "s后重新获取";
+                time--;
+            }
+        }, 1000);
+        // 发送验证码
+        let param = new URLSearchParams();
+        param.append("stuId", document.getElementById("stuId").value.trim());
+        axios.post("/users/sendCode", param);
+        code_prompt.style.display = "";
+    }
 }
