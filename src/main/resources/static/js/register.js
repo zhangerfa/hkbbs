@@ -8,8 +8,9 @@ function signIn(){
     param.append("stuId", document.getElementById("stuId").value.trim());
     param.append("password", document.getElementById("password").value.trim());
     param.append("username", document.getElementById("username").value.trim())
-    param.append("cod   e", document.getElementById("code").value.trim())
-    axios.post("/users/register", param).then(function (resp) {
+    param.append("code", document.getElementById("code").value.trim())
+    axios.post("/users/register", param).
+    then(function (resp) {
         // 弹出后端响应信息
         alert(resp.data.msg);
         if (resp.data.data){
