@@ -125,7 +125,7 @@
                             <!--点击跳转帖子详情页面-->
                             <a th:href="@{|cards/details/${map.card.id}|}" th:utext="${map.card.title}">标题</a>
                         </h6>
-                        <p th:utext="${map.card.content}">帖子内容</p>
+                        <p class="content" th:utext="${map.card.content}">帖子内容</p>
                         <div class="text-muted font-size-12">
                             <u class="mr-3" th:utext="${map.username}">作者</u> 发布于 <b th:text="${#dates.format(map.card.createTime,'yyyy-MM-dd HH:mm:ss')}">2019-04-15 15:32:18</b>
                             <ul class="d-inline float-right">
