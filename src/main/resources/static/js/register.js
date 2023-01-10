@@ -22,8 +22,8 @@ function signIn(){
 
 // 学号合法验证
 isStuIdValid = function(){
-    let stuId = document.getElementById("stuId").value.trim();
-    let reg = /^[UM][0-9]{9}$/;
+    let stuId = document.getElementById("stuId").value.trim().toUpperCase();
+    let reg = /^[UMD][0-9]{9}$/;
 
     let stuIdError = document.getElementById("stuIdError");
     let res;
