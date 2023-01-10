@@ -166,10 +166,15 @@
         </div>
     </div>
     <!-- 尾部 -->
-    <footer class="my-footer" th:fragment="footer">
-        <img src="http://static.nowcoder.com/company/images/res/ghs.png" style="width:18px;" />
-        <a href="http://beian.miit.gov.cn/">鄂ICP备2022018191号</a>
-    </footer>
+    <div th:fragment="footer">
+        <div style="padding: 0;margin:0;list-style: none; text-align: center;">
+            <br>
+            <img src="http://static.nowcoder.com/company/images/res/ghs.png" style="width:18px;" />
+            <a class="banquan" style="color:#000;"
+               href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=2022018191" target="_blank">
+                鄂ICP备2022018191号</a>
+        </div>
+    </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" crossorigin="anonymous"></script>
