@@ -40,4 +40,11 @@ public interface CommentService {
      */
     @Transactional(isolation= Isolation.READ_COMMITTED, propagation = Propagation.NESTED)
     boolean addComment(Comment comment);
+
+    /**
+     * 删除评论，并删除所有该评论的评论
+     * @param id
+     * @return
+     */
+    boolean deleteComment(int id);
 }

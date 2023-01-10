@@ -1,18 +1,32 @@
 package site.zhangerfa.service.impl;
 
+import jakarta.annotation.Resource;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Service;
 import org.springframework.web.util.HtmlUtils;
 import site.zhangerfa.dao.CardMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import site.zhangerfa.pojo.Card;
+import site.zhangerfa.pojo.Comment;
 import site.zhangerfa.service.CardService;
+import site.zhangerfa.service.CommentService;
+import site.zhangerfa.util.Constant;
+import site.zhangerfa.util.HostHolder;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class CardServiceImpl implements CardService {
-    @Autowired
+    @Resource
     private CardMapper cardMapper;
+
+    @Resource
+    @Lazy
+    private CommentService commentService;
+
+    @Resource
+    private HostHolder hostHolder;
 
     @Override
     public List<Card> getOnePageCards(String stuId, int offset, int limit) {
@@ -48,5 +62,29 @@ public class CardServiceImpl implements CardService {
     public boolean commentNumPlusOne(int id) {
         int flag = cardMapper.commentNumPlusOne(id);
         return flag > 0;
+    }
+
+    @Override
+    public Map<String, Object> deleteCard(int id, String stuId) {
+        // 权限验证 只有发帖者可以删除自己发的帖子
+        Card card = cardMapper.selectCardById(id);
+        if (!stuId.equals(card.getPosterId())){
+            Map<String, Object> map = new HashMap<>();
+            map.put("result", false);
+            map.put("msg", "您没有权限删除");
+            return map;
+        }
+        // 删除卡片的评论
+        List<Comment> comments = commentService.getCommentsForEntity(Constant.ENTITY_TYPE_CARD, id, 0, Integer.MAX_VALUE);
+        for (Comment comment : comments) {
+            commentService.deleteComment(comment.getId());
+        }
+        // 删除卡片
+        cardMapper.deleteCardById(id);
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("result", true);
+        map.put("msg", "删除成功");
+        return map;
     }
 }

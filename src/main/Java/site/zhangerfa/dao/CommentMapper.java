@@ -31,4 +31,14 @@ public interface CommentMapper {
     Comment selectCommentById(int id);
 
     int insertComment(Comment comment);
+
+    int deleteCommentById(int id);
+
+    /**
+     * 获取所有指向传入实体的评论
+     * @param entityType 实体类型
+     * @param entityId 实体id
+     * @return
+     */
+    List<Comment> getCommentsForEntity(int entityType, int entityId);
 }

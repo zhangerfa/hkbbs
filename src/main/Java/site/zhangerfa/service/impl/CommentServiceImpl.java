@@ -47,4 +47,16 @@ public class CommentServiceImpl implements CommentService {
         }
         return addNum != 0;
     }
+
+    @Override
+    public boolean deleteComment(int id) {
+        // 删除所有评论的评论
+        List<Comment> comments = commentMapper.getCommentsForEntity(Constant.ENTITY_TYPE_COMMENT, id);
+        for (Comment comment : comments) {
+            deleteComment(comment.getId());
+        }
+        // 删除评论
+        commentMapper.deleteCommentById(id);
+        return true;
+    }
 }

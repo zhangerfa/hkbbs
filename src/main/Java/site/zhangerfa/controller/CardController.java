@@ -119,4 +119,12 @@ public class CardController {
         boolean flag = commentService.addComment(comment);
         return "redirect:/cards/details/" + cardId;
     }
+
+    @DeleteMapping("/delete/{cardId}")
+    @ResponseBody
+    public Result deleteCard(@PathVariable int cardId, Page page){
+        String stuId = hostHolder.getUser().getStuId();
+        Map<String, Object> map = cardService.deleteCard(cardId, stuId);
+        return new Result(Code.DELETE_OK, map.get("result"), (String) map.get("msg"));
+    }
 }

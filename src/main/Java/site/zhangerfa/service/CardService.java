@@ -3,6 +3,7 @@ package site.zhangerfa.service;
 import site.zhangerfa.pojo.Card;
 
 import java.util.List;
+import java.util.Map;
 
 public interface CardService {
     /**
@@ -35,4 +36,11 @@ public interface CardService {
      * @return
      */
     boolean commentNumPlusOne(int id);
+
+    /**
+     * 删除卡片，并所有该卡片的评论
+     * @param id
+     * @return
+     */
+    Map<String, Object> deleteCard(int id, String stuId);
 }

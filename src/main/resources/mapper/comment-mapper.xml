@@ -10,6 +10,10 @@
         insert into comment(stu_id, entity_type, entity_id, content, create_time)
         values (#{stuId}, #{entityType}, #{entityId}, #{content}, #{createTime})
     </insert>
+    <delete id="deleteCommentById">
+        delete from comment
+        where id = #{id}
+    </delete>
 
     <select id="selectCommentsByEntity" resultType="site.zhangerfa.pojo.Comment">
         select <include refid="select"></include>
@@ -27,5 +31,10 @@
         select <include refid="select"></include>
         from comment
         where id = #{id}
+    </select>
+    <select id="getCommentsForEntity" resultType="site.zhangerfa.pojo.Comment">
+        select <include refid="select"></include>
+        from comment
+        where entity_type = #{entityType} and entity_id = #{entityId}
     </select>
 </mapper>

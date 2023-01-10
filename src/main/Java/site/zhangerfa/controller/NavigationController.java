@@ -64,10 +64,13 @@ public class NavigationController {
         page.setRows(cardService.getNumOfCards());
         page.setPath("/wall");
 
+        // 帖子信息
         List<Card> cards = cardService.getOnePageCards("0",
                 page.getOffset(), page.getLimit());// 获取一页卡片
         List<Map> maps = cardUtil.completeCard(cards);
         model.addAttribute("maps", maps);
+        // 当前用户的学号
+        model.addAttribute("stuId", hostHolder.getUser().getStuId());
         return "site/wall";
     }
 
