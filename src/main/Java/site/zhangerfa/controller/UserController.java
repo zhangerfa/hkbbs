@@ -1,6 +1,14 @@
 package site.zhangerfa.controller;
 
 import com.google.code.kaptcha.impl.DefaultKaptcha;
+import com.qcloud.cos.COSClient;
+import com.qcloud.cos.ClientConfig;
+import com.qcloud.cos.auth.BasicCOSCredentials;
+import com.qcloud.cos.auth.COSCredentials;
+import com.qcloud.cos.http.HttpProtocol;
+import com.qcloud.cos.model.PutObjectRequest;
+import com.qcloud.cos.model.PutObjectResult;
+import com.qcloud.cos.region.Region;
 import jakarta.annotation.Resource;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.Cookie;
@@ -9,16 +17,20 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import site.zhangerfa.controller.tool.Code;
 import site.zhangerfa.controller.tool.Result;
 import site.zhangerfa.dao.LoginTicketMapper;
 import site.zhangerfa.pojo.LoginTicket;
 import site.zhangerfa.pojo.User;
 import site.zhangerfa.service.UserService;
+import site.zhangerfa.util.HostHolder;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Map;
@@ -36,6 +48,20 @@ public class UserController {
 
     @Resource
     private LoginTicketMapper loginTicketMapper;
+
+    @Resource
+    private HostHolder hostHolder;
+    @Value("${cos.secretId}")
+    private String secretId;
+    @Value("${cos.secretKey}")
+    private String secretKey;
+    @Value("${cos.region}")
+    private String cosRegion;
+    @Value("${cos.bucket}")
+    private String bucketName;
+    @Value("${cos.path}")
+    private String path;
+
 
     /**
      * 判断用户是否已经注册
@@ -104,20 +130,64 @@ public class UserController {
     }
 
     /**
-     * 修改用户信息，请求可以传入用户名和密码，传入即修改
-     * @return 当用户名或密码至少一项修改成功则返回true ，否则返回 “请输入有效信息”
+     * 修改用户信息，请求可以传入用户名、密码,传入即修改
+     * @return 当传入多项要修改内容时，全部修改成功返回true，否则返回false
      */
     @PutMapping
-    public Result updateUsername(@RequestBody User user){
-        String stuId = user.getStuId();
-        boolean flag = false;
+    public Result updateUser(@RequestBody User user){
+        String stuId = hostHolder.getUser().getStuId();
         if (user.getPassword() != null){
-            flag &= userService.updatePassword(stuId, user.getPassword());
+            userService.updatePassword(stuId, user.getPassword());
         }
         if (user.getUsername() != null){
-            flag |= userService.updateUsername(stuId, user.getUsername());
+            userService.updateUsername(stuId, user.getUsername());
         }
-        return new Result(flag? Code.UPDATE_OK: Code.UPDATE_ERR, flag);
+        return new Result(Code.UPDATE_OK, true, "修改成功");
+    }
+
+    /**
+     * 用户修改头像，传入头像文件，将头像文件存储后将头像文件地址更新到数据库中
+     * @return
+     */
+    @PostMapping("/header")
+    public Result updateHeader(MultipartFile headerImage){
+        if (headerImage == null){
+            return new Result(Code.UPDATE_ERR, false, "您还没上传头像");
+        }
+        // 将头像文件上传到图床
+        // 创建cos客户端
+        COSCredentials cred = new BasicCOSCredentials(secretId, secretKey);
+        Region region = new Region(cosRegion);
+        ClientConfig clientConfig = new ClientConfig(region);
+        clientConfig.setHttpProtocol(HttpProtocol.https);
+        COSClient cosClient = new COSClient(cred, clientConfig);
+        // 上传文件
+        try {
+            // 修改头像文件名：学号_header.原后缀名
+            String originalFilename = headerImage.getOriginalFilename();
+            String suffix = originalFilename.substring(originalFilename.lastIndexOf("."));
+            if (suffix == null || suffix.equals("")){
+                return new Result(Code.UPDATE_ERR, false, "文件格式不正确");
+            }
+            User user = hostHolder.getUser();
+            String fileName = user.getStuId() + "_header" + suffix;
+            File file = File.createTempFile(fileName, suffix);
+            headerImage.transferTo(file);
+            String key = path + fileName;
+            PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, key, file);
+            PutObjectResult putObjectResult = cosClient.putObject(putObjectRequest);
+            // 更新当前用户的头像访问路径
+            String headerUrl = "https://" + bucketName + ".cos." + cosRegion + ".myqcloud.com/" + key;
+            userService.updateHeaderUrl(user.getStuId(), headerUrl);
+            return new Result(Code.UPDATE_OK, headerUrl, "头像上传成功");
+        } catch (IOException e) {
+            logger.error("头像上传失败" + e.getMessage());
+            System.out.println(e.getMessage());
+        }finally {
+            // 关闭客户端(关闭后台线程)
+            cosClient.shutdown();
+        }
+        return null;
     }
 
     /**

@@ -11,6 +11,10 @@ servlet:
 
 
 spring:
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 20MB
   datasource:
     # 换数据源（JDBC连接池）
     type: com.alibaba.druid.pool.DruidDataSource
@@ -52,3 +56,12 @@ mybatis:
 logging:
   level:
     web: error
+
+# 腾讯云图床
+cos:
+  secretId: AKIDgEZlmeMtBYlmbHbie5MUQAlEhVFxY1Tm
+  secretKey: BE53pU3Sgiqxx8B3vdDgy90qTvENn2Af
+  bucket: zhangerfa-1316526930
+  appId: 1316526930
+  region: ap-guangzhou
+  path: header/

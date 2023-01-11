@@ -43,6 +43,13 @@
       <version>1.2.15</version>
     </dependency>
 
+    <!--腾讯云图床-->
+    <dependency>
+      <groupId>com.qcloud</groupId>
+      <artifactId>cos_api</artifactId>
+      <version>5.6.97</version>
+    </dependency>
+
     <dependency>
       <groupId>org.webjars.npm</groupId>
       <artifactId>axios</artifactId>
