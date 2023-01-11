@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import site.zhangerfa.pojo.Card;
 import site.zhangerfa.pojo.Page;
+import site.zhangerfa.pojo.User;
 import site.zhangerfa.service.CardService;
 import site.zhangerfa.service.UserService;
 import site.zhangerfa.util.CardUtil;
@@ -22,9 +23,6 @@ import java.util.Map;
 public class NavigationController {
     @Resource
     private CardService cardService;
-
-    @Resource
-    private UserService userService;
 
     @Resource
     private CardUtil cardUtil;
@@ -45,9 +43,8 @@ public class NavigationController {
         String stuId = hostHolder.getUser().getStuId();
         List<Card> cards = cardService.getOnePageCards(stuId,
                 page.getOffset(), page.getLimit());// 获取一页卡片
-        String username = hostHolder.getUser().getUsername();
 
-        model.addAttribute("username", username);
+        model.addAttribute("user", hostHolder.getUser());
         model.addAttribute("cards", cards);
 
         return "site/my-wall";
@@ -69,8 +66,7 @@ public class NavigationController {
                 page.getOffset(), page.getLimit());// 获取一页卡片
         List<Map> maps = cardUtil.completeCard(cards);
         model.addAttribute("maps", maps);
-        // 当前用户的学号
-        model.addAttribute("stuId", hostHolder.getUser().getStuId());
+        model.addAttribute("user", hostHolder.getUser());
         return "site/wall";
     }
 
@@ -108,6 +104,13 @@ public class NavigationController {
     @RequestMapping("/register")
     public String register(){
         return "site/register";
+    }
+
+    @RequestMapping("/setting")
+    public String setting(Model model){
+        User user = hostHolder.getUser();
+        model.addAttribute("user", user);
+        return "site/setting";
     }
 
 }

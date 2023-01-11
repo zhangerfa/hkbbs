@@ -6,7 +6,8 @@ public class User {
     private String stuId; // 学号
     private String username; // 用户名
     private String password; // 密码
-    private String headerUrl; // 头像地址
+    // 头像地址
+    private String headerUrl = "https://zhangerfa-1316526930.cos.ap-guangzhou.myqcloud.com/hkbbs/default.jpg";
     private Date createTime; // 创建时间
 
     @Override

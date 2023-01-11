@@ -25,9 +25,6 @@ public class CardServiceImpl implements CardService {
     @Lazy
     private CommentService commentService;
 
-    @Resource
-    private HostHolder hostHolder;
-
     @Override
     public List<Card> getOnePageCards(String stuId, int offset, int limit) {
         if (stuId == null){

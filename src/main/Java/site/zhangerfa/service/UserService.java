@@ -152,5 +152,5 @@ public interface UserService {
      */
     User getUserByTicket(String ticket) throws IllegalAccessException;
 
-    boolean updateHeaderUrl(String headerUrl);
+    boolean updateHeaderUrl(String stuId, String headerUrl);
 }

@@ -87,8 +87,8 @@ public class CardController {
      */
     @GetMapping("/details/{cardId}")
     public String getDetails(@PathVariable int cardId, Model model, Page page){
-        // 登录用户的学号
-        model.addAttribute("stuId", hostHolder.getUser().getStuId());
+        // 登录用户的信息
+        model.addAttribute("user", hostHolder.getUser());
         // 帖子信息
         Card card = cardService.getCardById(cardId);
         model.addAttribute("card", card);

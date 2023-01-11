@@ -30,9 +30,6 @@ public class UserServiceImpl implements UserService {
     @Resource
     private LoginTicketMapper loginTicketMapper;
 
-    @Resource
-    private HostHolder hostHolder;
-
 
     @Override
     public Map<String, Object> login(User user, boolean rememberMe) {
@@ -203,8 +200,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean updateHeaderUrl(String headerUrl) {
-        String stuId = hostHolder.getUser().getStuId();
+    public boolean updateHeaderUrl(String stuId, String headerUrl) {
         int flag = userMapper.updateHeaderUrl(stuId, headerUrl);
         return flag > 0;
     }

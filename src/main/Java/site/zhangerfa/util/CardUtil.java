@@ -4,6 +4,7 @@ import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
 import site.zhangerfa.pojo.Card;
 import site.zhangerfa.pojo.Comment;
+import site.zhangerfa.pojo.User;
 import site.zhangerfa.service.CommentService;
 import site.zhangerfa.service.UserService;
 
@@ -21,10 +22,10 @@ public class CardUtil {
     public List<Map> completeCard(List<Card> cards){
         List<Map> res = new ArrayList<>();
         for (Card card : cards) {
-            String username = userService.getUsernameByStuId(card.getPosterId());
+            User user = userService.getUserByStuId(card.getPosterId());
             Map<String, Object> map = new HashMap<>();
             map.put("card", card);
-            map.put("username", username);
+            map.put("user", user);
             res.add(map);
         }
         return res;

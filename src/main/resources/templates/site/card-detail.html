@@ -22,8 +22,10 @@
 			<!-- 作者 -->
 			<div class="media pb-3 border-bottom">
 				<a href="#">
-					<!--作者头像写死-->
-					<img src="https://picx.zhimg.com/v2-9bc1971a6e1d2acc1ea8698f2bb1b88c_xll.jpg?source=32738c0c" class="align-self-start mr-4 rounded-circle user-header" alt="用户头像" >
+					<!--头像-->
+					<a href="#">
+						<img th:src="${user.headerUrl}" class="mr-4 rounded-circle" alt="用户头像" style="width:50px;height:50px;">
+					</a>
 				</a>
 				<div class="media-body">
 					<div class="mt-0 text-warning" th:text="${username}">作者姓名</div>
@@ -34,7 +36,7 @@
 							<!--								<li class="d-inline ml-2">|</li>-->
 							<!--								<li class="d-inline ml-2"><a href="#replyform" class="text-primary">回帖 </a></li>-->
 							<!--当帖子为当前用户所发时显示删除按钮-->
-							<li class="d-inline ml-2" th:if="${stuId == card.posterId}">
+							<li class="d-inline ml-2" th:if="${user.stuId == card.posterId}">
 								<input type="button" value="删除"
 									   th:onclick="|deleteCard('/cards/delete/${card.id}')|">
 							</li>
@@ -63,9 +65,9 @@
 				<li class="pb-3 pt-3 mb-3 border-bottom" th:each="comment:${comments}"
 					th:style="|text-indent:${comment.deep * 6}em;|">
 					<div>
+						<!--头像-->
 						<a href="#">
-							<!--用户头像写死-->
-							<img src="https://picx.zhimg.com/v2-9bc1971a6e1d2acc1ea8698f2bb1b88c_xll.jpg?source=32738c0c" class="align-self-start mr-4 rounded-circle user-header" alt="用户头像" >
+							<img th:src="${comment.user.headerUrl}" class="mr-4 rounded-circle" alt="用户头像" style="width:50px;height:50px;">
 						</a>
 						<span><b class="text-info" th:text="${comment.username}">作者</b>:&nbsp;&nbsp;</span>
 						<span th:utext="${comment.content}" style="white-space:pre-wrap">
