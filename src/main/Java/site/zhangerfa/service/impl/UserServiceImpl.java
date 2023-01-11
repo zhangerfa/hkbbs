@@ -11,6 +11,7 @@ import site.zhangerfa.dao.UserMapper;
 import site.zhangerfa.pojo.LoginTicket;
 import site.zhangerfa.pojo.User;
 import site.zhangerfa.service.UserService;
+import site.zhangerfa.util.HostHolder;
 import site.zhangerfa.util.MailClient;
 
 import java.util.*;
@@ -28,6 +29,9 @@ public class UserServiceImpl implements UserService {
 
     @Resource
     private LoginTicketMapper loginTicketMapper;
+
+    @Resource
+    private HostHolder hostHolder;
 
 
     @Override
@@ -196,5 +200,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserByStuId(String stuId) {
         return userMapper.selectUserByStuId(stuId);
+    }
+
+    @Override
+    public boolean updateHeaderUrl(String headerUrl) {
+        String stuId = hostHolder.getUser().getStuId();
+        int flag = userMapper.updateHeaderUrl(stuId, headerUrl);
+        return flag > 0;
     }
 }
