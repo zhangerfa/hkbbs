@@ -23,5 +23,7 @@ public interface UserMapper {
 
     int updatePassword(String stuId, String password);
 
+    int updateHeaderUrl(String stuId, String headerUrl);
+
     int delete(String stuId);
 }
