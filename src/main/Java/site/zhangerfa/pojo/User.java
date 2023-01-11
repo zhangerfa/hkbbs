@@ -6,6 +6,7 @@ public class User {
     private String stuId; // 学号
     private String username; // 用户名
     private String password; // 密码
+    private String headerUrl; // 头像地址
     private Date createTime; // 创建时间
 
     @Override
@@ -22,6 +23,18 @@ public class User {
         this.password = password;
         this.username = username;
         this.stuId = stuId;
+    }
+
+    public String getHeaderUrl() {
+        return headerUrl;
+    }
+
+    public void setHeaderUrl(String headerUrl) {
+        this.headerUrl = headerUrl;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 
     public void setStuId(String stuId) {
