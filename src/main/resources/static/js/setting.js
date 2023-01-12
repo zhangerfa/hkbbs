@@ -47,3 +47,7 @@ changePassword = function (newPassword, oldPassword, confirmPassword){
         alert("请输入正确信息")
     }
 }
+
+changeHeadLable = function (_this){
+    $("#head-image-label")[0].innerHTML = _this.files[0].name;
+}
