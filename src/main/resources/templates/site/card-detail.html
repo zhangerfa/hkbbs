@@ -67,9 +67,9 @@
 					<div>
 						<!--头像-->
 						<a href="#">
-							<img th:src="${comment.user.headerUrl}" class="mr-4 rounded-circle" alt="用户头像" style="width:50px;height:50px;">
+							<img th:src="${comment.poster.headerUrl}" class="mr-4 rounded-circle" alt="用户头像" style="width:50px;height:50px;">
 						</a>
-						<span><b class="text-info" th:text="${comment.username}">作者</b>:&nbsp;&nbsp;</span>
+						<span><b class="text-info" th:text="${comment.poster.username}">作者</b>:&nbsp;&nbsp;</span>
 						<span th:utext="${comment.content}" style="white-space:pre-wrap">
 							回复内容
 						</span>
@@ -84,7 +84,7 @@
 								<a th:href="@{|#huifu-${commentStat.count}|}" data-toggle="collapse" class="text-primary">回复</a>
 							</li>
 							<!--当评论为当前用户所发时显示删除按钮-->
-							<li class="d-inline ml-2" th:if="${stuId == comment.commenterId}">
+							<li class="d-inline ml-2" th:if="${stuId == comment.poster.stuId}">
 								<input type="button" value="删除"
 									   th:onclick="|deleteCard('/comments/delete/${comment.commentId}')|">
 							</li>
