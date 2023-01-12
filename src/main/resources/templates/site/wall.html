@@ -32,8 +32,10 @@
 <!--                            <a class="nav-link position-relative" href="#">消息<span class="badge badge-danger">12</span></a>-->
 <!--                        </li>-->
                         <li class="nav-item ml-3 btn-group-vertical dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <img th:src="${user.headerUrl}" class="mr-4 rounded-circle" alt="用户头像" style="width:50px;height:50px;">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                th:fragment="user-header">
+                                <img th:src="${user.headerUrl}" class="rounded-circle" style="width:30px;">
                             </a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 <a class="dropdown-item text-center" href="/my">个人主页</a>
