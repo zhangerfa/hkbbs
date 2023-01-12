@@ -36,19 +36,17 @@ public class CheckLoginInterceptor implements HandlerInterceptor {
 
         // 判断是否访问与注册、登录有关页面
         String url = request.getRequestURL().toString();
-        String[] pass = {"users", "login", "register"};
+        String[] pass = {"Code", "isExist", "login", "register"};
         for (String s : pass) {
             if (url.contains(s)){
-                // 访问与注册、登录有关请求，放行
+                // 访问与注册、登录有关请求时，如果已经登录跳转到卡片墙
+                //                           否则放行
                 if (userService.checkTicket(ticket)){
-                    // ticket有效，且不访问注销登录请求，跳转卡片墙
                     if (!url.contains("logout") && !url.contains("header")){
                         response.sendRedirect("/wall");
                         return false;
                     }
                 }
-                // ticket有效时，注销、修改账号、密码、头像，放行
-                // ticket无效时，注册、登录，放行
                 return true;
             }
         }

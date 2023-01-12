@@ -15,6 +15,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import org.apache.ibatis.annotations.Param;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -134,15 +135,23 @@ public class UserController {
      * @return 当传入多项要修改内容时，全部修改成功返回true，否则返回false
      */
     @PutMapping
-    public Result updateUser(@RequestBody User user){
-        String stuId = hostHolder.getUser().getStuId();
-        if (user.getPassword() != null){
-            userService.updatePassword(stuId, user.getPassword());
+    public Result updateUser(String newPassword, String username, String oldPassword){
+        User user = hostHolder.getUser();
+        String stuId = user.getStuId();
+        String msg = "";
+        if (oldPassword != null){
+            if (oldPassword.equals(user.getPassword())){
+                userService.updatePassword(stuId, newPassword);
+                msg += "密码修改成功";
+            } else {
+                msg += "密码错误";
+            }
         }
-        if (user.getUsername() != null){
-            userService.updateUsername(stuId, user.getUsername());
+        if (username != null){
+            userService.updateUsername(stuId, username);
+            msg += "用户名修改成功";
         }
-        return new Result(Code.UPDATE_OK, true, "修改成功");
+        return new Result(Code.UPDATE_OK, true, msg);
     }
 
     /**

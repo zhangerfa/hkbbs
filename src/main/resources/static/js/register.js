@@ -48,26 +48,23 @@ isStuIdValid = function(){
 }
 
 // 密码验证
-isPasswordValid = function(){
-    let password = document.getElementById("password").value.trim();
-
+isPasswordValid = function(password){
     let reg = /^[A-Za-z0-9]{6,16}$/;
     let passwordError = document.getElementById("passwordError");
     if (reg.test(password)){
         passwordError.style.display = "none";
         return true;
     }else{
+        passwordError.innerText="密码为6~16位字母和数字的组合";
         passwordError.style.display = "";
         return false;
     }
 }
 
 // 再次输入密码验证
-function confirmPasswordValid(){
-    let password = document.getElementById("password").value.trim();
-    let confirmPassword = document.getElementById("confirmPassword").value.trim();
+function confirmPasswordValid(password, confirmPassword){
     let confirmPasswordError = document.getElementById("confirmPasswordError");
-    if (password == confirmPassword){
+    if (password === confirmPassword){
         confirmPasswordError.style.display = "none";
         return true;
     }else {
