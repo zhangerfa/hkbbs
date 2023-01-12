@@ -24,11 +24,11 @@
 				<a href="#">
 					<!--头像-->
 					<a href="#">
-						<img th:src="${user.headerUrl}" class="mr-4 rounded-circle" alt="用户头像" style="width:50px;height:50px;">
+						<img th:src="${poster.headerUrl}" class="mr-4 rounded-circle" alt="用户头像" style="width:50px;height:50px;">
 					</a>
 				</a>
 				<div class="media-body">
-					<div class="mt-0 text-warning" th:text="${username}">作者姓名</div>
+					<div class="mt-0 text-warning" th:text="${poster.username}">作者姓名</div>
 					<div class="text-muted mt-3">
 						发布于 <b th:text="${#dates.format(card.createTime,'yyyy-MM-dd HH:mm:ss')}">2019-04-15 15:32:18</b>
 						<ul class="d-inline float-right">
