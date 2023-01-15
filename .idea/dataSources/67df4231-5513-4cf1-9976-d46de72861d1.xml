@@ -5219,7 +5219,7 @@ mysql&gt; SELECT VERSION(), sys.version_patch();
     </column>
     <column id="720" parent="301" name="nickname">
       <Comment>由两个数字组成的字符，表示在两个字符集中的字符索引，由两个字符集中对应的两个字符拼接为昵称</Comment>
-      <DataType>varchar(5)|0s</DataType>
+      <DataType>varchar(7)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>3</Position>
     </column>
