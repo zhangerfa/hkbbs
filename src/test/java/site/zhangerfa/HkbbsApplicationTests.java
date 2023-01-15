@@ -1,53 +1,35 @@
 package site.zhangerfa;
 
+import jakarta.annotation.Resource;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import site.zhangerfa.dao.LoginTicketMapper;
-import site.zhangerfa.pojo.LoginTicket;
+import site.zhangerfa.pojo.Hole;
+import site.zhangerfa.service.HoleNicknameService;
+import site.zhangerfa.service.HoleService;
 
-import java.util.Date;
-import java.util.UUID;
+import java.util.List;
 
 
 @SpringBootTest
 class HkbbsApplicationTests {
-    @Autowired
-    private LoginTicketMapper loginTicketMapper;
+    @Resource
+    private HoleService holeService;
 
-    @Test
-    public void addTest(){
-        LoginTicket loginTicket = new LoginTicket();
-        loginTicket.setStuId("M222271503");
-        loginTicket.setTicket("sdfsfdf");
-        loginTicket.setExpired(new Date(System.currentTimeMillis() + 1000 * 60 * 10));
-        loginTicket.setStatus(0);
-
-        int num = loginTicketMapper.insertTicket(loginTicket);
-        System.out.println(loginTicket.getId());
-        System.out.println(num);
-    }
-
-    @Test
-    public void selectTest(){
-        LoginTicket ticket = loginTicketMapper.selectByTicket("sdfsfdf");
-        System.out.println(ticket.getStatus());
-        loginTicketMapper.updateStatus("sdfsfdf", 1);
-        ticket = loginTicketMapper.selectByTicket("sdfsfdf");
-        System.out.println(ticket.getStatus());
-    }
-
-    @Test
-    public void testUpdateExpired(){
-        LoginTicket ticket = loginTicketMapper.selectByTicket("sdfsfdf");
-        System.out.println(ticket.getExpired());
-        long expired = System.currentTimeMillis() + 1000L * 60 * 60 * 24 * 30;
-        loginTicketMapper.updateExpired("sdfsfdf", new Date(expired));
-        System.out.println(ticket.getExpired());
-    }
+    @Resource
+    private HoleNicknameService holeNicknameService;
 
     @Test
     public void test(){
-        System.out.println(UUID.randomUUID().toString().replace("-", "").length());
+        Hole hole = new Hole();
+        hole.setPosterId("M202271503");
+        hole.setTitle("测试树洞");
+        hole.setContent("测试测试");
+
+        holeService.addHole(hole);
+        List<Hole> holes = holeService.getOnePageHoles(hole.getPosterId(), 0, Integer.MAX_VALUE);
+        for (Hole h : holes) {
+            System.out.println(holeNicknameService.getHoleNickname(h.getId(), h.getPosterId()) + ":");
+            System.out.println(h);
+        }
     }
 }
