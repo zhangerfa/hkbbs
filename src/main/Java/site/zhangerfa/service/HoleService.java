@@ -11,6 +11,8 @@ public interface HoleService {
 
     Hole getHoleById(int id);
 
+    int getNumOfRows();
+
     /**
      * 学号为 0时获取一页卡片
      * 学号不为 0时获取所有该学号用户发的卡片中的某一页

@@ -4,8 +4,10 @@ import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
 import site.zhangerfa.pojo.Card;
 import site.zhangerfa.pojo.Comment;
+import site.zhangerfa.pojo.Hole;
 import site.zhangerfa.pojo.User;
 import site.zhangerfa.service.CommentService;
+import site.zhangerfa.service.HoleNicknameService;
 import site.zhangerfa.service.UserService;
 
 import java.util.*;
@@ -17,6 +19,9 @@ public class CardUtil {
 
     @Resource
     private CommentService commentService;
+
+    @Resource
+    private HoleNicknameService holeNicknameService;
 
     // 补全卡片信息
     public List<Map> completeCard(List<Card> cards){
@@ -95,5 +100,18 @@ public class CardUtil {
             }
         }
         return res;
+    }
+
+    /**
+     * 补全树洞信息
+     * @param holes
+     * @return
+     */
+    public List<Hole> completeHoles(List<Hole> holes){
+        for (Hole hole : holes) {
+            String holeNickname = holeNicknameService.getHoleNickname(hole.getId(), hole.getPosterId());
+            hole.setNickname(holeNickname);
+        }
+        return holes;
     }
 }

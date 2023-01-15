@@ -6,9 +6,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import site.zhangerfa.pojo.Card;
+import site.zhangerfa.pojo.Hole;
 import site.zhangerfa.pojo.Page;
 import site.zhangerfa.pojo.User;
 import site.zhangerfa.service.CardService;
+import site.zhangerfa.service.HoleService;
 import site.zhangerfa.service.UserService;
 import site.zhangerfa.util.CardUtil;
 import site.zhangerfa.util.HostHolder;
@@ -23,6 +25,9 @@ import java.util.Map;
 public class NavigationController {
     @Resource
     private CardService cardService;
+
+    @Resource
+    private HoleService holeService;
 
     @Resource
     private CardUtil cardUtil;
@@ -75,7 +80,14 @@ public class NavigationController {
      */
     @RequestMapping("/hole")
     public String hole(Page page, Model model){
-        String stuId = hostHolder.getUser().getStuId();
+        page.setRows(holeService.getNumOfRows());
+        page.setPath("/hole");
+
+        // 树洞信息
+        List<Hole> holes = holeService.getOnePageHoles("0", page.getOffset(), page.getLimit());
+        holes = cardUtil.completeHoles(holes);
+        model.addAttribute("holes", holes);
+        model.addAttribute("user", hostHolder.getUser());
         return "site/hole";
     }
 

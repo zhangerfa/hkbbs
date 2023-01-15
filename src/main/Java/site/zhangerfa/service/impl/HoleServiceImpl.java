@@ -42,6 +42,11 @@ public class HoleServiceImpl implements HoleService {
     }
 
     @Override
+    public int getNumOfRows() {
+        return holeMapper.getNumOfHoles();
+    }
+
+    @Override
     public List<Hole> getOnePageHoles(String posterId, int offset, int limit) {
         return holeMapper.selectOnePageHoles(posterId, offset, limit);
     }
