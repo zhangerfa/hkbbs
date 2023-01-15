@@ -21,12 +21,10 @@ public class HoleNicknameImpl implements HoleNicknameService {
         // 生成一个未被当前树洞使用的随机昵称
         String nicknameIndex = "";
         do {
-            // 生成两个随机数
+            // 生成字符索引
             Random random = new Random();
-            for (int i = 0; i < 2; i++){
-                nicknameIndex += (";" + random.nextInt(19));
-            }
-            nicknameIndex = nicknameIndex.substring(1);
+            nicknameIndex += random.nextInt(Constant.FIRSTNAME.length);
+            nicknameIndex += (";" + random.nextInt(Constant.SECONDNAME.length));
         } while (nicknamesSet.contains(nicknameIndex));
         int insertNum = holeNicknameMapper.insertHoleNickname(holeId, stuId, nicknameIndex);
         return insertNum > 0;
