@@ -75,3 +75,7 @@ function whenPublish(){
     document.getElementById("recipient-name").value = "";
     $('#publishModal').modal('show');
 }
+
+getMyHole = function (){
+    alert(111)
+}

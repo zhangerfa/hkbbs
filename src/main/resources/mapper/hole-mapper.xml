@@ -18,7 +18,7 @@
         update hole set comment_num = comment_num - 1
         where id = #{id}
     </update>
-    <delete id="deleteCardById">
+    <delete id="deleteHoleById">
         delete from hole
         where id = #{id}
     </delete>

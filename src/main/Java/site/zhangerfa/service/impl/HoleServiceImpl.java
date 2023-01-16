@@ -35,7 +35,7 @@ public class HoleServiceImpl implements HoleService {
         // 删除所有该树洞的随机昵称
         holeNicknameService.deleteNicknamesForHole(id);
         // 删除树洞
-        int deleteNum = holeMapper.deleteCardById(id);
+        int deleteNum = holeMapper.deleteHoleById(id);
         return deleteNum > 0;
     }
 
@@ -45,6 +45,7 @@ public class HoleServiceImpl implements HoleService {
     }
 
     @Override
+    @Transactional(isolation= Isolation.READ_COMMITTED, propagation = Propagation.NESTED)
     public boolean addComment(int holeId, String posterId) {
         int flag = holeMapper.commentNumPlusOne(holeId);
         // 树洞评论还要为其增加随机昵称
@@ -53,6 +54,7 @@ public class HoleServiceImpl implements HoleService {
     }
 
     @Override
+    @Transactional(isolation= Isolation.READ_COMMITTED, propagation = Propagation.NESTED)
     public boolean deleteComment(int id) {
         int flag = holeMapper.commentNumMinusOne(id);
         return flag > 0;

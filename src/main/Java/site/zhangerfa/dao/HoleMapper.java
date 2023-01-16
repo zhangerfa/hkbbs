@@ -1,7 +1,6 @@
 package site.zhangerfa.dao;
 
 import org.apache.ibatis.annotations.Mapper;
-import site.zhangerfa.pojo.Card;
 import site.zhangerfa.pojo.Hole;
 
 import java.util.List;
@@ -34,5 +33,5 @@ public interface HoleMapper {
 
     int commentNumMinusOne(int id);
 
-    int deleteCardById(int id);
+    int deleteHoleById(int id);
 }

@@ -75,7 +75,7 @@ public class CommentServiceImpl implements CommentService {
         if (comment.getEntityType() == Constant.ENTITY_TYPE_CARD){
             cardService.commentNumMinusOne(comment.getEntityId());
         } else if (comment.getEntityType() == Constant.ENTITY_TYPE_HOLE){
-            holeService.deleteComment(comment.getId());
+            holeService.deleteComment(comment.getEntityId());
         }
 
         Map<String, Object> map = new HashMap<>();

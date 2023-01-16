@@ -4,6 +4,7 @@ import jakarta.annotation.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import site.zhangerfa.pojo.Card;
 import site.zhangerfa.pojo.Hole;
@@ -39,18 +40,31 @@ public class NavigationController {
     /**
      * 跳转到我的主页
      */
-    @RequestMapping("/my")
-    public String my(Page page, Model model){
-        // page对象被自动注入到model对象中
-        page.setRows(cardService.getNumOfCards());
-        page.setPath("/my");
+    @RequestMapping("/my/{cardCurrentPage}/{holeCurrentPage}")
+    public String my(Model model, @PathVariable int cardCurrentPage, @PathVariable int holeCurrentPage){
+        // 分页信息
+        Page cardPage = new Page();
+        cardPage.setRows(cardService.getNumOfCards());
+        cardPage.setCurrent(cardCurrentPage);
+        cardPage.setPath("/my");
+        model.addAttribute("cardPage", cardPage);
+        Page holePage = new Page();
+        holePage.setRows(holeService.getNumOfRows());
+        holePage.setCurrent(holeCurrentPage);
+        holePage.setPath("/my");
+        model.addAttribute("holePage", holePage);
 
         String stuId = hostHolder.getUser().getStuId();
         List<Card> cards = cardService.getOnePageCards(stuId,
-                page.getOffset(), page.getLimit());// 获取一页卡片
+                cardPage.getOffset(), cardPage.getLimit());// 获取一页卡片
 
         model.addAttribute("user", hostHolder.getUser());
         model.addAttribute("cards", cards);
+
+        // 树洞信息
+        List<Hole> holes = holeService.getOnePageHoles("0", holePage.getOffset(), holePage.getLimit());
+        holes = cardUtil.completeHoles(holes);
+        model.addAttribute("holes", holes);
 
         return "site/my-wall";
     }
