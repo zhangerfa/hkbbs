@@ -6,6 +6,7 @@ import site.zhangerfa.dao.CommentMapper;
 import site.zhangerfa.pojo.Comment;
 import site.zhangerfa.service.CardService;
 import site.zhangerfa.service.CommentService;
+import site.zhangerfa.service.HoleService;
 import site.zhangerfa.util.Constant;
 
 import java.util.HashMap;
@@ -16,9 +17,10 @@ import java.util.Map;
 public class CommentServiceImpl implements CommentService {
     @Resource
     private CommentMapper commentMapper;
-
     @Resource
     private CardService cardService;
+    @Resource
+    private HoleService holeService;
 
 
     @Override
@@ -43,9 +45,11 @@ public class CommentServiceImpl implements CommentService {
         }
         // 增加评论
         int addNum = commentMapper.insertComment(comment);
-        // 当评论卡片时，卡片表中卡片的评论数量+1
+        // 当评论卡片或树洞时，卡片表中卡片的评论数量+1
         if (comment.getEntityType() == Constant.ENTITY_TYPE_CARD){
             cardService.commentNumPlusOne(comment.getEntityId());
+        }else if (comment.getEntityType() == Constant.ENTITY_TYPE_HOLE){
+            holeService.addComment(comment.getEntityId(), comment.getStuId());
         }
         return addNum != 0;
     }
@@ -68,7 +72,11 @@ public class CommentServiceImpl implements CommentService {
         // 删除评论
         commentMapper.deleteCommentById(id);
         // 卡片的评论数量减一
-        cardService.commentNumMinusOne(comment.getEntityId());
+        if (comment.getEntityType() == Constant.ENTITY_TYPE_CARD){
+            cardService.commentNumMinusOne(comment.getEntityId());
+        } else if (comment.getEntityType() == Constant.ENTITY_TYPE_HOLE){
+            holeService.deleteComment(comment.getId());
+        }
 
         Map<String, Object> map = new HashMap<>();
         map.put("result", true);

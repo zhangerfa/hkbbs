@@ -7,6 +7,10 @@
         insert into hole_nickname(hole_id, stu_id, nickname)
         values(#{holeId}, #{stuId}, #{nickname})
     </insert>
+    <delete id="deleteNicknamesByHoleId">
+        delete from hole_nickname
+        where hole_id = #{holeId}
+    </delete>
     <select id="selectHoleNickname" resultType="java.lang.String">
         select nickname from hole_nickname
         where hole_id = #{holeId} and stu_id = #{stuId}

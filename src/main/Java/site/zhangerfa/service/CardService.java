@@ -44,5 +44,5 @@ public interface CardService {
      * @param id
      * @return
      */
-    Map<String, Object> deleteCard(int id, String stuId);
+    Map<String, Object> deleteCard(int id, String stuId, CommentService commentService);
 }

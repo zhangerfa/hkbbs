@@ -26,4 +26,6 @@ public interface HoleNicknameMapper {
      * @return
      */
     String[] selectAllHoleNickname4Hole(int holeId);
+
+    int deleteNicknamesByHoleId(int holeId);
 }

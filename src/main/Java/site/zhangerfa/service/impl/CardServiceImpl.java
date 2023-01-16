@@ -1,6 +1,7 @@
 package site.zhangerfa.service.impl;
 
 import jakarta.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.HtmlUtils;
@@ -10,7 +11,6 @@ import site.zhangerfa.pojo.Comment;
 import site.zhangerfa.service.CardService;
 import site.zhangerfa.service.CommentService;
 import site.zhangerfa.util.Constant;
-import site.zhangerfa.util.HostHolder;
 
 import java.util.HashMap;
 import java.util.List;
@@ -20,10 +20,6 @@ import java.util.Map;
 public class CardServiceImpl implements CardService {
     @Resource
     private CardMapper cardMapper;
-
-    @Resource
-    @Lazy
-    private CommentService commentService;
 
     @Override
     public List<Card> getOnePageCards(String stuId, int offset, int limit) {
@@ -68,7 +64,7 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public Map<String, Object> deleteCard(int id, String stuId) {
+    public Map<String, Object> deleteCard(int id, String stuId,CommentService commentService) {
         // 权限验证 只有发帖者可以删除自己发的帖子
         Card card = cardMapper.selectCardById(id);
         if (!stuId.equals(card.getPosterId())){

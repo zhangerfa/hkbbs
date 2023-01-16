@@ -108,10 +108,53 @@ public class CardUtil {
      * @return
      */
     public List<Hole> completeHoles(List<Hole> holes){
+        if (holes == null){
+            return null;
+        }
         for (Hole hole : holes) {
             String holeNickname = holeNicknameService.getHoleNickname(hole.getId(), hole.getPosterId());
             hole.setNickname(holeNickname);
         }
         return holes;
+    }
+
+
+    /**
+     * 获取传入树洞的完整评论信息
+     * @param comments
+     * @return 返回一个集合，集合中一个元素是一个map，存储一个评论的信息
+     *              包含 nickname,content,createTime,posterId,commentId
+     */
+    public List<Map> serializeComments(int holeId, List<Comment> comments){
+        return serializeComments(holeId, comments, 0);
+    }
+
+    public List<Map> serializeComments(int holeId, List<Comment> comments, int deep){
+        if (comments == null || comments.size() ==0){
+            return new ArrayList<>();
+        }
+        List<Map> res = new ArrayList<>();
+        for (Comment comment : comments) {
+            // 将当前节点加入集合
+            Map<String, Object> map = new HashMap<>();
+            res.add(map);
+            String holeNickname = holeNicknameService.getHoleNickname(holeId, comment.getStuId());
+            map.put("nickname", holeNickname);
+            map.put("content", comment.getContent());
+            map.put("createTime", comment.getCreateTime());
+            map.put("posterId", comment.getStuId());
+            map.put("commentId", comment.getId());
+            map.put("deep", deep);
+            List<Comment> comments4Comment = commentService.getCommentsForEntity(Constant.ENTITY_TYPE_HOLE_COMMENT,
+                    comment.getId(), 0, Integer.MAX_VALUE); // 查询所有评论该评论的评论
+            // 评论数量
+            map.put("commentNum", comments4Comment.size());
+            // 将当前节点的所有子节点序列化后节点集合加入集合
+            List<Map> subComments = serializeComments(holeId, comments4Comment, deep + 1);
+            for (Map subComment : subComments) {
+                res.add(subComment);
+            }
+        }
+        return res;
     }
 }

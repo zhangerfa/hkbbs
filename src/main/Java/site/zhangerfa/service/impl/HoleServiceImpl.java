@@ -32,6 +32,9 @@ public class HoleServiceImpl implements HoleService {
 
     @Override
     public boolean deleteHoleById(int id) {
+        // 删除所有该树洞的随机昵称
+        holeNicknameService.deleteNicknamesForHole(id);
+        // 删除树洞
         int deleteNum = holeMapper.deleteCardById(id);
         return deleteNum > 0;
     }
@@ -39,6 +42,20 @@ public class HoleServiceImpl implements HoleService {
     @Override
     public Hole getHoleById(int id) {
         return holeMapper.selectHoleById(id);
+    }
+
+    @Override
+    public boolean addComment(int holeId, String posterId) {
+        int flag = holeMapper.commentNumPlusOne(holeId);
+        // 树洞评论还要为其增加随机昵称
+        holeNicknameService.addHoleNickname(holeId, posterId);
+        return flag > 0;
+    }
+
+    @Override
+    public boolean deleteComment(int id) {
+        int flag = holeMapper.commentNumMinusOne(id);
+        return flag > 0;
     }
 
     @Override

@@ -1,13 +1,15 @@
 package site.zhangerfa.controller;
 
 import jakarta.annotation.Resource;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import site.zhangerfa.controller.tool.Code;
 import site.zhangerfa.controller.tool.Result;
-import site.zhangerfa.pojo.*;
+import site.zhangerfa.pojo.Card;
+import site.zhangerfa.pojo.Comment;
+import site.zhangerfa.pojo.Page;
+import site.zhangerfa.pojo.User;
 import site.zhangerfa.service.CardService;
 import site.zhangerfa.service.CommentService;
 import site.zhangerfa.service.UserService;
@@ -113,7 +115,7 @@ public class CardController {
     @ResponseBody
     public Result deleteCard(@PathVariable int cardId){
         String stuId = hostHolder.getUser().getStuId();
-        Map<String, Object> map = cardService.deleteCard(cardId, stuId);
+        Map<String, Object> map = cardService.deleteCard(cardId, stuId, commentService);
         return new Result(Code.DELETE_OK, map.get("result"), (String) map.get("msg"));
     }
 }

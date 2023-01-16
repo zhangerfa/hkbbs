@@ -11,6 +11,16 @@ public interface HoleService {
 
     Hole getHoleById(int id);
 
+    /**
+     * 将指定id卡片的评论数量加一，并为评论生成随机昵称
+     * @param holeId 树洞id
+     * @param posterId 发帖人id
+     * @return
+     */
+    boolean addComment(int holeId, String posterId);
+
+    boolean deleteComment(int id);
+
     int getNumOfRows();
 
     /**

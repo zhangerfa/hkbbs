@@ -6,6 +6,8 @@ public class Constant {
      */
     public static final int ENTITY_TYPE_CARD = 1; // 卡片
     public static final int ENTITY_TYPE_COMMENT = 2; // 回帖
+    public static final int ENTITY_TYPE_HOLE = 3; // 树洞
+    public static final int ENTITY_TYPE_HOLE_COMMENT = 4; // 树洞的回帖
 
     /**
      * 树洞随机昵称生成用的字符集

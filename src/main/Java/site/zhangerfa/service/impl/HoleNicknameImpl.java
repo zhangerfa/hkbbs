@@ -15,6 +15,11 @@ public class HoleNicknameImpl implements HoleNicknameService {
 
     @Override
     public boolean addHoleNickname(int holeId, String stuId) {
+        // 先判断该用户是否已经在该树洞发过帖
+        String nickname = holeNicknameMapper.selectHoleNickname(holeId, stuId);
+        if (nickname != null){
+            return true;
+        }
         // 获取该树洞的所有随机昵称
         String[] nicknames = holeNicknameMapper.selectAllHoleNickname4Hole(holeId);
         Set<String> nicknamesSet = Set.of(nicknames);
@@ -41,5 +46,11 @@ public class HoleNicknameImpl implements HoleNicknameService {
         nickname += Constant.SECONDNAME[Integer.parseInt(indexArray[1])];
 
         return nickname;
+    }
+
+    @Override
+    public boolean deleteNicknamesForHole(int holeId) {
+        int deleteNum = holeNicknameMapper.deleteNicknamesByHoleId(holeId);
+        return deleteNum > 0;
     }
 }

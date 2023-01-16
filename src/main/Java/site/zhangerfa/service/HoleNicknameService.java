@@ -18,4 +18,11 @@ public interface HoleNicknameService {
      * @return 昵称
      */
     String getHoleNickname(int holeId, String stuId);
+
+    /**
+     * 删除该树洞的所有随机昵称
+     * @param holeId 树洞id
+     * @return
+     */
+    boolean deleteNicknamesForHole(int holeId);
 }

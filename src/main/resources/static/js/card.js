@@ -20,10 +20,14 @@ deleteCard = function (path){
     then(function (resp){
         alert(resp.data.msg)
         if (resp.data.data){
-            // 如果卡片详情页面删除卡片，跳转到卡片墙，否则刷新页面
-            if (location.href.includes("/details") && path.includes("/cards")){
+            if (location.href.includes("/detail") && path.includes("/card")){
+                // 如果卡片详情页面删除卡片，跳转到卡片墙，否则刷新页面
                 location.replace("/wall")
-            }else{
+            }else if(location.href.includes("/detail") && path.includes("/hole")){
+                // 如果树洞详情页面删除卡片，跳转到树洞，否则刷新页面
+                location.replace("/hole")
+            }
+            else{
                 location.reload();
             }
         }
@@ -43,15 +47,27 @@ postCard = function (){
         $('#hintModal').modal('show');
         return
     }
-    axios.post("/cards", param).
-    then(function (resp) {
-        document.getElementById("hintModal").style.color="black";
-        document.getElementById("hintBody").innerText="发帖成功";
-        $('#hintModal').modal('show');
-        $('#publishModal').modal('hide');
-        // 发布成功后刷新页面
-        location.reload();
-    })
+    if (location.href.includes("/cards")){
+        axios.post("/card", param).
+        then(function (resp) {
+            document.getElementById("hintModal").style.color="black";
+            document.getElementById("hintBody").innerText="发帖成功";
+            $('#hintModal').modal('show');
+            $('#publishModal').modal('hide');
+            // 发布成功后刷新页面
+            location.reload();
+        })
+    }else if (location.href.includes("/hole")){
+        axios.post("/holes", param).
+        then(function (resp) {
+            document.getElementById("hintModal").style.color="black";
+            document.getElementById("hintBody").innerText="发帖成功";
+            $('#hintModal').modal('show');
+            $('#publishModal').modal('hide');
+            // 发布成功后刷新页面
+            location.reload();
+        })
+    }
 }
 
 function whenPublish(){

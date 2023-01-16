@@ -7,6 +7,7 @@ import site.zhangerfa.controller.tool.Code;
 import site.zhangerfa.controller.tool.Result;
 import site.zhangerfa.pojo.Comment;
 import site.zhangerfa.service.CommentService;
+import site.zhangerfa.util.Constant;
 import site.zhangerfa.util.HostHolder;
 
 import java.util.Map;
@@ -30,7 +31,10 @@ public class CommentController {
         comment.setStuId(hostHolder.getUser().getStuId());
 
         boolean flag = commentService.addComment(comment);
-        return "redirect:/cards/details/" + cardId;
+        if (comment.getEntityType() == Constant.ENTITY_TYPE_CARD){
+            return "redirect:/cards/details/" + cardId;
+        }
+        return "redirect:/holes/details/" + cardId;
     }
 
     /**
