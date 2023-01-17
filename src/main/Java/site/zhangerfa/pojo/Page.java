@@ -11,7 +11,7 @@ public class Page {
     // 一页卡片的数量
     private int numOfPageOnPage = 10;
     // 总的卡片数（用于计算总共有多少页，便于前端显示分页按钮）
-    private int rows = -1; // 默认值为-1，表示还未设置总卡片数
+    private int rows = 1;
     // 查询路径
     private String path;
 
@@ -35,7 +35,7 @@ public class Page {
      * 获取当前总的页数
      * @return
      */
-    public int getTotal() throws Exception {
+    public int getTotal() {
         int total = getRows() / numOfPageOnPage;
         total = (rows % numOfPageOnPage) == 0? total: total + 1;
         return total;
@@ -63,11 +63,13 @@ public class Page {
     }
 
     /**
-     * 当传入负数则不改变当前页码
+     * 改变当前页码，但页码必须 ≥1，≤最大页码
      * @param current
      */
     public void setCurrent(int current) {
-        if (current >= 1) this.current = current;
+        if (current >= 1 && current <= getTotal()){
+            this.current = current;
+        }
     }
 
     public int getNumOfPageOnPage() {
@@ -89,10 +91,7 @@ public class Page {
      * @return
      * @throws Exception
      */
-    public int getRows() throws Exception {
-        if (rows == -1){
-            throw new Exception("未设置最大行数");
-        }
+    public int getRows(){
         return rows;
     }
 
