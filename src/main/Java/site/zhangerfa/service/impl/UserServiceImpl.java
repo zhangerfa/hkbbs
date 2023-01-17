@@ -3,6 +3,7 @@ package site.zhangerfa.service.impl;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Service;
+import org.springframework.util.DigestUtils;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import site.zhangerfa.controller.tool.Result;
@@ -72,7 +73,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean checkPassword(String stuId, String password) {
         User user = userMapper.selectUserByStuId(stuId);
-        return user != null ? user.getPassword().equals(password) : false;
+        if (user == null) return false;
+        String md5Password = DigestUtils.md5DigestAsHex((password + user.getSalt()).getBytes());
+        return md5Password.equals(user.getPassword());
     }
 
     @Override
@@ -102,6 +105,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean add(User user) {
+        // 生成6位随机数作为salt
+        String salt = UUID.randomUUID().toString().substring(0, 6);
+        user.setSalt(salt);
+        // 用户密码 + salt经过md5加密作为存储密码
+        String password = DigestUtils.md5DigestAsHex((user.getPassword() + salt).getBytes());
+        user.setPassword(password);
         int addNum = userMapper.add(user);
         return addNum == 1;
     }

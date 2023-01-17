@@ -9,6 +9,7 @@ public class User {
     // 头像地址
     private String headerUrl = "https://zhangerfa-1316526930.cos.ap-guangzhou.myqcloud.com/hkbbs/default.jpg";
     private Date createTime; // 创建时间
+    private String salt;
 
     @Override
     public String toString() {
@@ -24,6 +25,14 @@ public class User {
         this.password = password;
         this.username = username;
         this.stuId = stuId;
+    }
+
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
     }
 
     public String getHeaderUrl() {

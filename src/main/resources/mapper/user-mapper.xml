@@ -23,6 +23,9 @@
         set header_url = #{headerUrl}
         where stu_id = #{stuId}
     </update>
+    <update id="updateSalt">
+        update user set salt = #{salt} where stu_id = #{stuId}
+    </update>
 
     <delete id="delete">
         delete from user
@@ -30,8 +33,11 @@
     </delete>
 
     <select id="selectUserByStuId" resultType="User">
-        select stu_id, username, password, create_at as createTime, header_url
+        select stu_id, username, password, create_at as createTime, header_url, salt
         from user
         where stu_id = #{stuId}
+    </select>
+    <select id="selectAllUsers" resultType="site.zhangerfa.pojo.User">
+        select * from user;
     </select>
 </mapper>

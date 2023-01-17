@@ -3,6 +3,8 @@ package site.zhangerfa.dao;
 import org.apache.ibatis.annotations.*;
 import site.zhangerfa.pojo.User;
 
+import java.util.List;
+
 @Mapper
 public interface UserMapper {
     /**
@@ -26,4 +28,8 @@ public interface UserMapper {
     int updateHeaderUrl(String stuId, String headerUrl);
 
     int delete(String stuId);
+
+    List<User> selectAllUsers();
+
+    int updateSalt(String stuId, String salt);
 }
