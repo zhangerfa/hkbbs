@@ -5330,6 +5330,7 @@ stu_id</ColNames>
     <column id="740" parent="303" name="salt">
       <Comment>password中存储用户密码 + salt经过MD5算法加密后的字符串</Comment>
       <DataType>char(6)|0s</DataType>
+      <NotNull>1</NotNull>
       <Position>6</Position>
     </column>
     <index id="741" parent="303" name="PRIMARY">

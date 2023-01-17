@@ -30,6 +30,4 @@ public interface UserMapper {
     int delete(String stuId);
 
     List<User> selectAllUsers();
-
-    int updateSalt(String stuId, String salt);
 }

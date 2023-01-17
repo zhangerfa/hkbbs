@@ -23,9 +23,6 @@
         set header_url = #{headerUrl}
         where stu_id = #{stuId}
     </update>
-    <update id="updateSalt">
-        update user set salt = #{salt} where stu_id = #{stuId}
-    </update>
 
     <delete id="delete">
         delete from user
