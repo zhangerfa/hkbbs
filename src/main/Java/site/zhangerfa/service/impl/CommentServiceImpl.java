@@ -4,10 +4,9 @@ import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import site.zhangerfa.dao.CommentMapper;
 import site.zhangerfa.pojo.Comment;
-import site.zhangerfa.service.CardService;
 import site.zhangerfa.service.CommentService;
-import site.zhangerfa.service.HoleService;
 import site.zhangerfa.util.Constant;
+import site.zhangerfa.util.HostHolder;
 
 import java.util.HashMap;
 import java.util.List;
@@ -18,10 +17,7 @@ public class CommentServiceImpl implements CommentService {
     @Resource
     private CommentMapper commentMapper;
     @Resource
-    private CardService cardService;
-    @Resource
-    private HoleService holeService;
-
+    private HostHolder hostHolder;
 
     @Override
     public List<Comment> getCommentsForEntity(int entityType, int entityId, int offset, int limit) {
@@ -44,20 +40,16 @@ public class CommentServiceImpl implements CommentService {
             throw new IllegalArgumentException("未传入评论信息");
         }
         // 增加评论
+        comment.setStuId(hostHolder.getUser().getStuId());
         int addNum = commentMapper.insertComment(comment);
-        // 当评论卡片或树洞时，卡片表中卡片的评论数量+1
-        if (comment.getEntityType() == Constant.ENTITY_TYPE_CARD){
-            cardService.commentNumPlusOne(comment.getEntityId());
-        }else if (comment.getEntityType() == Constant.ENTITY_TYPE_HOLE){
-            holeService.addComment(comment.getEntityId(), comment.getStuId());
-        }
         return addNum != 0;
     }
 
     @Override
-    public Map<String, Object> deleteComment(int id, String stuId) {
+    public Map<String, Object> deleteComment(int commentId) {
         // 权限验证 只有发帖者可以删除自己发的帖子
-        Comment comment = commentMapper.selectCommentById(id);
+        Comment comment = commentMapper.selectCommentById(commentId);
+        String stuId = hostHolder.getUser().getStuId();
         if (!stuId.equals(comment.getStuId())){
             Map<String, Object> map = new HashMap<>();
             map.put("result", false);
@@ -65,18 +57,12 @@ public class CommentServiceImpl implements CommentService {
             return map;
         }
         // 删除所有评论的评论
-        List<Comment> comments = commentMapper.getCommentsForEntity(Constant.ENTITY_TYPE_COMMENT, id);
+        List<Comment> comments = commentMapper.getCommentsForEntity(Constant.ENTITY_TYPE_COMMENT, commentId);
         for (Comment cur : comments) {
-            deleteComment(cur.getId(), stuId);
+            deleteComment(cur.getId());
         }
         // 删除评论
-        commentMapper.deleteCommentById(id);
-        // 卡片的评论数量减一
-        if (comment.getEntityType() == Constant.ENTITY_TYPE_CARD){
-            cardService.commentNumMinusOne(comment.getEntityId());
-        } else if (comment.getEntityType() == Constant.ENTITY_TYPE_HOLE){
-            holeService.deleteComment(comment.getEntityId());
-        }
+        commentMapper.deleteCommentById(commentId);
 
         Map<String, Object> map = new HashMap<>();
         map.put("result", true);

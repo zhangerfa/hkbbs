@@ -11,10 +11,8 @@ import site.zhangerfa.pojo.Comment;
 import site.zhangerfa.pojo.Page;
 import site.zhangerfa.pojo.User;
 import site.zhangerfa.service.CardService;
-import site.zhangerfa.service.CommentService;
 import site.zhangerfa.service.UserService;
 import site.zhangerfa.util.CardUtil;
-import site.zhangerfa.util.Constant;
 import site.zhangerfa.util.HostHolder;
 
 import java.util.List;
@@ -26,18 +24,12 @@ import java.util.Map;
 public class CardController {
     @Resource
     private CardService cardService;
-
     @Resource
     private UserService userService;
-
     @Resource
     private HostHolder hostHolder;
-
     @Resource
     private CardUtil cardUtil;
-
-    @Resource
-    private CommentService commentService;
 
     @GetMapping
     @ResponseBody
@@ -59,8 +51,8 @@ public class CardController {
     @GetMapping("/my")
     @ResponseBody
     public Result getOnePageCardsByStuId(Page page,
-                                         @CookieValue("ticket") String ticket){
-        String stuId = userService.getStuIdByTicket(ticket);
+                                         @CookieValue("ticket") String ticket) throws IllegalAccessException {
+        String stuId = hostHolder.getUser().getStuId();
         List<Card> cards = cardService.getOnePageCards(stuId,
                 page.getOffset(), page.getLimit());
         Integer code = cards != null? Code.GET_OK: Code.GET_ERR;
@@ -101,8 +93,7 @@ public class CardController {
         page.setRows(card.getCommentNum());
         page.setPath("/details/" + cardId);
         // 评论集合
-        List<Comment> comments = commentService.getCommentsForEntity(Constant.ENTITY_TYPE_CARD, cardId,
-                page.getOffset(), page.getLimit());
+        List<Comment> comments = cardService.getComments(cardId, page.getOffset(), page.getLimit());
         List<Map> res = cardUtil.serializeComments(cardUtil.completeComments(comments));
         model.addAttribute("comments", res);
         // 评论数量
@@ -114,8 +105,27 @@ public class CardController {
     @DeleteMapping("/delete/{cardId}")
     @ResponseBody
     public Result deleteCard(@PathVariable int cardId){
-        String stuId = hostHolder.getUser().getStuId();
-        Map<String, Object> map = cardService.deleteCard(cardId, stuId, commentService);
+        Map<String, Object> map = cardService.deleteCard(cardId);
         return new Result(Code.DELETE_OK, map.get("result"), (String) map.get("msg"));
+    }
+
+    /**
+     * 为卡片增加评论,加成功后重定向到当前卡片的详情页面
+     * @param comment
+     * @param cardId
+     * @return
+     */
+    @PostMapping("/comment")
+    public String addComment(Comment comment, int cardId){
+        cardService.addComment(comment);
+        return "redirect:/cards/details/" + cardId;
+    }
+
+    @DeleteMapping("/comment/{commentId}")
+    @ResponseBody
+    public Result deleteComment(@PathVariable int commentId){
+        Map<String, Object> map = cardService.deleteComment(commentId);
+        int code = (boolean)map.get("result")? Code.DELETE_OK: Code.DELETE_ERR;
+        return new Result(code, map.get("result"), (String)map.get("msg"));
     }
 }

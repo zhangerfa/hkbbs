@@ -12,27 +12,34 @@ public interface LoginTicketMapper {
      * @param loginTicket
      * @return
      */
-    int insertTicket(LoginTicket loginTicket);
+    int insertLoginTicket(LoginTicket loginTicket);
 
     /**
-     * 根据ticket查询登录凭证信息
-     * @param ticket
+     * 根据登录凭证码查询登录凭证信息
+     * @param ticket 登录凭证码
      * @return
      */
     LoginTicket selectByTicket(String ticket);
 
     /**
-     * 根据凭证 修改登录凭证状态
-     * @param ticket
+     * 获取该用户的登录凭证信息
+     * @param stuId 学号
      * @return
      */
-    int updateStatus(String ticket, int status);
+    LoginTicket selectByStuId(String stuId);
+
+    /**
+     * 修改该用户的登录凭证状态
+     * @param
+     * @return
+     */
+    int updateStatus(String stuId, int status);
 
     /**
      * 修改登录凭证过期时间
-     * @param ticket
+     * @param stuId
      * @param expired
      * @return
      */
-    int updateExpired(String ticket, Date expired);
+    int updateExpired(String stuId, Date expired);
 }

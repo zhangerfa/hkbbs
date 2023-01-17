@@ -15,7 +15,6 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import org.apache.ibatis.annotations.Param;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,9 +22,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import site.zhangerfa.controller.tool.Code;
 import site.zhangerfa.controller.tool.Result;
-import site.zhangerfa.dao.LoginTicketMapper;
 import site.zhangerfa.pojo.LoginTicket;
 import site.zhangerfa.pojo.User;
+import site.zhangerfa.service.LoginTicketService;
 import site.zhangerfa.service.UserService;
 import site.zhangerfa.util.HostHolder;
 
@@ -43,13 +42,10 @@ public class UserController {
     private static Logger logger = LoggerFactory.getLogger(UserController.class);
     @Resource
     private DefaultKaptcha defaultKaptcha;
-
     @Resource
     private UserService userService;
-
     @Resource
-    private LoginTicketMapper loginTicketMapper;
-
+    private LoginTicketService loginTicketService;
     @Resource
     private HostHolder hostHolder;
     @Value("${cos.secretId}")
@@ -85,7 +81,7 @@ public class UserController {
     public Result login(User user, boolean rememberMe, HttpServletResponse response){
         Map<String, Object> map = userService.login(user, rememberMe);
         if (!(boolean) map.get("result")){
-            return new Result(Code.SAVE_ERR, null, (String) map.get("msg"));
+            return new Result(Code.SAVE_ERR, false, (String) map.get("msg"));
         }
         // 登录凭证作为cookie凭证发送给客户端
         LoginTicket ticket = (LoginTicket) map.get("ticket");
@@ -95,7 +91,7 @@ public class UserController {
         cookie.setMaxAge((int) expired);
         cookie.setPath("/"); // 访问所有页面需要携带登录凭证
         response.addCookie(cookie);
-        return new Result(Code.SAVE_OK, ticket.getTicket(), (String) map.get("msg"));
+        return new Result(Code.SAVE_OK, true, (String) map.get("msg"));
     }
 
     /**
@@ -106,7 +102,7 @@ public class UserController {
     @RequestMapping("/logout")
     public Result logout(@CookieValue("ticket") String ticket, HttpServletRequest request,
                          HttpServletResponse response) {
-        loginTicketMapper.updateStatus(ticket, 0);
+        loginTicketService.updateStatus(hostHolder.getUser().getStuId(), 0);
         try {
             response.sendRedirect("/login");
         } catch (Exception e) {

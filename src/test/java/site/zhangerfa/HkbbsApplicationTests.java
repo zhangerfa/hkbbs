@@ -5,7 +5,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.util.DigestUtils;
 import site.zhangerfa.dao.HoleNicknameMapper;
+import site.zhangerfa.dao.LoginTicketMapper;
 import site.zhangerfa.dao.UserMapper;
+import site.zhangerfa.pojo.LoginTicket;
 import site.zhangerfa.pojo.User;
 import site.zhangerfa.service.HoleNicknameService;
 import site.zhangerfa.service.HoleService;
@@ -25,8 +27,12 @@ class HkbbsApplicationTests {
     private HoleNicknameMapper holeNicknameMapper;
     @Resource
     private UserMapper userMapper;
+    @Resource
+    private LoginTicketMapper loginTicketMapper;
 
     @Test
     public void test(){
+        LoginTicket loginTicket = loginTicketMapper.selectByStuId("M202271503");
+        System.out.println(loginTicket == null);
     }
 }

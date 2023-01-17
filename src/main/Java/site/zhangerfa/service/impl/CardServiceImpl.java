@@ -1,9 +1,10 @@
 package site.zhangerfa.service.impl;
 
 import jakarta.annotation.Resource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.HtmlUtils;
 import site.zhangerfa.dao.CardMapper;
 import site.zhangerfa.pojo.Card;
@@ -11,6 +12,7 @@ import site.zhangerfa.pojo.Comment;
 import site.zhangerfa.service.CardService;
 import site.zhangerfa.service.CommentService;
 import site.zhangerfa.util.Constant;
+import site.zhangerfa.util.HostHolder;
 
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +22,10 @@ import java.util.Map;
 public class CardServiceImpl implements CardService {
     @Resource
     private CardMapper cardMapper;
+    @Resource
+    private CommentService commentService;
+    @Resource
+    private HostHolder hostHolder;
 
     @Override
     public List<Card> getOnePageCards(String stuId, int offset, int limit) {
@@ -30,7 +36,13 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public int getNumOfCards() {
+    public boolean deleteById(int id) {
+        int deleteNum = cardMapper.deleteCardById(id);
+        return deleteNum > 0;
+    }
+
+    @Override
+    public int getTotalNums() {
         return cardMapper.getNumOfCards();
     }
 
@@ -52,21 +64,39 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public boolean commentNumPlusOne(int id) {
-        int flag = cardMapper.commentNumPlusOne(id);
-        return flag > 0;
+    @Transactional(isolation= Isolation.READ_COMMITTED, propagation = Propagation.NESTED)
+    public boolean addComment(Comment comment) {
+        // 发布评论
+        boolean flag = commentService.addComment(comment);
+        // 卡片表中评论数量加一
+        flag &= commentNumPlusOne(comment.getEntityId());
+        return flag;
     }
 
     @Override
-    public boolean commentNumMinusOne(int id) {
-        int flag = cardMapper.commentNumMinusOne(id);
-        return flag > 0;
+    public Map<String, Object> deleteComment(int commentId) {
+        // 卡片表评论数减一
+        Comment comment = commentService.getCommentById(commentId);
+        commentNumMinusOne(comment.getEntityId());
+        // 删除评论
+        return commentService.deleteComment(commentId);
     }
 
     @Override
-    public Map<String, Object> deleteCard(int id, String stuId,CommentService commentService) {
+    public List<Comment> getComments(int id) {
+        return getComments(id, 0, Integer.MAX_VALUE);
+    }
+
+    @Override
+    public List<Comment> getComments(int id, int offset, int limit) {
+        return commentService.getCommentsForEntity(Constant.ENTITY_TYPE_CARD, id, offset, limit);
+    }
+
+    @Override
+    public Map<String, Object> deleteCard(int id) {
         // 权限验证 只有发帖者可以删除自己发的帖子
         Card card = cardMapper.selectCardById(id);
+        String stuId = hostHolder.getUser().getStuId();
         if (!stuId.equals(card.getPosterId())){
             Map<String, Object> map = new HashMap<>();
             map.put("result", false);
@@ -76,7 +106,7 @@ public class CardServiceImpl implements CardService {
         // 删除卡片的评论
         List<Comment> comments = commentService.getCommentsForEntity(Constant.ENTITY_TYPE_CARD, id, 0, Integer.MAX_VALUE);
         for (Comment comment : comments) {
-            commentService.deleteComment(comment.getId(), stuId);
+            deleteComment(comment.getId());
         }
         // 删除卡片
         cardMapper.deleteCardById(id);
@@ -85,5 +115,15 @@ public class CardServiceImpl implements CardService {
         map.put("result", true);
         map.put("msg", "删除成功");
         return map;
+    }
+
+    public boolean commentNumPlusOne(int cardId) {
+        int flag = cardMapper.commentNumPlusOne(cardId);
+        return flag > 0;
+    }
+
+    public boolean commentNumMinusOne(int cardId) {
+        int flag = cardMapper.commentNumMinusOne(cardId);
+        return flag > 0;
     }
 }

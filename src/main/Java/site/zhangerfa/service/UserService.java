@@ -34,22 +34,6 @@ public interface UserService {
      */
     Map<String, String> getUsernameAndCreateTimeByStuId(String stuId);
 
-    /**
-     * 查询指定学号用户的用户名
-     *
-     * @param stuId
-     * @return 返回用户名，如果传入学号未注册则返回null
-     */
-    String getUsernameByStuId(String stuId);
-
-    /**
-     * 查询指定学号用户的注册时间
-     *
-     * @param stuId
-     * @return 返回注册时间，如果传入学号未注册则返回null
-     */
-    Date getCreateTimeByStuId(String stuId);
-
     User getUserByStuId(String stuId);
 
     /**
@@ -109,48 +93,6 @@ public interface UserService {
      * @return
      */
     boolean checkCode(String code, HttpSession session);
-
-    /**
-     * 根据传入的登录凭证码查询登录凭证信息
-     * @param ticket 登录凭证码
-     * @return
-     */
-    LoginTicket getTicket(String ticket);
-
-    /**
-     * 根据传入的登录凭证码修改登录凭证状态
-     *
-     * @param ticket 登录凭证码
-     * @param status
-     * @return
-     */
-    boolean updateTicket(String ticket, int status);
-
-    /**
-     * 通过登陆凭证码获取用户学号
-     * @param ticket 登录凭证码
-     * @return
-     */
-    String getStuIdByTicket(String ticket);
-
-    /**
-     * 检查登陆凭证是否有效
-     *   传入ticket为空返回false
-     *      判断状态码是否有效
-     *      有效还要判断是否过期
-     *      有效且未过期返回true
-     *      有效但已过期，将状态改为无效，返回false
-     * @param ticket
-     * @return
-     */
-    boolean checkTicket(String ticket);
-
-    /**
-     * 根据 ticket返回用户信息
-     * @param ticket
-     * @return
-     */
-    User getUserByTicket(String ticket) throws IllegalAccessException;
 
     boolean updateHeaderUrl(String stuId, String headerUrl);
 }

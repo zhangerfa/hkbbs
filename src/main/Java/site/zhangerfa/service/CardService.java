@@ -1,11 +1,12 @@
 package site.zhangerfa.service;
 
 import site.zhangerfa.pojo.Card;
+import site.zhangerfa.pojo.Comment;
 
 import java.util.List;
 import java.util.Map;
 
-public interface CardService {
+public interface CardService extends PostService{
     /**
      * 学号为 0时获取一页卡片
      * 学号不为 0时获取所有该学号用户发的卡片中的某一页
@@ -18,8 +19,6 @@ public interface CardService {
      */
     List<Card> getOnePageCards(String stuId, int offset, int limit);
 
-    int getNumOfCards();
-
     /**
      * 添加卡片
      *
@@ -31,18 +30,16 @@ public interface CardService {
     Card getCardById(int id);
 
     /**
-     * 将指定id卡片的评论数量加一
-     * @param id
-     * @return
-     */
-    boolean commentNumPlusOne(int id);
-
-    boolean commentNumMinusOne(int id);
-
-    /**
      * 删除卡片，并所有该卡片的评论
      * @param id
      * @return
      */
-    Map<String, Object> deleteCard(int id, String stuId, CommentService commentService);
+    Map<String, Object> deleteCard(int id);
+
+    /**
+     * 为帖子增加一条评论
+     * @param comment
+     * @return
+     */
+    boolean addComment(Comment comment);
 }

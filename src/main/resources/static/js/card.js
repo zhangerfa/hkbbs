@@ -34,6 +34,17 @@ deleteCard = function (path){
     });
 }
 
+// 删除评论
+deleteComment = function (path){
+    axios.delete(path).
+    then(function (resp){
+        alert(resp.data.msg)
+        if (resp.data.data){
+            location.reload();
+        }
+    });
+}
+
 // 发布卡片
 postCard = function (){
     let param = {
@@ -47,8 +58,8 @@ postCard = function (){
         $('#hintModal').modal('show');
         return
     }
-    if (location.href.includes("/cards")){
-        axios.post("/card", param).
+    if (location.href.includes("/wall")){
+        axios.post("/cards", param).
         then(function (resp) {
             document.getElementById("hintModal").style.color="black";
             document.getElementById("hintBody").innerText="发帖成功";

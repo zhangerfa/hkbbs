@@ -91,7 +91,7 @@ public class CardUtil {
         for (Map comment : completedComments) {
             // 将当前节点添加到返回集合中
             comment.put("deep", deep);
-            List<Map> subComments = (List<Map>) comment.remove("comments");
+            List<Map> subComments = (List<Map>) comment.get("comments");
             res.add(comment);
             // 将当前节点的所有子节点以深度优先的顺序序列化添加到返回集合中
             List<Map> comments = serializeComments(subComments, deep + 1);

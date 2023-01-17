@@ -12,7 +12,6 @@ import site.zhangerfa.pojo.Page;
 import site.zhangerfa.pojo.User;
 import site.zhangerfa.service.CardService;
 import site.zhangerfa.service.HoleService;
-import site.zhangerfa.service.UserService;
 import site.zhangerfa.util.CardUtil;
 import site.zhangerfa.util.HostHolder;
 
@@ -26,14 +25,10 @@ import java.util.Map;
 public class NavigationController {
     @Resource
     private CardService cardService;
-
     @Resource
     private HoleService holeService;
-
     @Resource
     private CardUtil cardUtil;
-
-    // 同一次会话中共享的用户数据存放在这里
     @Resource
     private HostHolder hostHolder;
 
@@ -44,12 +39,12 @@ public class NavigationController {
     public String my(Model model, @PathVariable int cardCurrentPage, @PathVariable int holeCurrentPage){
         // 分页信息
         Page cardPage = new Page();
-        cardPage.setRows(cardService.getNumOfCards());
+        cardPage.setRows(cardService.getTotalNums());
         cardPage.setCurrent(cardCurrentPage);
         cardPage.setPath("/my");
         model.addAttribute("cardPage", cardPage);
         Page holePage = new Page();
-        holePage.setRows(holeService.getNumOfRows());
+        holePage.setRows(holeService.getTotalNums());
         holePage.setCurrent(holeCurrentPage);
         holePage.setPath("/my");
         model.addAttribute("holePage", holePage);
@@ -77,7 +72,7 @@ public class NavigationController {
      */
     @GetMapping("/wall")
     public String wall(Page page, Model model){
-        page.setRows(cardService.getNumOfCards());
+        page.setRows(cardService.getTotalNums());
         page.setPath("/wall");
 
         // 帖子信息
@@ -94,7 +89,7 @@ public class NavigationController {
      */
     @RequestMapping("/hole")
     public String hole(Page page, Model model){
-        page.setRows(holeService.getNumOfRows());
+        page.setRows(holeService.getTotalNums());
         page.setPath("/hole");
 
         // 树洞信息

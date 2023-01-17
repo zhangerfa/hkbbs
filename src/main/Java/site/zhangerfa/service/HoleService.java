@@ -1,27 +1,14 @@
 package site.zhangerfa.service;
 
+import site.zhangerfa.pojo.Comment;
 import site.zhangerfa.pojo.Hole;
 
 import java.util.List;
 
-public interface HoleService {
-    boolean addHole(Hole hole);
-
-    boolean deleteHoleById(int id);
+public interface HoleService extends PostService{
+    boolean add(Hole hole);
 
     Hole getHoleById(int id);
-
-    /**
-     * 将指定id卡片的评论数量加一，并为评论生成随机昵称
-     * @param holeId 树洞id
-     * @param posterId 发帖人id
-     * @return
-     */
-    boolean addComment(int holeId, String posterId);
-
-    boolean deleteComment(int id);
-
-    int getNumOfRows();
 
     /**
      * 学号为 0时获取一页卡片
@@ -34,4 +21,6 @@ public interface HoleService {
      * @return
      */
     List<Hole> getOnePageHoles(String posterId, int offset, int limit);
+
+    boolean addComment(Comment comment, int holeId);
 }

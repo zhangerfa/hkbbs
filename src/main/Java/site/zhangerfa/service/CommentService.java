@@ -35,11 +35,10 @@ public interface CommentService {
     Comment getCommentById(int id);
 
     /**
-     * 增加评论，并更新卡片表中的评论数量
+     * 增加评论
      * @param comment
      * @return
      */
-    @Transactional(isolation= Isolation.READ_COMMITTED, propagation = Propagation.NESTED)
     boolean addComment(Comment comment);
 
     /**
@@ -47,6 +46,5 @@ public interface CommentService {
      * @param id
      * @return
      */
-    @Transactional(isolation= Isolation.READ_COMMITTED, propagation = Propagation.NESTED)
-    Map<String, Object> deleteComment(int id, String stuId);
+    Map<String, Object> deleteComment(int commentId);
 }

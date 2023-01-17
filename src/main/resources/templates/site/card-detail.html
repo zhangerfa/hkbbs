@@ -84,13 +84,13 @@
 								<a th:href="@{|#huifu-${commentStat.count}|}" data-toggle="collapse" class="text-primary">回复</a>
 							</li>
 							<!--当评论为当前用户所发时显示删除按钮-->
-							<li class="d-inline ml-2" th:if="${stuId == comment.poster.stuId}">
+							<li class="d-inline ml-2" th:if="${user.stuId == comment.poster.stuId}">
 								<input type="button" value="删除"
-									   th:onclick="|deleteCard('/comments/delete/${comment.commentId}')|">
+									   th:onclick="|deleteComment('/cards/comment/${comment.commentId}')|">
 							</li>
 						</ul>
 						<div th:id="|huifu-${commentStat.count}|" class="panel-collapse collapse in">
-							<form th:action="@{/comments}" method="post"
+							<form th:action="@{/cards/comment}" method="post"
 								  style="text-indent:0">
 								<input type="text" class="input-size" name="content" placeholder="回复层主">
 								<input type="hidden" name="entityType" value="2">
@@ -108,7 +108,7 @@
 		</div>
 		<!-- 回复卡片 -->
 		<div class="container mt-3">
-			<form id="replyform" class="replyform" method="post" th:action="@{/comments}">
+			<form id="replyform" class="replyform" method="post" th:action="@{/cards/comment}">
 				<p class="mt-3">
 					<textarea placeholder="评论楼主" id="comment_content" name="content"></textarea>
 					<input type="hidden" name="entityType" value="1">
