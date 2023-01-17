@@ -21,6 +21,7 @@ public class LoginTicketImpl implements LoginTicketService {
 
     @Override
     public LoginTicket getLoginTicketByTicket(String ticket) {
+        if (ticket == null) return null;
         LoginTicket loginTicket = loginTicketMapper.selectByTicket(ticket);
         return loginTicket;
     }

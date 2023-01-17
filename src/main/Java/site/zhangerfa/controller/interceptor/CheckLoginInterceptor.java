@@ -45,10 +45,10 @@ public class CheckLoginInterceptor implements HandlerInterceptor {
                         response.sendRedirect("/wall");
                         return false;
                     }
+                    // ticket有效，将用户信息存储到hostHolder中，供这次请求共享
+                    String stuId = loginTicketService.getLoginTicketByTicket(ticket).getStuId();
+                    hostHolder.setUser(userService.getUserByStuId(stuId));
                 }
-                // ticket有效，将用户信息存储到hostHolder中，供这次请求共享
-                String stuId = loginTicketService.getLoginTicketByTicket(ticket).getStuId();
-                hostHolder.setUser(userService.getUserByStuId(stuId));
                 return true;
             }
         }
