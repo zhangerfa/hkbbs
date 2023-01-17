@@ -32,6 +32,8 @@ public class CardServiceImpl implements CardService {
         if (stuId == null){
             throw new IllegalArgumentException("未输入学号");
         }
+        offset = Math.max(offset, 1);
+        limit = Math.min(limit, cardMapper.getNumOfCards());
         return cardMapper.selectOnePageCards(stuId, offset, limit);
     }
 

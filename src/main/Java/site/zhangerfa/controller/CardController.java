@@ -31,34 +31,6 @@ public class CardController {
     @Resource
     private CardUtil cardUtil;
 
-    @GetMapping
-    @ResponseBody
-    public Result getOnePageCards(Page page){
-        List<Card> cards = cardService.getOnePageCards("0", page.getOffset(),
-                page.getLimit());
-        List<Map> res;
-        Integer code;
-        if (cards == null){
-            res = null;
-            code = Code.GET_ERR;
-        }else {
-            res = cardUtil.completeCard(cards);
-            code = Code.GET_OK;
-        }
-        return new Result(code, res);
-    }
-
-    @GetMapping("/my")
-    @ResponseBody
-    public Result getOnePageCardsByStuId(Page page,
-                                         @CookieValue("ticket") String ticket) throws IllegalAccessException {
-        String stuId = hostHolder.getUser().getStuId();
-        List<Card> cards = cardService.getOnePageCards(stuId,
-                page.getOffset(), page.getLimit());
-        Integer code = cards != null? Code.GET_OK: Code.GET_ERR;
-        return new Result(code, cards);
-    }
-
     // 新增一个卡片
     @PostMapping
     @ResponseBody

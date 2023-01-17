@@ -67,7 +67,7 @@ public class Page {
      * @param current
      */
     public void setCurrent(int current) {
-        if (current >= 1 && current <= getTotal()){
+        if (current >= 1){
             this.current = current;
         }
     }
