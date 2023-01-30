@@ -11,6 +11,14 @@ servlet:
 
 
 spring:
+  # Kafka配置信息
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: hkbbs-consumer-group
+      enable-auto-commit: true
+      auto-commit-interval: 3000 # 自动提交间隔（ms）
+  # Tomcat配置信息
   servlet:
     multipart:
       max-file-size: 10MB

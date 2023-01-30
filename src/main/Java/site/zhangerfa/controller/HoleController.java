@@ -6,12 +6,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import site.zhangerfa.controller.tool.Code;
 import site.zhangerfa.controller.tool.Result;
-import site.zhangerfa.pojo.Comment;
-import site.zhangerfa.pojo.Hole;
-import site.zhangerfa.pojo.Page;
-import site.zhangerfa.pojo.User;
+import site.zhangerfa.event.EventProducer;
+import site.zhangerfa.event.EventUtil;
+import site.zhangerfa.pojo.*;
 import site.zhangerfa.service.HoleService;
 import site.zhangerfa.util.CardUtil;
+import site.zhangerfa.util.Constant;
 import site.zhangerfa.util.HostHolder;
 
 import java.util.ArrayList;
@@ -27,6 +27,10 @@ public class HoleController {
     private HostHolder hostHolder;
     @Resource
     private CardUtil cardUtil;
+    @Resource
+    private EventProducer eventProducer;
+    @Resource
+    private EventUtil eventUtil;
 
     @PostMapping
     @ResponseBody
@@ -44,7 +48,7 @@ public class HoleController {
     }
 
     @RequestMapping("/details/{holeId}")
-    public String details(Model model, Page page, @PathVariable int holeId){
+    public String getDetails(Model model, Page page, @PathVariable int holeId){
         // 用户信息
         User user = hostHolder.getUser();
         model.addAttribute("user", user);
@@ -75,7 +79,11 @@ public class HoleController {
      */
     @PostMapping("/comment")
     public String addComment(Comment comment, int holeId){
+        // 发布评论
         holeService.addComment(comment, holeId);
+        // 发布通知
+        Notice notice = eventUtil.getNotice(comment, holeId); // 将评论数据包装为notice对象
+        eventProducer.addNotice(Constant.TOPIC_COMMENT, notice); // 传入消息队列
         return "redirect:/holes/details/" + holeId;
     }
 

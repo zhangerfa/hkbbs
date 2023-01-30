@@ -1,8 +1,5 @@
 package site.zhangerfa.service;
 
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import site.zhangerfa.pojo.Comment;
 
 import java.util.List;
@@ -43,7 +40,7 @@ public interface CommentService {
 
     /**
      * 删除评论，并删除所有该评论的评论
-     * @param id
+     * @param
      * @return
      */
     Map<String, Object> deleteComment(int commentId);

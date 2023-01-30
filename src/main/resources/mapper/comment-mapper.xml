@@ -6,7 +6,7 @@
     <sql id="select">
         id, stu_id, entity_type, entity_id, content, create_time
     </sql>
-    <insert id="insertComment">
+    <insert id="insertComment" keyProperty="id">
         insert into comment(stu_id, entity_type, entity_id, content, create_time)
         values (#{stuId}, #{entityType}, #{entityId}, #{content}, #{createTime})
     </insert>

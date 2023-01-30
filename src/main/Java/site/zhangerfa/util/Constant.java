@@ -10,6 +10,38 @@ public class Constant {
     public static final int ENTITY_TYPE_HOLE_COMMENT = 4; // 树洞的回帖
 
     /**
+     * 获取传入类型的名称
+     * @param type
+     * @return
+     */
+    public static String getEntityTye(int type){
+        if (type == ENTITY_TYPE_CARD){
+            return "卡片";
+        }
+        if (type == ENTITY_TYPE_HOLE){
+            return "树洞";
+        }
+        if (type == ENTITY_TYPE_COMMENT || type == ENTITY_TYPE_HOLE_COMMENT){
+            return "评论";
+        }
+        throw new RuntimeException("传入实体类型不存在");
+    }
+
+    /**
+     * 通知中的动作类型
+     */
+    public static final int ACTION_COMMENT = 0; // 评论
+    public static final int ACTION_LIKE = 1; // 点赞
+    public static final int ACTION_FOLLOW = 2; // 关注
+
+    /**
+     * 事件主题
+     */
+    public static final String TOPIC_COMMENT = "comment"; // 评论
+    public static final String TOPIC_LIKE = "like"; // 点赞
+    public static final String TOPIC_FOLLOW = "follow"; // 关注
+
+    /**
      * 树洞随机昵称生成用的字符集
      */
     public static String[] FIRSTNAME = {"西一", "西二", "百惠园", "美食屋", "西华园", "百景园",

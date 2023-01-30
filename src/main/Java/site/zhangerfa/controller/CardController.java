@@ -6,13 +6,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import site.zhangerfa.controller.tool.Code;
 import site.zhangerfa.controller.tool.Result;
-import site.zhangerfa.pojo.Card;
-import site.zhangerfa.pojo.Comment;
-import site.zhangerfa.pojo.Page;
-import site.zhangerfa.pojo.User;
+import site.zhangerfa.event.EventProducer;
+import site.zhangerfa.event.EventUtil;
+import site.zhangerfa.pojo.*;
 import site.zhangerfa.service.CardService;
 import site.zhangerfa.service.UserService;
 import site.zhangerfa.util.CardUtil;
+import site.zhangerfa.util.Constant;
 import site.zhangerfa.util.HostHolder;
 
 import java.util.List;
@@ -30,6 +30,10 @@ public class CardController {
     private HostHolder hostHolder;
     @Resource
     private CardUtil cardUtil;
+    @Resource
+    private EventProducer eventProducer;
+    @Resource
+    private EventUtil eventUtil;
 
     // 新增一个卡片
     @PostMapping
@@ -52,7 +56,7 @@ public class CardController {
      *                  comments是该评论的评论集合，是一个list，每个值为map
      */
     @GetMapping("/details/{cardId}")
-    public String getDetails(@PathVariable int cardId, Model model, Page page){
+    public String getDetails(Model model, @PathVariable int cardId, Page page){
         // 登录用户的信息
         model.addAttribute("user", hostHolder.getUser());
         // 帖子信息
@@ -89,7 +93,11 @@ public class CardController {
      */
     @PostMapping("/comment")
     public String addComment(Comment comment, int cardId){
+        // 增加评论
         cardService.addComment(comment);
+        // 发布评论通知
+        Notice notice = eventUtil.getNotice(comment, cardId); // 将评论数据包装为notice对象
+        eventProducer.addNotice(Constant.TOPIC_COMMENT, notice); // 传入消息队列
         return "redirect:/cards/details/" + cardId;
     }
 

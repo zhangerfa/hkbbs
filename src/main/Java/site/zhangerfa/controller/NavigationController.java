@@ -71,7 +71,7 @@ public class NavigationController {
      * @return
      */
     @GetMapping("/wall")
-    public String wall(Page page, Model model){
+    public String wall(Model model, Page page){
         page.setRows(cardService.getTotalNums());
         page.setPath("/wall");
 
@@ -88,7 +88,7 @@ public class NavigationController {
      * 访问树洞
      */
     @RequestMapping("/hole")
-    public String hole(Page page, Model model){
+    public String hole(Model model, Page page){
         page.setRows(holeService.getTotalNums());
         page.setPath("/hole");
 
@@ -98,33 +98,6 @@ public class NavigationController {
         model.addAttribute("holes", holes);
         model.addAttribute("user", hostHolder.getUser());
         return "site/hole";
-    }
-
-    /**
-     * 访问域名时资源跳转
-     * @return
-     */
-    @RequestMapping("/")
-    public String homeRedirect(){
-        return "forward:/wall";
-    }
-
-    /**
-     * 跳转到卡片墙页面
-     * @return
-     */
-    @RequestMapping("/login")
-    public String login(){
-        return "site/login";
-    }
-
-    /**
-     * 跳转到注册页面
-     * @return
-     */
-    @RequestMapping("/register")
-    public String register(){
-        return "site/register";
     }
 
     @RequestMapping("/setting")
