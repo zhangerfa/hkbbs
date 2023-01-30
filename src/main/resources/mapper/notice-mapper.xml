@@ -39,5 +39,6 @@
         <if test="actionType != null">
             and action_type = #{actionType}
         </if>
+        and status = 0
     </select>
 </mapper>
