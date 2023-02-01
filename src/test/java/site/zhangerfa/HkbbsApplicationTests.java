@@ -3,20 +3,19 @@ package site.zhangerfa;
 import jakarta.annotation.Resource;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import site.zhangerfa.pojo.Notice;
-import site.zhangerfa.service.NoticeService;
-import site.zhangerfa.util.Constant;
-
-import java.util.List;
+import org.springframework.data.redis.core.RedisTemplate;
+import site.zhangerfa.pojo.User;
 
 
 @SpringBootTest
 class HkbbsApplicationTests {
     @Resource
-    private NoticeService noticeService;
+    private RedisTemplate<String, Object> redisTemplate;
 
     @Test
-    public void test() throws InterruptedException {
-
+    public void test() {
+        User user = new User("M202271503", "张二发", "z123456");
+        redisTemplate.opsForValue().set("user", user);
+        System.out.println(redisTemplate.opsForValue().get("user"));
     }
 }

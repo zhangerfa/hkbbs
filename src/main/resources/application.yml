@@ -11,6 +11,18 @@ servlet:
 
 
 spring:
+  # Redis配置信息
+  data:
+    redis:
+      host: localhost
+      port: 6379 # redis默认端口
+      # 默认使用 lettuce，如果使用Jedis需要导入依赖
+      lettuce:
+        # 连接池配置
+        pool:
+          max-active: 8
+
+
   # Kafka配置信息
   kafka:
     bootstrap-servers: localhost:9092
