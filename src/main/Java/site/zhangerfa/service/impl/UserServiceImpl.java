@@ -138,7 +138,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean checkCode(String code, HttpSession session){
-        return session.getAttribute("code").equals(code);
+        String sendCode = (String) session.getAttribute("code");
+        if (sendCode != null) return sendCode.equals(code);
+        return false;
     }
 
     @Override
