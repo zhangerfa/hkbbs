@@ -4,6 +4,7 @@ import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
+import org.springframework.web.multipart.MultipartFile;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import site.zhangerfa.controller.tool.Result;
@@ -13,6 +14,7 @@ import site.zhangerfa.pojo.LoginTicket;
 import site.zhangerfa.pojo.User;
 import site.zhangerfa.service.LoginTicketService;
 import site.zhangerfa.service.UserService;
+import site.zhangerfa.util.ImgShackUtil;
 import site.zhangerfa.util.MailClient;
 
 import java.util.*;
@@ -27,6 +29,8 @@ public class UserServiceImpl implements UserService {
     private MailClient mailClient;
     @Resource
     private LoginTicketService loginTicketService;
+    @Resource
+    private ImgShackUtil imgShackUtil;
 
 
     @Override
@@ -165,7 +169,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean updateHeaderUrl(String stuId, String headerUrl) {
+    public boolean updateHeader(String stuId, MultipartFile headerImage) {
+        // 头像文件上传到图床中
+        // 文件命名为 学号_header
+        String imageName = stuId + "_header";
+        String headerUrl = imgShackUtil.add(headerImage, imageName);
         int flag = userMapper.updateHeaderUrl(stuId, headerUrl);
         return flag > 0;
     }

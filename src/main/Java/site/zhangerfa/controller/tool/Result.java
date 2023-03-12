@@ -1,9 +1,15 @@
 package site.zhangerfa.controller.tool;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(description = "返回结果")
 public class Result {
+    @Schema(description = "响应数据")
     private Object data; // 封装响应数据，可能为任意类型，用Object对象接收
-    private Integer code; // 请求处理状态码
-    private String msg; // 请求处理结果信息
+    @Schema(description = "请求处理状态码")
+    private Integer code;
+    @Schema(description = "请求处理结果信息")
+    private String msg;
 
     public Result(){}
 

@@ -1,14 +1,24 @@
 package site.zhangerfa.pojo;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 import java.util.Date;
 
+@Schema(description = "用户信息")
 public class User {
-    private String stuId; // 学号
+    @Schema(description = "学号") @NotNull @Email(regexp = "[UMD][0-9]{9}")
+    private String stuId;
+    @NotBlank
     private String username; // 用户名
+    @NotBlank
     private String password; // 密码
-    // 头像地址
+    @Schema(description = "头像地址")
     private String headerUrl = "https://zhangerfa-1316526930.cos.ap-guangzhou.myqcloud.com/hkbbs/default.jpg";
     private Date createTime; // 创建时间
+    @Schema(hidden = true)
     private String salt;
 
     @Override

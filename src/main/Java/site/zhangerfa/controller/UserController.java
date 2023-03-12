@@ -1,23 +1,17 @@
 package site.zhangerfa.controller;
 
 import com.google.code.kaptcha.impl.DefaultKaptcha;
-import com.qcloud.cos.COSClient;
-import com.qcloud.cos.ClientConfig;
-import com.qcloud.cos.auth.BasicCOSCredentials;
-import com.qcloud.cos.auth.COSCredentials;
-import com.qcloud.cos.http.HttpProtocol;
-import com.qcloud.cos.model.PutObjectRequest;
-import com.qcloud.cos.model.PutObjectResult;
-import com.qcloud.cos.region.Region;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import site.zhangerfa.controller.tool.Code;
@@ -30,13 +24,12 @@ import site.zhangerfa.util.HostHolder;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Map;
 
-
 @RestController
+@Tag(name = "用户信息")
 @RequestMapping("/users")
 public class UserController {
     private static Logger logger = LoggerFactory.getLogger(UserController.class);
@@ -48,35 +41,19 @@ public class UserController {
     private LoginTicketService loginTicketService;
     @Resource
     private HostHolder hostHolder;
-    @Value("${cos.secretId}")
-    private String secretId;
-    @Value("${cos.secretKey}")
-    private String secretKey;
-    @Value("${cos.region}")
-    private String cosRegion;
-    @Value("${cos.bucket}")
-    private String bucketName;
-    @Value("${cos.path}")
-    private String path;
 
 
-    /**
-     * 判断用户是否已经注册
-     * @param stuId
-     * @return
-     */
-    @RequestMapping("/isExist")
-    public Result isExist(String stuId) {
+    @Operation(summary = "判断用户是否注册")
+    @GetMapping ("/isExist")
+    @Parameter(name = "stuId", description = "用户学号", required = true)
+    public Result isExist( String stuId) {
         boolean flag = userService.isExist(stuId);
         return  new Result(flag? Code.GET_OK: Code.GET_ERR, flag);
     }
 
-    /**
-     * 检查指定学号的用户的输入密码、验证码是否正确
-     *      如果正确生成登录凭证以cookie返回给用户
-     * @param rememberMe 是否勾选记住密码
-     * @return
-     */
+    // 如果正确生成登录凭证以cookie返回给用户
+    @Operation(summary = "登录：检查用户输入的密码是否正确")
+    @Parameter(name = "rememberMe", description = "用户是否勾选记住密码")
     @PostMapping("/login")
     public Result login(User user, boolean rememberMe, HttpServletResponse response){
         Map<String, Object> map = userService.login(user, rememberMe);
@@ -94,14 +71,9 @@ public class UserController {
         return new Result(Code.SAVE_OK, true, (String) map.get("msg"));
     }
 
-    /**
-     * 注销登录，发送请求后将登录凭证状态修改为不可用，并重定向到登录页面
-     * @param ticket 登录凭证
-     * @return
-     */
-    @RequestMapping("/logout")
-    public Result logout(@CookieValue("ticket") String ticket, HttpServletRequest request,
-                         HttpServletResponse response) {
+    @Operation(summary = "退出登录，重定向到登录页面")
+    @PutMapping("/logout")
+    public Result logout(HttpServletResponse response) {
         loginTicketService.updateStatus(hostHolder.getUser().getStuId(), 0);
         try {
             response.sendRedirect("/login");
@@ -111,14 +83,10 @@ public class UserController {
         return new Result(Code.DELETE_OK, null);
     }
 
-    /**
-     * 注册新用户
-     * @param user
-     * @param code 用户输入的验证码
-     * @return
-     */
+    @Operation(summary = "注册新用户")
+    @Parameter(name = "code", description = "用户输入验证码")
     @PostMapping("/register")
-    public Result register(User user, @RequestParam("code") String code, HttpSession session){
+    public Result register(User user, String code, HttpSession session){
         if (!userService.checkCode(code, session)){
             return new Result(Code.GET_ERR, false, "验证码错误");
         }
@@ -126,102 +94,35 @@ public class UserController {
         return new Result(flag? Code.SAVE_OK: Code.SAVE_ERR, flag, "注册成功");
     }
 
-    /**
-     * 修改用户信息，请求可以传入用户名、密码,传入即修改
-     * @return 当传入多项要修改内容时，全部修改成功返回true，否则返回false
-     */
+    @Operation(summary = "修改用户信息：用户名、密码、头像传入非空则进行修改")
+    @Parameters({@Parameter(name = "newPassword", description = "新密码"),
+            @Parameter(name = "username", description = "新用户名"),
+            @Parameter(name = "headerImage", description = "新头像")})
     @PutMapping
-    public Result updateUser(String newPassword, String username, String oldPassword){
+    public Result updateUser(String newPassword, String username, MultipartFile headerImage){
         User user = hostHolder.getUser();
         String stuId = user.getStuId();
         String msg = "";
-        if (oldPassword != null){
-            if (oldPassword.equals(user.getPassword())){
-                userService.updatePassword(stuId, newPassword);
-                msg += "密码修改成功";
-            } else {
-                msg += "密码错误";
-            }
+        if (newPassword != null){
+            userService.updatePassword(stuId, newPassword);
+            msg += "密码修改成功!";
         }
         if (username != null){
             userService.updateUsername(stuId, username);
-            msg += "用户名修改成功";
+            if (msg.length() == 0) msg += "用户名修改成功！";
+            else msg = "用户名、" + msg;
+        }
+        if (headerImage != null){
+            userService.updateHeader(user.getStuId(), headerImage);
+            userService.updateHeader(user.getStuId(), headerImage);
+            if (msg.length() == 0) msg += "头像修改成功！";
+            else msg = "头像、" + msg;
         }
         return new Result(Code.UPDATE_OK, true, msg);
     }
 
-    /**
-     * 用户修改头像，传入头像文件，将头像文件存储后将头像文件地址更新到数据库中
-     * @return
-     */
-    @PostMapping("/header")
-    public Result updateHeader(MultipartFile headerImage){
-        if (headerImage == null){
-            return new Result(Code.UPDATE_ERR, false, "您还没上传头像");
-        }
-        // 将头像文件上传到图床
-        // 创建cos客户端
-        COSCredentials cred = new BasicCOSCredentials(secretId, secretKey);
-        Region region = new Region(cosRegion);
-        ClientConfig clientConfig = new ClientConfig(region);
-        clientConfig.setHttpProtocol(HttpProtocol.https);
-        COSClient cosClient = new COSClient(cred, clientConfig);
-        // 上传文件
-        try {
-            // 修改头像文件名：学号_header.原后缀名
-            String originalFilename = headerImage.getOriginalFilename();
-            String suffix = originalFilename.substring(originalFilename.lastIndexOf("."));
-            if (suffix == null || suffix.equals("")){
-                return new Result(Code.UPDATE_ERR, false, "文件格式不正确");
-            }
-            User user = hostHolder.getUser();
-            String fileName = user.getStuId() + "_header" + suffix;
-            File file = File.createTempFile(fileName, suffix);
-            headerImage.transferTo(file);
-            String key = path + fileName;
-            PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, key, file);
-            PutObjectResult putObjectResult = cosClient.putObject(putObjectRequest);
-            // 更新当前用户的头像访问路径
-            String headerUrl = "https://" + bucketName + ".cos." + cosRegion + ".myqcloud.com/" + key;
-            userService.updateHeaderUrl(user.getStuId(), headerUrl);
-            return new Result(Code.UPDATE_OK, headerUrl, "头像上传成功");
-        } catch (IOException e) {
-            logger.error("头像上传失败" + e.getMessage());
-            System.out.println(e.getMessage());
-        }finally {
-            // 关闭客户端(关闭后台线程)
-            cosClient.shutdown();
-        }
-        return null;
-    }
-
-    /**
-     * 获取指定学号的用户信息
-     * @param stuId
-     * @return 返回用户的学号、用户名、注册时间的map,输入学号有误则返回null
-     */
-    @GetMapping("/{stuId}")
-    public Result getUser(@PathVariable String stuId){
-        Map<String, String> map = userService.getUsernameAndCreateTimeByStuId(stuId);
-        return new Result(map != null? Code.GET_OK: Code.GET_ERR, map);
-    }
-
-    /**
-     * 删除指定学号的用户
-     * @param stuId
-     * @return
-     */
-    @DeleteMapping("/{stuId}")
-    public Result delete(@PathVariable String stuId){
-        boolean flag = userService.deleteByStuId(stuId);
-        return new Result(flag? Code.SAVE_OK: Code.SAVE_ERR, flag);
-    }
-
-    /**
-     * 向指定学号的邮箱发送验证码
-     * @return 返回验证码
-     */
-    @RequestMapping("/sendCode")
+    @Operation(summary = "向指定学号的邮箱发送验证码")
+    @GetMapping("/sendCode")
     public Result sendCode(String stuId, HttpSession session){
         boolean flag = userService.sendCode(stuId, session);
         int code = flag? Code.GET_OK: Code.GET_ERR;
@@ -229,11 +130,8 @@ public class UserController {
         return new Result(code, flag, msg);
     }
 
-    /**
-     * 发送随机图片验证码
-     * @return
-     */
-    @RequestMapping("/sendImageCode")
+    @Operation(summary = "发送图片验证码")
+    @GetMapping("/sendImageCode")
     public void getKaptcha(HttpSession session, HttpServletResponse response){
         // 生成图片验证码
         String text = defaultKaptcha.createText();
@@ -251,5 +149,20 @@ public class UserController {
             logger.error("向响应中写入图片验证码失败");
             throw new RuntimeException(e);
         }
+    }
+
+    // ########################################## 以下为管理员权限才可以调用的接口
+    @Operation(summary = "获取指定学号的用户信息")
+    @GetMapping("/{stuId}")
+    public Result getUser(@PathVariable String stuId){
+        Map<String, String> map = userService.getUsernameAndCreateTimeByStuId(stuId);
+        return new Result(map != null? Code.GET_OK: Code.GET_ERR, map);
+    }
+
+    @Operation(summary = "删除指定学号的用户")
+    @DeleteMapping("/{stuId}")
+    public Result delete(@PathVariable String stuId){
+        boolean flag = userService.deleteByStuId(stuId);
+        return new Result(flag? Code.SAVE_OK: Code.SAVE_ERR, flag);
     }
 }

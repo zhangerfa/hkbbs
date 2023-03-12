@@ -1,10 +1,9 @@
 package site.zhangerfa.service;
 
 import jakarta.servlet.http.HttpSession;
-import site.zhangerfa.pojo.LoginTicket;
+import org.springframework.web.multipart.MultipartFile;
 import site.zhangerfa.pojo.User;
 
-import java.util.Date;
 import java.util.Map;
 
 public interface UserService {
@@ -94,5 +93,11 @@ public interface UserService {
      */
     boolean checkCode(String code, HttpSession session);
 
-    boolean updateHeaderUrl(String stuId, String headerUrl);
+    /**
+     * 修改用户头像
+     * @param stuId
+     * @param headerImage 传入的头像文件
+     * @return
+     */
+    boolean updateHeader(String stuId, MultipartFile headerImage);
 }
