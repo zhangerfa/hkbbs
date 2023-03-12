@@ -85,3 +85,23 @@ cos:
   appId: 1316526930
   region: ap-guangzhou
   path: header/
+
+# springdoc-openapi项目配置
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html # swagger-ui的访问路径：http://ip:port/context-path/path
+    tags-sorter: alpha
+    operations-sorter: alpha
+  api-docs:
+    path: /v3/api-docs # json文档的访问路径
+  group-configs:
+    - group: 'default'
+      # 注释文档包含的包列表
+      packages-to-scan: site.zhangerfa.controller
+      # 注释文档要包含的路径列表
+      paths-to-match: '/**'
+# knife4j的增强配置，不需要增强可以不配
+knife4j:
+  enable: false
+  setting:
+    language: zh_cn
