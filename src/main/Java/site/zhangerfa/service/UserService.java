@@ -25,14 +25,6 @@ public interface UserService {
      */
     boolean checkPassword(String stuId, String password);
 
-    /**
-     * 查询指定学号的用户的用户名、注册时间
-     *
-     * @param stuId 学号
-     * @return 以字典形式返回用户名和注册时间
-     */
-    Map<String, String> getUsernameAndCreateTimeByStuId(String stuId);
-
     User getUserByStuId(String stuId);
 
     /**

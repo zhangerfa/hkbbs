@@ -1,24 +1,27 @@
 package site.zhangerfa.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 
 import java.util.Date;
 
 @Schema(description = "用户信息")
 public class User {
-    @Schema(description = "学号") @NotNull @Email(regexp = "[UMD][0-9]{9}")
+    @Schema(description = "学号") @NotNull
+    @Pattern(regexp = "[UMD][0-9]{9}", message = "学号第一位为学历缩写，后九位为数字")
     private String stuId;
     @NotBlank
     private String username; // 用户名
-    @NotBlank
+    @NotBlank @Pattern(regexp = "[a-zA-Z0-9]{6,16}", message = "密码由6到16位的数字和字母组成")
+    @JsonIgnore
     private String password; // 密码
     @Schema(description = "头像地址")
     private String headerUrl = "https://zhangerfa-1316526930.cos.ap-guangzhou.myqcloud.com/hkbbs/default.jpg";
     private Date createTime; // 创建时间
-    @Schema(hidden = true)
+    @JsonIgnore
     private String salt;
 
     @Override

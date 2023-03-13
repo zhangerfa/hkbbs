@@ -1,7 +1,7 @@
 package site.zhangerfa.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.annotation.Resource;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import site.zhangerfa.controller.tool.Code;
@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 
-@Controller
+@RestController
 @RequestMapping("/cards")
 public class CardController {
     @Resource
@@ -35,14 +35,13 @@ public class CardController {
     @Resource
     private EventUtil eventUtil;
 
-    // 新增一个卡片
+    @Operation(summary = "新增卡片")
     @PostMapping
-    @ResponseBody
-    public Result addCard(@RequestBody Card card){
+    public Result<Boolean> addCard(@RequestBody Card card){
         String stuId = hostHolder.getUser().getStuId();
         card.setPosterId(stuId);
         boolean flag = cardService.add(card);
-        return new Result(flag? Code.SAVE_OK: Code.SAVE_ERR, flag);
+        return new Result<>(flag? Code.SAVE_OK: Code.SAVE_ERR, flag);
     }
 
     /**
@@ -56,7 +55,7 @@ public class CardController {
      *                  comments是该评论的评论集合，是一个list，每个值为map
      */
     @GetMapping("/details/{cardId}")
-    public String getDetails(Model model, @PathVariable int cardId, Page page){
+    public String getDetails(Model model, @PathVariable int cardId, Page<Card> page){
         // 登录用户的信息
         model.addAttribute("user", hostHolder.getUser());
         // 帖子信息
@@ -66,7 +65,7 @@ public class CardController {
         User user = userService.getUserByStuId(card.getPosterId());
         model.addAttribute("poster", user);
         // 分页信息
-        page.setRows(card.getCommentNum());
+        page.setNumOfPosts(card.getCommentNum());
         page.setPath("/details/" + cardId);
         // 评论集合
         List<Comment> comments = cardService.getComments(cardId, page.getOffset(), page.getLimit());
@@ -103,7 +102,7 @@ public class CardController {
 
     @DeleteMapping("/comment/{commentId}")
     @ResponseBody
-    public Result deleteComment(@PathVariable int commentId){
+    public Result<Map> deleteComment(@PathVariable int commentId){
         Map<String, Object> map = cardService.deleteComment(commentId);
         int code = (boolean)map.get("result")? Code.DELETE_OK: Code.DELETE_ERR;
         return new Result(code, map.get("result"), (String)map.get("msg"));

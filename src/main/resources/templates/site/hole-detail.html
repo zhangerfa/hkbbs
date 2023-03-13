@@ -30,7 +30,7 @@
                         <!--								<li class="d-inline ml-2">|</li>-->
                         <!--								<li class="d-inline ml-2"><a href="#replyform" class="text-primary">回帖 </a></li>-->
                         <!--当帖子为当前用户所发时显示删除按钮-->
-                        <li class="d-inline ml-2" th:if="${user.stuId == hole.posterId}">
+                        <li class="d-inline ml-2" th:if="${user.posterId == hole.posterId}">
                             <input type="button" value="删除"
                                    th:onclick="|deleteCard('/holes/delete/${hole.id}')|">
                         </li>
@@ -74,7 +74,7 @@
                             <a th:href="@{|#huifu-${commentStat.count}|}" data-toggle="collapse" class="text-primary">回复</a>
                         </li>
                         <!--当评论为当前用户所发时显示删除按钮-->
-                        <li class="d-inline ml-2" th:if="${user.stuId == comment.posterId}">
+                        <li class="d-inline ml-2" th:if="${user.posterId == comment.posterId}">
                             <input type="button" value="删除"
                                    th:onclick="|deleteComment('/holes/comment/${comment.commentId}')|">
                         </li>

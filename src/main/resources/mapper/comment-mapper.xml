@@ -8,7 +8,7 @@
     </sql>
     <insert id="insertComment" keyProperty="id">
         insert into comment(stu_id, entity_type, entity_id, content, create_time)
-        values (#{stuId}, #{entityType}, #{entityId}, #{content}, #{createTime})
+        values (#{posterId}, #{entityType}, #{entityId}, #{content}, #{createTime})
     </insert>
     <delete id="deleteCommentById">
         delete from comment

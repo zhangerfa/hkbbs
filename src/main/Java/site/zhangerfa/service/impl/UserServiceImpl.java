@@ -98,19 +98,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Map<String, String> getUsernameAndCreateTimeByStuId(String stuId) {
-        Map<String, String> map = new HashMap<>();
-        User user = userMapper.selectUserByStuId(stuId);
-        Result result;
-        if (user != null){
-            map.put("username", user.getUsername());
-            map.put("createTime", user.getCreateTime().toString());
-            map.put("stuId", stuId);
-        }
-        return map;
-    }
-
-    @Override
     public boolean add(User user) {
         // 生成6位随机数作为salt
         String salt = UUID.randomUUID().toString().substring(0, 6);
@@ -165,7 +152,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserByStuId(String stuId) {
-        return userMapper.selectUserByStuId(stuId);
+        User user = userMapper.selectUserByStuId(stuId);
+        user.setPassword("");
+        return user;
     }
 
     @Override

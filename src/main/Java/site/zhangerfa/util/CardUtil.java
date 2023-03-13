@@ -53,7 +53,7 @@ public class CardUtil {
             // 评论id
             map.put("commentId", comment.getId());
             // 评论人的信息
-            User user = userService.getUserByStuId(comment.getStuId());
+            User user = userService.getUserByStuId(comment.getPosterId());
             map.put("poster", user);
             // 评论内容
             map.put("content", comment.getContent());
@@ -138,11 +138,11 @@ public class CardUtil {
             // 将当前节点加入集合
             Map<String, Object> map = new HashMap<>();
             res.add(map);
-            String holeNickname = holeNicknameService.getHoleNickname(holeId, comment.getStuId());
+            String holeNickname = holeNicknameService.getHoleNickname(holeId, comment.getPosterId());
             map.put("nickname", holeNickname);
             map.put("content", comment.getContent());
             map.put("createTime", comment.getCreateTime());
-            map.put("posterId", comment.getStuId());
+            map.put("posterId", comment.getPosterId());
             map.put("commentId", comment.getId());
             map.put("deep", deep);
             List<Comment> comments4Comment = commentService.getCommentsForEntity(Constant.ENTITY_TYPE_HOLE_COMMENT,

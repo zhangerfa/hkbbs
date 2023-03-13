@@ -46,19 +46,18 @@ public class UserController {
     @Operation(summary = "判断用户是否注册")
     @GetMapping ("/isExist")
     @Parameter(name = "stuId", description = "用户学号", required = true)
-    public Result isExist( String stuId) {
+    public Result<Boolean> isExist(String stuId) {
         boolean flag = userService.isExist(stuId);
-        return  new Result(flag? Code.GET_OK: Code.GET_ERR, flag);
+        return new Result<>(flag ? Code.GET_OK : Code.GET_ERR, flag);
     }
 
-    // 如果正确生成登录凭证以cookie返回给用户
-    @Operation(summary = "登录：检查用户输入的密码是否正确")
+    @Operation(summary = "登录：检查用户输入的密码是否正确", description = "如果正确生成登录凭证以cookie返回给用户")
     @Parameter(name = "rememberMe", description = "用户是否勾选记住密码")
     @PostMapping("/login")
-    public Result login(User user, boolean rememberMe, HttpServletResponse response){
+    public Result<Boolean> login(User user, boolean rememberMe, HttpServletResponse response){
         Map<String, Object> map = userService.login(user, rememberMe);
         if (!(boolean) map.get("result")){
-            return new Result(Code.SAVE_ERR, false, (String) map.get("msg"));
+            return new Result<>(Code.SAVE_ERR, false, (String) map.get("msg"));
         }
         // 登录凭证作为cookie凭证发送给客户端
         LoginTicket ticket = (LoginTicket) map.get("ticket");
@@ -68,30 +67,30 @@ public class UserController {
         cookie.setMaxAge((int) expired);
         cookie.setPath("/"); // 访问所有页面需要携带登录凭证
         response.addCookie(cookie);
-        return new Result(Code.SAVE_OK, true, (String) map.get("msg"));
+        return new Result<>(Code.SAVE_OK, true, (String) map.get("msg"));
     }
 
     @Operation(summary = "退出登录，重定向到登录页面")
     @PutMapping("/logout")
-    public Result logout(HttpServletResponse response) {
+    public Result<Boolean> logout(HttpServletResponse response) {
         loginTicketService.updateStatus(hostHolder.getUser().getStuId(), 0);
         try {
             response.sendRedirect("/login");
         } catch (Exception e) {
             logger.error("注销登录后重定向错误-->" + e.getMessage());
         }
-        return new Result(Code.DELETE_OK, null);
+        return new Result<>(Code.DELETE_OK, true);
     }
 
     @Operation(summary = "注册新用户")
     @Parameter(name = "code", description = "用户输入验证码")
     @PostMapping("/register")
-    public Result register(User user, String code, HttpSession session){
+    public Result<Boolean> register(User user, String code, HttpSession session){
         if (!userService.checkCode(code, session)){
-            return new Result(Code.GET_ERR, false, "验证码错误");
+            return new Result<>(Code.GET_ERR, false, "验证码错误");
         }
         boolean flag = userService.add(user);
-        return new Result(flag? Code.SAVE_OK: Code.SAVE_ERR, flag, "注册成功");
+        return new Result<>(flag? Code.SAVE_OK: Code.SAVE_ERR, flag, "注册成功");
     }
 
     @Operation(summary = "修改用户信息：用户名、密码、头像传入非空则进行修改")
@@ -99,35 +98,32 @@ public class UserController {
             @Parameter(name = "username", description = "新用户名"),
             @Parameter(name = "headerImage", description = "新头像")})
     @PutMapping
-    public Result updateUser(String newPassword, String username, MultipartFile headerImage){
+    public Result<Boolean> updateUser(String newPassword, String username, MultipartFile headerImage){
         User user = hostHolder.getUser();
         String stuId = user.getStuId();
         String msg = "";
         if (newPassword != null){
-            userService.updatePassword(stuId, newPassword);
-            msg += "密码修改成功!";
+            if (userService.updatePassword(stuId, newPassword)) msg += "密码修改成功!\n";
+            else msg += "密码修改失败，请重试！\n";
         }
         if (username != null){
-            userService.updateUsername(stuId, username);
-            if (msg.length() == 0) msg += "用户名修改成功！";
-            else msg = "用户名、" + msg;
+            if (userService.updateUsername(stuId, username)) msg += "用户名修改成功！\n";
+            else msg += "用户名修改失败，请重试！\n";
         }
         if (headerImage != null){
-            userService.updateHeader(user.getStuId(), headerImage);
-            userService.updateHeader(user.getStuId(), headerImage);
-            if (msg.length() == 0) msg += "头像修改成功！";
-            else msg = "头像、" + msg;
+            if (userService.updateHeader(user.getStuId(), headerImage)) msg += "头像修改成功！";
+            else msg += "头像修改失败，请重试！";
         }
-        return new Result(Code.UPDATE_OK, true, msg);
+        return new Result<>(Code.UPDATE_OK, true, msg);
     }
 
     @Operation(summary = "向指定学号的邮箱发送验证码")
     @GetMapping("/sendCode")
-    public Result sendCode(String stuId, HttpSession session){
+    public Result<Boolean> sendCode(String stuId, HttpSession session){
         boolean flag = userService.sendCode(stuId, session);
         int code = flag? Code.GET_OK: Code.GET_ERR;
         String msg = flag? "验证码已发送": "请检查您的学号后重试";
-        return new Result(code, flag, msg);
+        return new Result<>(code, flag, msg);
     }
 
     @Operation(summary = "发送图片验证码")
@@ -151,18 +147,19 @@ public class UserController {
         }
     }
 
-    // ########################################## 以下为管理员权限才可以调用的接口
     @Operation(summary = "获取指定学号的用户信息")
     @GetMapping("/{stuId}")
-    public Result getUser(@PathVariable String stuId){
-        Map<String, String> map = userService.getUsernameAndCreateTimeByStuId(stuId);
-        return new Result(map != null? Code.GET_OK: Code.GET_ERR, map);
+    public Result<User> getUser(@PathVariable String stuId){
+        User user = userService.getUserByStuId(stuId);
+        String msg = user != null? "查询成功": "用户不存在";
+        return new Result<>(user != null? Code.GET_OK: Code.GET_ERR, user, msg);
     }
 
+    // ########################################## 以下为管理员权限才可以调用的接口
     @Operation(summary = "删除指定学号的用户")
     @DeleteMapping("/{stuId}")
-    public Result delete(@PathVariable String stuId){
+    public Result<Boolean> delete(@PathVariable String stuId){
         boolean flag = userService.deleteByStuId(stuId);
-        return new Result(flag? Code.SAVE_OK: Code.SAVE_ERR, flag);
+        return new Result<>(flag? Code.SAVE_OK: Code.SAVE_ERR, flag);
     }
 }

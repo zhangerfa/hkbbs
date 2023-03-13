@@ -1,18 +1,24 @@
 package site.zhangerfa.pojo;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.util.Date;
 
-/**
- * 所有帖子类的祖先类
- */
+@Schema(description = "帖子")
 public class Post {
     private int id;
-    private String posterId; // 发帖人学号
-    private String title; // 标题
-    private String content; // 正文
-    private Date createTime = new Date(); // 发帖时间
-    private int commentNum = 0; // 评论数量
-    private int hot = 0; // 热度
+    @Schema(description = "发帖人学号")
+    private String posterId;
+    @Schema(description = "标题")
+    private String title;
+    @Schema(description = "正文")
+    private String content;
+    @Schema(description = "发帖时间")
+    private Date createTime = new Date();
+    @Schema(description = "评论数量")
+    private int commentNum = 0;
+    @Schema(description = "热度")
+    private int hot = 0;
 
     public int getId() {
         return id;

@@ -31,7 +31,7 @@
                             <li class="d-inline ml-2">回帖 <span th:text="${hole.commentNum}"></span></li>
                             <li class="d-inline ml-2">|</li>
                             <!--当帖子为当前用户所发时显示删除按钮-->
-                            <li class="d-inline ml-2" th:if="${user.stuId == hole.posterId}">
+                            <li class="d-inline ml-2" th:if="${user.posterId == hole.posterId}">
                                 <input type="button" value="删除"
                                        th:onclick="|deleteCard('/holes/delete/${hole.id}')|">
                             </li>

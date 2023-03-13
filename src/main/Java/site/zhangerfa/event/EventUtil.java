@@ -27,11 +27,11 @@ public class EventUtil {
         } else if (comment.getEntityType() == Constant.ENTITY_TYPE_HOLE) {
             receivingUserId = holeService.getHoleById(comment.getEntityId()).getPosterId();
         } else if (comment.getEntityType() == Constant.ENTITY_TYPE_COMMENT) {
-            receivingUserId = commentService.getCommentById(comment.getEntityId()).getStuId();
+            receivingUserId = commentService.getCommentById(comment.getEntityId()).getPosterId();
         }
         notice.setReceivingUserId(receivingUserId);
         notice.setActionType(Constant.ACTION_COMMENT);
-        notice.setActionUserId(comment.getStuId()); // 评论人学号
+        notice.setActionUserId(comment.getPosterId()); // 评论人学号
         notice.setCommentId(comment.getId());
         notice.setEntityType(comment.getEntityType());
         notice.setEntityId(comment.getEntityId());

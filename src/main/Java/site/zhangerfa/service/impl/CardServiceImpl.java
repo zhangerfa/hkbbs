@@ -9,6 +9,8 @@ import org.springframework.web.util.HtmlUtils;
 import site.zhangerfa.dao.CardMapper;
 import site.zhangerfa.pojo.Card;
 import site.zhangerfa.pojo.Comment;
+import site.zhangerfa.pojo.Page;
+import site.zhangerfa.pojo.User;
 import site.zhangerfa.service.CardService;
 import site.zhangerfa.service.CommentService;
 import site.zhangerfa.util.Constant;
@@ -35,6 +37,13 @@ public class CardServiceImpl implements CardService {
         offset = Math.max(offset, 1);
         limit = Math.min(limit, cardMapper.getNumOfCards());
         return cardMapper.selectOnePageCards(stuId, offset, limit);
+    }
+
+    public void completePage(Page page) {
+        page.setNumOfPosts(getTotalNums());
+        User user = hostHolder.getUser();
+        List<Card> cards = cardMapper.selectOnePageCards(user.getStuId(), page.getOffset(), page.getLimit());
+        page.setPosts(cards);
     }
 
     @Override

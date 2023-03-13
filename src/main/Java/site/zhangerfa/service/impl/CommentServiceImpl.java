@@ -40,7 +40,7 @@ public class CommentServiceImpl implements CommentService {
             throw new IllegalArgumentException("未传入评论信息");
         }
         // 增加评论
-        comment.setStuId(hostHolder.getUser().getStuId());
+        comment.setPosterId(hostHolder.getUser().getStuId());
         int addNum = commentMapper.insertComment(comment);
         return addNum != 0;
     }
@@ -50,7 +50,7 @@ public class CommentServiceImpl implements CommentService {
         // 权限验证 只有发帖者可以删除自己发的帖子
         Comment comment = commentMapper.selectCommentById(commentId);
         String stuId = hostHolder.getUser().getStuId();
-        if (!stuId.equals(comment.getStuId())){
+        if (!stuId.equals(comment.getPosterId())){
             Map<String, Object> map = new HashMap<>();
             map.put("result", false);
             map.put("msg", "您没有权限删除");

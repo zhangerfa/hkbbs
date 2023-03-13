@@ -1,13 +1,21 @@
 package site.zhangerfa.pojo;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.util.Date;
 
+@Schema(description = "评论")
 public class Comment {
     private int id;
-    private String stuId;
+    @Schema(description = "发布评论人的学号")
+    private String posterId;
+    @Schema(description = "被评论实体的类型")
     private int entityType;
+    @Schema(description = "被评论实体的ID")
     private int entityId;
+    @Schema(description = "评论内容")
     private String content;
+    @Schema(description = "评论时间")
     private Date createTime = new Date();
 
     public int getId() {
@@ -18,12 +26,12 @@ public class Comment {
         this.id = id;
     }
 
-    public String getStuId() {
-        return stuId;
+    public String getPosterId() {
+        return posterId;
     }
 
-    public void setStuId(String stuId) {
-        this.stuId = stuId;
+    public void setPosterId(String posterId) {
+        this.posterId = posterId;
     }
 
     public int getEntityType() {
@@ -62,7 +70,7 @@ public class Comment {
     public String toString() {
         return "Comment{" +
                 "id=" + id +
-                ", stuId='" + stuId + '\'' +
+                ", posterId='" + posterId + '\'' +
                 ", entityType=" + entityType +
                 ", entityId=" + entityId +
                 ", content='" + content + '\'' +

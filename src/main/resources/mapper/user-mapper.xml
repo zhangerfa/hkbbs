@@ -5,34 +5,34 @@
 <mapper namespace="site.zhangerfa.dao.UserMapper">
     <insert id="add">
         insert into user(stu_id, username, password, header_url, salt)
-        values(#{stuId}, #{username}, #{password}, #{headerUrl}, #{salt})
+        values(#{posterId}, #{username}, #{password}, #{headerUrl}, #{salt})
     </insert>
 
     <update id="updateUsername">
         update user
         set username = #{username}
-        where stu_id = #{stuId}
+        where stu_id = #{posterId}
     </update>
     <update id="updatePassword">
         update user
         set password = #{password}
-        where stu_id = #{stuId}
+        where stu_id = #{posterId}
     </update>
     <update id="updateHeaderUrl">
         update user
         set header_url = #{headerUrl}
-        where stu_id = #{stuId}
+        where stu_id = #{posterId}
     </update>
 
     <delete id="delete">
         delete from user
-        where stu_id = #{stuId}
+        where stu_id = #{posterId}
     </delete>
 
     <select id="selectUserByStuId" resultType="User">
         select stu_id, username, password, create_at as createTime, header_url, salt
         from user
-        where stu_id = #{stuId}
+        where stu_id = #{posterId}
     </select>
     <select id="selectAllUsers" resultType="site.zhangerfa.pojo.User">
         select * from user;

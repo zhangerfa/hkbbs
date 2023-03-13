@@ -8,10 +8,13 @@ import org.springframework.transaction.annotation.Transactional;
 import site.zhangerfa.dao.HoleMapper;
 import site.zhangerfa.pojo.Comment;
 import site.zhangerfa.pojo.Hole;
+import site.zhangerfa.pojo.Page;
+import site.zhangerfa.pojo.User;
 import site.zhangerfa.service.CommentService;
 import site.zhangerfa.service.HoleNicknameService;
 import site.zhangerfa.service.HoleService;
 import site.zhangerfa.util.Constant;
+import site.zhangerfa.util.HostHolder;
 
 import java.util.List;
 import java.util.Map;
@@ -24,6 +27,8 @@ public class HoleServiceImpl implements HoleService {
     private CommentService commentService;
     @Resource
     private HoleNicknameService holeNicknameService;
+    @Resource
+    private HostHolder hostHolder;
 
     @Override
     @Transactional(isolation= Isolation.READ_COMMITTED, propagation = Propagation.NESTED)
@@ -33,6 +38,14 @@ public class HoleServiceImpl implements HoleService {
         // 为树洞主生成随机昵称
         boolean flag = holeNicknameService.addHoleNickname(hole.getId(), hole.getPosterId());
         return insertNum > 0 && flag;
+    }
+
+    @Override
+    public void completePage(Page page) {
+        page.setNumOfPosts(getTotalNums());
+        User user = hostHolder.getUser();
+        List<site.zhangerfa.pojo.Hole> holes = holeMapper.selectOnePageHoles(user.getStuId(), page.getOffset(), page.getLimit());
+        page.setPosts(holes);
     }
 
     @Override
@@ -57,7 +70,7 @@ public class HoleServiceImpl implements HoleService {
         // 卡片表中评论数量加一
         flag &= commentNumPlusOne(comment.getEntityId());
         // 生成随机昵称
-        flag &= holeNicknameService.addHoleNickname(holeId, comment.getStuId());
+        flag &= holeNicknameService.addHoleNickname(holeId, comment.getPosterId());
         return flag;
     }
 

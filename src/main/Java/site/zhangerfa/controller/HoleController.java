@@ -59,7 +59,7 @@ public class HoleController {
         hole = cardUtil.completeHoles(holes).get(0);
         model.addAttribute("hole", hole);
         // 分页信息
-        page.setRows(hole.getCommentNum());
+        page.setNumOfPosts(hole.getCommentNum());
         page.setPath("/details/" + holeId);
         // 评论集合
         List<Comment> comments = holeService.getComments(holeId, page.getOffset(), page.getLimit());

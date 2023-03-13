@@ -27,8 +27,8 @@
         select <include refid="select"/>
         from card
         <where>
-            <if test='stuId != "0"'>
-                stu_id = #{stuId}
+            <if test='posterId != "0"'>
+                stu_id = #{posterId}
             </if>
         </where>
         order by createTime desc

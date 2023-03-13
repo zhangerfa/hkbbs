@@ -54,7 +54,7 @@
                 </ul>
                 <!-- 分页 -->
                 <!--当查询到数据，且数据大于一页时才显示分页-->
-                <nav class="mt-5" th:if="${cardPage.rows > cardPage.numOfPageOnPage}">
+                <nav class="mt-5" th:if="${cardPage.numOfPosts > cardPage.numOfPostsOnPage}">
                     <ul class="pagination justify-content-center">
                         <li class="page-item">
                             <a class="page-link" th:href="@{|${cardPage.path}/1/${holePage.current}|}">首页</a>
@@ -101,7 +101,7 @@
                 </ul>
                 <!-- 分页 -->
                 <!--当查询到数据，且数据大于一页时才显示分页-->
-                <nav class="mt-5" th:if="${holePage.rows > holePage.numOfPageOnPage}">
+                <nav class="mt-5" th:if="${holePage.numOfPosts > holePage.numOfPostsOnPage}">
                     <ul class="pagination justify-content-center">
                         <li class="page-item">
                             <a class="page-link" th:href="@{|${holePage.path}/${cardPage.current}/1|}">首页</a>

@@ -1,8 +1,8 @@
 package site.zhangerfa.pojo;
 
-/*
-征友墙上的卡片的抽象
- */
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(description = "卡片")
 public class Card extends Post{
 
 }

@@ -39,12 +39,12 @@ public class NavigationController {
     public String my(Model model, @PathVariable int cardCurrentPage, @PathVariable int holeCurrentPage){
         // 分页信息
         Page cardPage = new Page();
-        cardPage.setRows(cardService.getTotalNums());
+        cardPage.setNumOfPosts(cardService.getTotalNums());
         cardPage.setCurrent(cardCurrentPage);
         cardPage.setPath("/my");
         model.addAttribute("cardPage", cardPage);
         Page holePage = new Page();
-        holePage.setRows(holeService.getTotalNums());
+        holePage.setNumOfPosts(holeService.getTotalNums());
         holePage.setCurrent(holeCurrentPage);
         holePage.setPath("/my");
         model.addAttribute("holePage", holePage);
@@ -72,7 +72,7 @@ public class NavigationController {
      */
     @GetMapping("/wall")
     public String wall(Model model, Page page){
-        page.setRows(cardService.getTotalNums());
+        page.setNumOfPosts(cardService.getTotalNums());
         page.setPath("/wall");
 
         // 帖子信息
@@ -89,7 +89,7 @@ public class NavigationController {
      */
     @RequestMapping("/hole")
     public String hole(Model model, Page page){
-        page.setRows(holeService.getTotalNums());
+        page.setNumOfPosts(holeService.getTotalNums());
         page.setPath("/hole");
 
         // 树洞信息

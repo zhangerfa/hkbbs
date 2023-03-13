@@ -1,13 +1,19 @@
 package site.zhangerfa.pojo;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.util.Date;
 
+@Schema(description = "登录凭证")
 public class LoginTicket {
     private int id;
     private String stuId;
-    private String ticket; // 登录凭证码
-    private int status; // 登录凭证状态码 0 无效， 1有效
-    private Date expired; // 登录凭证过期时间
+    @Schema(description = "登录凭证码")
+    private String ticket;
+    @Schema(description = "登录凭证状态码 0 无效， 1有效")
+    private int status;
+    @Schema(description = "登录凭证过期时间")
+    private Date expired;
 
     public int getId() {
         return id;

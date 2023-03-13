@@ -1,17 +1,26 @@
 package site.zhangerfa.pojo;
 
-/**
- * 封装分页信息
- */
-public class Page {
-    private static final int maxNumOfPageOnPage = 50; // 一页显示的最大卡片数量
+import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.List;
 
-    // 当前页码
+@Schema(name = "分页", description = "记录分页信息，并封装当前页的数据")
+public class Page<T> {
+    @Schema(description = "当前页码")
     private int current = 1;
-    // 一页卡片的数量
-    private int numOfPageOnPage = 10;
-    // 总的卡片数（用于计算总共有多少页，便于前端显示分页按钮）
-    private int rows = 1;
+    @Schema(description = "每页大小")
+    private int pageSize = 10;
+    @Schema(description = "当前页上的帖子数")
+    private int numOfPostsOnPage = 10;
+    @Schema(description = "总页数")
+    private int totalPage;
+    @Schema(description = "当前页帖子集合")
+    private List<T> posts;
+    @Schema(description = "分页页码开始页")
+    private int from;
+    @Schema(description = "分页页码结束页")
+    private int to;
+    @Schema(description = "总帖子数")
+    private int numOfPosts;
     // 查询路径
     private String path;
 
@@ -20,7 +29,7 @@ public class Page {
      * @return
      */
     public int getOffset(){
-        return (current - 1) * numOfPageOnPage;
+        return (current - 1) * numOfPostsOnPage;
     }
 
     /**
@@ -28,17 +37,25 @@ public class Page {
      * @return
      */
     public int getLimit(){
-        return getOffset() + numOfPageOnPage;
+        return getOffset() + numOfPostsOnPage;
     }
 
     /**
      * 获取当前总的页数
      * @return
      */
-    public int getTotal() {
-        int total = getRows() / numOfPageOnPage;
-        total = (rows % numOfPageOnPage) == 0? total: total + 1;
-        return total;
+    public int getTotalPage() {
+        totalPage = numOfPosts / pageSize;
+        totalPage = (numOfPosts % numOfPostsOnPage) == 0? totalPage: totalPage + 1;
+        return totalPage;
+    }
+
+    public int getNumOfPosts() {
+        return numOfPosts;
+    }
+
+    public void setNumOfPosts(int numOfPosts) {
+        this.numOfPosts = numOfPosts;
     }
 
     /**
@@ -46,16 +63,18 @@ public class Page {
      * @return
      */
     public int getFrom(){
-        return Math.max(current - 2, 1);
+        from = Math.max(current - 2, 1);
+        return from;
     }
 
     /**
      * 获取终止页码，当前页后两页，不会大于最大页数
      * @return
      */
-    public int getTo() throws Exception {
-        int total = getTotal();
-        return Math.min(current + 2, total);
+    public int getTo() {
+        int total = getTotalPage();
+        to = Math.min(current + 2, total);
+        return to;
     }
 
     public int getCurrent() {
@@ -72,31 +91,8 @@ public class Page {
         }
     }
 
-    public int getNumOfPageOnPage() {
-        return numOfPageOnPage;
-    }
-
-    /**
-     * 一页卡片数量不超过规定的最大数量
-     * @param numOfPageOnPage
-     */
-    public void setNumOfPageOnPage(int numOfPageOnPage) {
-        if (numOfPageOnPage >= 1 && numOfPageOnPage <= maxNumOfPageOnPage){
-            this.numOfPageOnPage = numOfPageOnPage;
-        }
-    }
-
-    /**
-     * 当获取最大行数但还未设置时抛出异常
-     * @return
-     * @throws Exception
-     */
-    public int getRows(){
-        return rows;
-    }
-
-    public void setRows(int rows) {
-        if (rows >= 0) this.rows = rows;
+    public int getNumOfPostsOnPage() {
+        return numOfPostsOnPage;
     }
 
     public String getPath() {
@@ -105,5 +101,21 @@ public class Page {
 
     public void setPath(String path) {
         this.path = path;
+    }
+
+    public void setPageSize(int pageSize) {
+        this.pageSize = pageSize;
+    }
+
+    public void setNumOfPostsOnPage(int numOfPostsOnPage) {
+        this.numOfPostsOnPage = numOfPostsOnPage;
+    }
+
+    public List<T> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(List<T> posts) {
+        this.posts = posts;
     }
 }

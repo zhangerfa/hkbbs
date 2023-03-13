@@ -19,7 +19,7 @@
     <select id="selectNoticesForUser" resultType="Notice">
         select * from notice
         <where>
-            receiving_user_id = #{stuId}
+            receiving_user_id = #{posterId}
             <if test="actionType != 0">
                 and action_type = #{actionType}
             </if>
@@ -28,14 +28,14 @@
     </select>
     <select id="getNumOfNotice" resultType="java.lang.Integer">
         select count(*) from notice
-        where receiving_user_id = #{stuId}
+        where receiving_user_id = #{posterId}
         <if test="actionType != null">
             and action_type = #{actionType}
         </if>
     </select>
     <select id="getNumOfUnreadNotice" resultType="java.lang.Integer">
         select count(*) from notice
-        where receiving_user_id = #{stuId}
+        where receiving_user_id = #{posterId}
         <if test="actionType != null">
             and action_type = #{actionType}
         </if>
