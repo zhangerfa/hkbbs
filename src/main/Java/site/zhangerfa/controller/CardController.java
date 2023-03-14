@@ -1,8 +1,10 @@
 package site.zhangerfa.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import site.zhangerfa.controller.tool.Code;
 import site.zhangerfa.controller.tool.Result;
@@ -20,6 +22,7 @@ import java.util.Map;
 
 
 @RestController
+@Tag(name = "卡片")
 @RequestMapping("/cards")
 public class CardController {
     @Resource
@@ -36,61 +39,60 @@ public class CardController {
     private EventUtil eventUtil;
 
     @Operation(summary = "新增卡片")
+    @Parameters({
+            @Parameter(name = "title", description = "标题", required = true),
+            @Parameter(name = "content", description = "内容", required = true)})
     @PostMapping
-    public Result<Boolean> addCard(@RequestBody Card card){
+    public Result<Boolean> addCard(@RequestBody @Parameter(hidden = true) Card card){
         String stuId = hostHolder.getUser().getStuId();
         card.setPosterId(stuId);
         boolean flag = cardService.add(card);
         return new Result<>(flag? Code.SAVE_OK: Code.SAVE_ERR, flag);
     }
 
-    /**
-     * 返回帖子详情界面
-     * @param cardId
-     * @return 向模板引擎发送数据 card、user、comments、commentsNum
-     *         分别是卡片信息、用户信息、评论集合、评论数量
-     *            其中，comments是一个list，每个值是一个map，包含一个评论的信息
-     *               每个map包含，username、content、createTime、comments、commentNum
-     *                  分别是谁评论的、评论了什么、什么时候评论的，评论的评论集合、评论数量
-     *                  comments是该评论的评论集合，是一个list，每个值为map
-     */
+    @Operation(summary = "帖子详情", description = "返回帖子详细数据，包括帖子内容，发布者信息，评论信息，评论的分页信息")
+    @Parameters({
+            @Parameter(name = "currentPage", description = "当前页码", required = true),
+            @Parameter(name = "pageSize", description = "当前页要展示的卡片数量", required = true),
+    })
     @GetMapping("/details/{cardId}")
-    public String getDetails(Model model, @PathVariable int cardId, Page<Card> page){
-        // 登录用户的信息
-        model.addAttribute("user", hostHolder.getUser());
+    public Result<PostDetails<Card>> getDetails(@PathVariable @Parameter(description = "帖子id") int cardId,
+                                                @Parameter(hidden = true) Page page){
+        PostDetails<Card> cardDetails = new PostDetails<>();
         // 帖子信息
         Card card = cardService.getCardById(cardId);
-        model.addAttribute("card", card);
+        cardDetails.setPost(card);
         // 作者信息
-        User user = userService.getUserByStuId(card.getPosterId());
-        model.addAttribute("poster", user);
+        User poster = userService.getUserByStuId(card.getPosterId());
+        cardDetails.setPoster(poster);
         // 分页信息
-        page.setNumOfPosts(card.getCommentNum());
-        page.setPath("/details/" + cardId);
+        cardService.completePage(page);
+        cardDetails.setPage(page);
         // 评论集合
         List<Comment> comments = cardService.getComments(cardId, page.getOffset(), page.getLimit());
-        List<Map> res = cardUtil.serializeComments(cardUtil.completeComments(comments));
-        model.addAttribute("comments", res);
-        // 评论数量
-        model.addAttribute("commentsNum", res.size());
-
-        return "site/card-detail";
+        // 获取每个评论的详细信息
+        List<CommentDetails> commentsDetails = cardUtil.getCommentsDetails(comments, page);
+        cardDetails.setCommentDetails(commentsDetails);
+        return new Result<>(Code.GET_OK, cardDetails);
     }
 
     @DeleteMapping("/delete/{cardId}")
+    @Operation(summary = "删除卡片", description = "删除卡片及卡片中所有评论")
     @ResponseBody
-    public Result deleteCard(@PathVariable int cardId){
+    public Result<Boolean> deleteCard(@PathVariable int cardId){
         Map<String, Object> map = cardService.deleteCard(cardId);
-        return new Result(Code.DELETE_OK, map.get("result"), (String) map.get("msg"));
+        return new Result<>(Code.DELETE_OK, (Boolean) map.get("result"), (String) map.get("msg"));
     }
 
-    /**
-     * 为卡片增加评论,加成功后重定向到当前卡片的详情页面
-     * @param comment
-     * @param cardId
-     * @return
-     */
+    @Operation(summary = "为卡片增加评论", description = "加成功后重定向到当前卡片的详情页面")
     @PostMapping("/comment")
+    @Parameters({
+            @Parameter(name = "posterId", description = "发布评论人的学号", required = true),
+            @Parameter(name = "entityType", description = "被评论实体的类型", required = true),
+            @Parameter(name = "entityId", description = "被评论实体的id", required = true),
+            @Parameter(name = "content", description = "评论内容"),
+            @Parameter(name = "cardId", description = "被评论实体所属帖子的id")
+    })
     public String addComment(Comment comment, int cardId){
         // 增加评论
         cardService.addComment(comment);
@@ -101,10 +103,11 @@ public class CardController {
     }
 
     @DeleteMapping("/comment/{commentId}")
+    @Operation(summary = "删除评论", description = "删除评论及评论中的子评论")
     @ResponseBody
-    public Result<Map> deleteComment(@PathVariable int commentId){
+    public Result<Boolean> deleteComment(@PathVariable int commentId){
         Map<String, Object> map = cardService.deleteComment(commentId);
         int code = (boolean)map.get("result")? Code.DELETE_OK: Code.DELETE_ERR;
-        return new Result(code, map.get("result"), (String)map.get("msg"));
+        return new Result<>(code, (Boolean) map.get("result"), (String)map.get("msg"));
     }
 }

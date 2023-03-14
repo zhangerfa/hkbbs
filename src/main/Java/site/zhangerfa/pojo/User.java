@@ -24,6 +24,7 @@ public class User {
     private String password; // 密码
     @Schema(description = "头像地址")
     private String headerUrl = "https://zhangerfa-1316526930.cos.ap-guangzhou.myqcloud.com/hkbbs/default.jpg";
+    @JsonIgnore
     private Date createTime; // 创建时间
     @JsonIgnore
     private String salt;

@@ -4,6 +4,7 @@ import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import site.zhangerfa.dao.CommentMapper;
 import site.zhangerfa.pojo.Comment;
+import site.zhangerfa.pojo.Page;
 import site.zhangerfa.service.CommentService;
 import site.zhangerfa.util.Constant;
 import site.zhangerfa.util.HostHolder;
@@ -18,6 +19,11 @@ public class CommentServiceImpl implements CommentService {
     private CommentMapper commentMapper;
     @Resource
     private HostHolder hostHolder;
+
+    @Override
+    public void completePage(Page page, int commentId) {
+        page.setNumOfPosts(commentMapper.getNumOfCommentsForEntity(Constant.ENTITY_TYPE_COMMENT, commentId));
+    }
 
     @Override
     public List<Comment> getCommentsForEntity(int entityType, int entityId, int offset, int limit) {
@@ -50,7 +56,7 @@ public class CommentServiceImpl implements CommentService {
         // 权限验证 只有发帖者可以删除自己发的帖子
         Comment comment = commentMapper.selectCommentById(commentId);
         String stuId = hostHolder.getUser().getStuId();
-        if (!stuId.equals(comment.getPosterId())){
+        if (!stuId.equals(comment.getId())){
             Map<String, Object> map = new HashMap<>();
             map.put("result", false);
             map.put("msg", "您没有权限删除");

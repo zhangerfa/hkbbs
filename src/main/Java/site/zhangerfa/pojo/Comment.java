@@ -1,11 +1,13 @@
 package site.zhangerfa.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.Date;
 
 @Schema(description = "评论")
 public class Comment {
+    @JsonIgnore
     private int id;
     @Schema(description = "发布评论人的学号")
     private String posterId;

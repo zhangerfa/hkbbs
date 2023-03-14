@@ -1,11 +1,23 @@
 package site.zhangerfa.service;
 
 import site.zhangerfa.pojo.Comment;
+import site.zhangerfa.pojo.Page;
 
 import java.util.List;
 import java.util.Map;
 
 public interface CommentService {
+    /**
+     * 补全分页信息，前端传入当前页页码，每页大小，
+     * 补全：总帖子数
+     * 当前页上的帖子数，总页数，分页页码开始页，分页页码结束页均可由以上数算出
+     * （已在Page的getter方法中实现）
+     *
+     * @param page
+     * @param commentId
+     */
+    void completePage(Page page, int commentId);
+
     /**
      * 查询回复传入某个对象（由实体类和实体id唯一确定）的所有帖子
      * @param entityType 对象类型
