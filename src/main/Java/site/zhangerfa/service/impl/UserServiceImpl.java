@@ -123,7 +123,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean updatePassword(String stuId, String password) {
-        int updateNum = userMapper.updatePassword(stuId, password);
+        // 获取 salt
+        User user = userMapper.selectUserByStuId(stuId);
+        // 用户密码 + salt经过md5加密作为存储密码
+        String Md5Password = DigestUtils.md5DigestAsHex((password + user.getSalt()).getBytes());
+        int updateNum = userMapper.updatePassword(stuId, Md5Password);
         return updateNum != 0;
     }
 

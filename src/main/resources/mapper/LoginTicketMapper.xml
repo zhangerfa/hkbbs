@@ -5,17 +5,17 @@
 <mapper namespace="site.zhangerfa.dao.LoginTicketMapper">
     <insert id="insertLoginTicket" keyProperty="id">
         insert into loggin_ticket(stu_id, ticket, status, expired)
-        values(#{posterId}, #{ticket}, #{status}, #{expired})
+        values(#{stuId}, #{ticket}, #{status}, #{expired})
     </insert>
     <update id="updateStatus">
         update loggin_ticket
         set status = #{status}
-        where stu_id = #{posterId}
+        where stu_id = #{stuId}
     </update>
     <update id="updateExpired">
         update loggin_ticket
         set expired = #{expired}
-        where stu_id = #{posterId}
+        where stu_id = #{stuId}
     </update>
     <select id="selectByTicket" resultType="LoginTicket">
         select * from loggin_ticket
@@ -23,6 +23,6 @@
     </select>
     <select id="selectByStuId" resultType="site.zhangerfa.pojo.LoginTicket">
         select * from loggin_ticket
-        where stu_id = #{posterId}
+        where stu_id = #{stuId}
     </select>
 </mapper>

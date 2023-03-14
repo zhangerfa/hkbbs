@@ -1,9 +1,11 @@
 package site.zhangerfa.controller;
 
 import com.google.code.kaptcha.impl.DefaultKaptcha;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.servlet.ServletOutputStream;
@@ -48,13 +50,17 @@ public class UserController {
     @Parameter(name = "stuId", description = "用户学号", required = true)
     public Result<Boolean> isExist(String stuId) {
         boolean flag = userService.isExist(stuId);
-        return new Result<>(flag ? Code.GET_OK : Code.GET_ERR, flag);
+        return new Result<>(flag ? Code.GET_OK : Code.GET_ERR, flag, flag? "已注册": "未注册");
     }
 
-    @Operation(summary = "登录：检查用户输入的密码是否正确", description = "如果正确生成登录凭证以cookie返回给用户")
-    @Parameter(name = "rememberMe", description = "用户是否勾选记住密码")
+    @Operation(summary = "登录", description = "检查用户输入的密码是否正确，如果正确生成登录凭证以cookie返回给用户")
+    @Parameters({
+            @Parameter(name = "rememberMe", description = "用户是否勾选记住密码"),
+            @Parameter(name = "stuId", description = "学号", required = true),
+            @Parameter(name = "password", description = "用户输入密码", required = true,
+                    schema = @Schema(pattern = "[a-zA-Z0-9]{6,16}"))})
     @PostMapping("/login")
-    public Result<Boolean> login(User user, boolean rememberMe, HttpServletResponse response){
+    public Result<Boolean> login(@Parameter(hidden = true) User user, boolean rememberMe, HttpServletResponse response){
         Map<String, Object> map = userService.login(user, rememberMe);
         if (!(boolean) map.get("result")){
             return new Result<>(Code.SAVE_ERR, false, (String) map.get("msg"));
@@ -67,15 +73,18 @@ public class UserController {
         cookie.setMaxAge((int) expired);
         cookie.setPath("/"); // 访问所有页面需要携带登录凭证
         response.addCookie(cookie);
+        hostHolder.setUser(user);
         return new Result<>(Code.SAVE_OK, true, (String) map.get("msg"));
     }
 
-    @Operation(summary = "退出登录，重定向到登录页面")
+    @Operation(summary = "退出登录", description = "将用户登录凭证的有效状态设置为不可用，并重定向到首页")
     @PutMapping("/logout")
     public Result<Boolean> logout(HttpServletResponse response) {
-        loginTicketService.updateStatus(hostHolder.getUser().getStuId(), 0);
+        User user = hostHolder.getUser();
+        if (user == null) return new Result<>(Code.UPDATE_ERR, false, "用户未登录");
+        loginTicketService.updateStatus(user.getStuId(), 0);
         try {
-            response.sendRedirect("/login");
+            response.sendRedirect("/");
         } catch (Exception e) {
             logger.error("注销登录后重定向错误-->" + e.getMessage());
         }
@@ -83,9 +92,15 @@ public class UserController {
     }
 
     @Operation(summary = "注册新用户")
-    @Parameter(name = "code", description = "用户输入验证码")
+    @Parameters({
+            @Parameter(name = "code", description = "用户输入验证码"),
+            @Parameter(name = "stuId", description = "学号", required = true,
+                    schema = @Schema(pattern = "[UMD][0-9]{9}")),
+            @Parameter(name = "username", description = "用户名", required = true),
+            @Parameter(name = "password", description = "密码", required = true,
+                    schema = @Schema(pattern = "[a-zA-Z0-9]{6,16}"))})
     @PostMapping("/register")
-    public Result<Boolean> register(User user, String code, HttpSession session){
+    public Result<Boolean> register(@Parameter(hidden = true) User user, String code, HttpSession session){
         if (!userService.checkCode(code, session)){
             return new Result<>(Code.GET_ERR, false, "验证码错误");
         }
@@ -93,13 +108,13 @@ public class UserController {
         return new Result<>(flag? Code.SAVE_OK: Code.SAVE_ERR, flag, "注册成功");
     }
 
-    @Operation(summary = "修改用户信息：用户名、密码、头像传入非空则进行修改")
-    @Parameters({@Parameter(name = "newPassword", description = "新密码"),
-            @Parameter(name = "username", description = "新用户名"),
-            @Parameter(name = "headerImage", description = "新头像")})
+    @Operation(summary = "修改用户信息", description = "用户名、密码、头像传入非空则进行修改")
     @PutMapping
-    public Result<Boolean> updateUser(String newPassword, String username, MultipartFile headerImage){
+    public Result<Boolean> updateUser(@Parameter(description = "新密码", schema = @Schema(pattern = "[a-zA-Z0-9]{6,16}")) String newPassword,
+                                      @Parameter(description = "新用户名") String username,
+                                      @Parameter(description = "新头像") MultipartFile headerImage){
         User user = hostHolder.getUser();
+        if (user == null) return new Result<>(Code.UPDATE_ERR, false, "用户未登录");
         String stuId = user.getStuId();
         String msg = "";
         if (newPassword != null){
@@ -112,9 +127,10 @@ public class UserController {
         }
         if (headerImage != null){
             if (userService.updateHeader(user.getStuId(), headerImage)) msg += "头像修改成功！";
-            else msg += "头像修改失败，请重试！";
+            else msg += "头像修改失败，请重试！\n";
         }
-        return new Result<>(Code.UPDATE_OK, true, msg);
+        if (msg.length() == 0) msg = "您未作任何修改\n";
+        return new Result<>(Code.UPDATE_OK, true, msg.strip());
     }
 
     @Operation(summary = "向指定学号的邮箱发送验证码")
@@ -147,19 +163,31 @@ public class UserController {
         }
     }
 
-    @Operation(summary = "获取指定学号的用户信息")
+    @Operation(summary = "获取用户信息", description = "获取指定用户信息，当传入用户学号为空时表示获取当前用户的信息")
     @GetMapping("/{stuId}")
     public Result<User> getUser(@PathVariable String stuId){
+        if (stuId.equals("")) {
+            if (hostHolder.getUser() != null) return new Result<>(Code.GET_OK, hostHolder.getUser());
+            else return new Result<>(Code.GET_ERR, "用户未登录");
+        }
         User user = userService.getUserByStuId(stuId);
         String msg = user != null? "查询成功": "用户不存在";
         return new Result<>(user != null? Code.GET_OK: Code.GET_ERR, user, msg);
     }
 
     // ########################################## 以下为管理员权限才可以调用的接口
+
+    /**
+     * 先删除账号所有发帖，登录凭证等以学号为外键的内容
+     * @param stuId
+     * @return
+     */
+    @Hidden
     @Operation(summary = "删除指定学号的用户")
     @DeleteMapping("/{stuId}")
     public Result<Boolean> delete(@PathVariable String stuId){
+        if (!isExist(stuId).getData()) return new Result<>(Code.DELETE_ERR, false, "用户不存在");
         boolean flag = userService.deleteByStuId(stuId);
-        return new Result<>(flag? Code.SAVE_OK: Code.SAVE_ERR, flag);
+        return new Result<>(flag? Code.DELETE_OK: Code.SAVE_ERR, flag);
     }
 }

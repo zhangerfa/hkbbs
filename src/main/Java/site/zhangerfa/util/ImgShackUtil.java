@@ -63,7 +63,7 @@ public class ImgShackUtil {
             }
             File file = File.createTempFile(imageName, suffix);
             image.transferTo(file);
-            String key = path + imageName;
+            String key = path + imageName + suffix;
             PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, key, file);
             PutObjectResult putObjectResult = cosClient.putObject(putObjectRequest);
             // 更新当前用户的头像访问路径

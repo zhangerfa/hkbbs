@@ -1,6 +1,9 @@
 package site.zhangerfa.pojo;
 
+import com.alibaba.fastjson2.annotation.JSONField;
+import com.alibaba.fastjson2.annotation.JSONType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -14,7 +17,8 @@ public class User {
     @Pattern(regexp = "[UMD][0-9]{9}", message = "学号第一位为学历缩写，后九位为数字")
     private String stuId;
     @NotBlank
-    private String username; // 用户名
+    @Schema(description = "用户名")
+    private String username;
     @NotBlank @Pattern(regexp = "[a-zA-Z0-9]{6,16}", message = "密码由6到16位的数字和字母组成")
     @JsonIgnore
     private String password; // 密码

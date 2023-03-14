@@ -22,7 +22,7 @@ public interface CardMapper {
      * @param limit 要查询页的末位行
      * @return 一页卡片对象的 list
      */
-    List<Card> selectOnePageCards(String stuId, int offset, int limit);
+    List<Card> selectOnePageCards(String posterId, int offset, int limit);
 
     int getNumOfCards();
 

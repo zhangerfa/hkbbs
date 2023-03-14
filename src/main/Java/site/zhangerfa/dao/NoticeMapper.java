@@ -34,5 +34,5 @@ public interface NoticeMapper {
      *                   不为 null时查询对应主题的未读通知数量
      * @return
      */
-    int getNumOfUnreadNotice(String stuId, Integer actionType);
+    int getNumOfUnreadNotice(String posterId, Integer actionType);
 }
