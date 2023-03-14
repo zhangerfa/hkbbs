@@ -2,7 +2,6 @@ package site.zhangerfa.pojo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.util.List;
 
 @Schema(name = "分页", description = "记录分页信息，并封装当前页的数据")
 public class Page {
@@ -11,11 +10,30 @@ public class Page {
     @Schema(description = "每页大小")
     private int pageSize = 10;
     @Schema(description = "当前页上的帖子数")
-    private int numOfPostsOnPage = 10;
+    private int numOfPostsOnPage;
     @Schema(description = "总页数")
     private int totalPage;
     @Schema(description = "总帖子数")
     private int numOfPosts;
+
+    public Page(int currentPage, int pageSize){
+        if (pageSize < 1) throw new RuntimeException("每页显示帖子数量至少为1");
+        this.currentPage = currentPage;
+        this.pageSize = pageSize;
+    }
+
+    /**
+     * 补全page的信息
+     */
+    public void completePage(int numOfPosts){
+        this.numOfPosts = numOfPosts;
+
+        totalPage = numOfPosts / pageSize;
+        totalPage = (numOfPosts % pageSize) == 0? totalPage: totalPage + 1;
+
+        if (currentPage < totalPage)  numOfPostsOnPage = pageSize;
+        else numOfPostsOnPage = numOfPosts - (totalPage - 1) * pageSize;
+    }
 
     /**
      * 返回当前页首行
@@ -23,7 +41,7 @@ public class Page {
      */
     @JsonIgnore
     public int getOffset(){
-        return (currentPage - 1) * numOfPostsOnPage;
+        return (currentPage - 1) * pageSize;
     }
 
     /**
@@ -32,7 +50,7 @@ public class Page {
      */
     @JsonIgnore
     public int getLimit(){
-        return getOffset() + numOfPostsOnPage;
+        return getOffset() + pageSize + 1;
     }
 
     /**
@@ -40,17 +58,11 @@ public class Page {
      * @return
      */
     public int getTotalPage() {
-        totalPage = numOfPosts / pageSize;
-        totalPage = (numOfPosts % numOfPostsOnPage) == 0? totalPage: totalPage + 1;
         return totalPage;
     }
 
     public int getNumOfPosts() {
         return numOfPosts;
-    }
-
-    public void setNumOfPosts(int numOfPosts) {
-        this.numOfPosts = numOfPosts;
     }
 
     /**
@@ -76,25 +88,11 @@ public class Page {
         return currentPage;
     }
 
-    /**
-     * 改变当前页码，但页码必须 ≥1，≤最大页码
-     * @param currentPage
-     */
-    public void setCurrentPage(int currentPage) {
-        if (currentPage >= 1){
-            this.currentPage = currentPage;
-        }
-    }
-
     public int getNumOfPostsOnPage() {
         return numOfPostsOnPage;
     }
 
-    public void setPageSize(int pageSize) {
-        this.pageSize = pageSize;
-    }
-
-    public void setNumOfPostsOnPage(int numOfPostsOnPage) {
-        this.numOfPostsOnPage = numOfPostsOnPage;
+    public int getPageSize() {
+        return pageSize;
     }
 }

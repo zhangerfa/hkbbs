@@ -21,11 +21,6 @@ public class CommentServiceImpl implements CommentService {
     private HostHolder hostHolder;
 
     @Override
-    public void completePage(Page page, int commentId) {
-        page.setNumOfPosts(commentMapper.getNumOfCommentsForEntity(Constant.ENTITY_TYPE_COMMENT, commentId));
-    }
-
-    @Override
     public List<Comment> getCommentsForEntity(int entityType, int entityId, int offset, int limit) {
         return commentMapper.selectCommentsByEntity(entityType, entityId, offset, limit);
     }

@@ -32,7 +32,11 @@ public class CheckLoginInterceptor implements HandlerInterceptor {
                              jakarta.servlet.http.HttpServletResponse response,
                              Object handler) throws Exception {
         String ticket = CookieUtil.getValue(request, "ticket");
-
+        if (1 == 1){
+            String stuId = loginTicketService.getLoginTicketByTicket(ticket).getStuId();
+            hostHolder.setUser(userService.getUserByStuId(stuId));
+            return true;
+        }
         // 判断是否访问与注册、登录有关页面
         String url = request.getRequestURL().toString();
         String[] pass = {"Code", "isExist", "login", "register"};

@@ -4,10 +4,10 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="site.zhangerfa.dao.CommentMapper">
     <sql id="select">
-        id, stu_id, entity_type, entity_id, content, create_time
+        id, poster_id, entity_type, entity_id, content, create_time
     </sql>
     <insert id="insertComment" keyProperty="id">
-        insert into comment(stu_id, entity_type, entity_id, content, create_time)
+        insert into comment(poster_id, entity_type, entity_id, content, create_time)
         values (#{posterId}, #{entityType}, #{entityId}, #{content}, #{createTime})
     </insert>
     <delete id="deleteCommentById">

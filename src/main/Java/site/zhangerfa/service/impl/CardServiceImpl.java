@@ -36,10 +36,6 @@ public class CardServiceImpl implements CardService {
         return cardMapper.selectOnePageCards(stuId, offset, limit);
     }
 
-    public void completePage(Page page) {
-        page.setNumOfPosts(getTotalNums());
-    }
-
     @Override
     public boolean deleteById(int id) {
         int deleteNum = cardMapper.deleteCardById(id);

@@ -8,14 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 public interface PostService {
-    /**
-     * 补全分页信息，前端传入当前页页码，每页大小，
-     *     补全：总帖子数
-     *          当前页上的帖子数，总页数，分页页码开始页，分页页码结束页均可由以上数算出
-     *          （已在Page的getter方法中实现）
-     * @param page
-     */
-    void completePage(Page page);
 
     /**
      * 删除指定id的帖子

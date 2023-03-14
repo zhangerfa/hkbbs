@@ -1,5 +1,6 @@
 package site.zhangerfa.controller;
 
+import com.alibaba.fastjson2.JSON;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -44,6 +45,7 @@ public class CardController {
             @Parameter(name = "content", description = "内容", required = true)})
     @PostMapping
     public Result<Boolean> addCard(@RequestBody @Parameter(hidden = true) Card card){
+        if (hostHolder.getUser() == null) return new Result<>(Code.SAVE_ERR, false, "用户未登录");
         String stuId = hostHolder.getUser().getStuId();
         card.setPosterId(stuId);
         boolean flag = cardService.add(card);
@@ -61,19 +63,21 @@ public class CardController {
         PostDetails<Card> cardDetails = new PostDetails<>();
         // 帖子信息
         Card card = cardService.getCardById(cardId);
+        if (card == null) return new Result<>(Code.GET_ERR, null, "您访问的帖子已被删除");
         cardDetails.setPost(card);
         // 作者信息
         User poster = userService.getUserByStuId(card.getPosterId());
         cardDetails.setPoster(poster);
         // 分页信息
-        cardService.completePage(page);
+        page.completePage(cardService.getTotalNums());
         cardDetails.setPage(page);
         // 评论集合
         List<Comment> comments = cardService.getComments(cardId, page.getOffset(), page.getLimit());
         // 获取每个评论的详细信息
-        List<CommentDetails> commentsDetails = cardUtil.getCommentsDetails(comments, page);
+        List<CommentDetails> commentsDetails = cardUtil.getCommentsDetails(comments, page.getPageSize());
         cardDetails.setCommentDetails(commentsDetails);
-        return new Result<>(Code.GET_OK, cardDetails);
+        System.out.println(JSON.toJSONString(cardDetails));
+        return new Result<>(Code.GET_OK, cardDetails, "查询成功");
     }
 
     @DeleteMapping("/delete/{cardId}")
@@ -87,19 +91,18 @@ public class CardController {
     @Operation(summary = "为卡片增加评论", description = "加成功后重定向到当前卡片的详情页面")
     @PostMapping("/comment")
     @Parameters({
-            @Parameter(name = "posterId", description = "发布评论人的学号", required = true),
             @Parameter(name = "entityType", description = "被评论实体的类型", required = true),
             @Parameter(name = "entityId", description = "被评论实体的id", required = true),
-            @Parameter(name = "content", description = "评论内容"),
-            @Parameter(name = "cardId", description = "被评论实体所属帖子的id")
+            @Parameter(name = "content", description = "评论内容", required = true),
+            @Parameter(name = "cardId", description = "被评论实体所属帖子的id", required = true)
     })
-    public String addComment(Comment comment, int cardId){
+    public Result<Boolean> addComment(@Parameter(hidden = true) Comment comment, int cardId){
         // 增加评论
         cardService.addComment(comment);
         // 发布评论通知
         Notice notice = eventUtil.getNotice(comment, cardId); // 将评论数据包装为notice对象
         eventProducer.addNotice(Constant.TOPIC_COMMENT, notice); // 传入消息队列
-        return "redirect:/cards/details/" + cardId;
+        return new Result<>(Code.SAVE_OK, true, "发布成功");
     }
 
     @DeleteMapping("/comment/{commentId}")
