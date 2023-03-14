@@ -56,7 +56,7 @@
         </div>
         <!-- 回帖列表 -->
         <ul class="list-unstyled mt-4">
-            <li class="pb-3 pt-3 mb-3 border-bottom" th:each="comment:${comments}"
+            <li class="pb-3 pt-3 mb-3 border-bottom" th:each="comment:${commentDetails}"
                 th:style="|text-indent:${comment.deep * 6}em;|">
                 <div>
                     <span><b class="text-info" th:text="${comment.nickname}">作者</b>:&nbsp;&nbsp;</span>

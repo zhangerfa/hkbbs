@@ -21,8 +21,7 @@ public class NoticeAspect {
     private HostHolder hostHolder;
 
     // 定义切入点
-    @Pointcut("execution(String site.zhangerfa.controller.*Controller.getDetails(..)) || " +
-            "execution(String site.zhangerfa.controller.NavigationController.*(..))")
+    @Pointcut("execution(String site.zhangerfa.controller.*Controller.getDetails(..))")
     public void notice(){}
 
     // 定义通知

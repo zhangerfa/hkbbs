@@ -57,18 +57,18 @@
                 <nav class="mt-5" th:if="${cardPage.numOfPosts > cardPage.numOfPostsOnPage}">
                     <ul class="pagination justify-content-center">
                         <li class="page-item">
-                            <a class="page-link" th:href="@{|${cardPage.path}/1/${holePage.current}|}">首页</a>
+                            <a class="page-link" th:href="@{|${cardPage.path}/1/${holePage.currentPage}|}">首页</a>
                         </li>
-                        <li th:class="|page-item ${cardPage.current==1?'disabled':''}|">
-                            <a class="page-link" th:href="@{|${cardPage.path}/${cardPage.current - 1}/${holePage.current}|}">上一页</a></li>
-                        <li th:class="|page-item ${i==cardPage.current?'active':''}|" th:each="i:${#numbers.sequence(cardPage.from,cardPage.to)}">
-                            <a class="page-link" th:href="@{|${cardPage.path}/${i}/${holePage.current}|}" th:text="${i}">1</a>
+                        <li th:class="|page-item ${cardPage.currentPage==1?'disabled':''}|">
+                            <a class="page-link" th:href="@{|${cardPage.path}/${cardPage.currentPage - 1}/${holePage.currentPage}|}">上一页</a></li>
+                        <li th:class="|page-item ${i==cardPage.currentPage?'active':''}|" th:each="i:${#numbers.sequence(cardPage.from,cardPage.to)}">
+                            <a class="page-link" th:href="@{|${cardPage.path}/${i}/${holePage.currentPage}|}" th:text="${i}">1</a>
                         </li>
-                        <li th:class="|page-item ${cardPage.current==cardPage.total?'disabled':''}|">
-                            <a class="page-link" th:href="@{|${cardPage.path}/${cardPage.current + 1}/${holePage.current}|}">下一页</a>
+                        <li th:class="|page-item ${cardPage.currentPage==cardPage.total?'disabled':''}|">
+                            <a class="page-link" th:href="@{|${cardPage.path}/${cardPage.currentPage + 1}/${holePage.currentPage}|}">下一页</a>
                         </li>
                         <li class="page-item">
-                            <a class="page-link" th:href="@{|${cardPage.path}/${cardPage.total}/${holePage.current}|}">末页</a>
+                            <a class="page-link" th:href="@{|${cardPage.path}/${cardPage.total}/${holePage.currentPage}|}">末页</a>
                         </li>
                     </ul>
                 </nav>
@@ -104,18 +104,18 @@
                 <nav class="mt-5" th:if="${holePage.numOfPosts > holePage.numOfPostsOnPage}">
                     <ul class="pagination justify-content-center">
                         <li class="page-item">
-                            <a class="page-link" th:href="@{|${holePage.path}/${cardPage.current}/1|}">首页</a>
+                            <a class="page-link" th:href="@{|${holePage.path}/${cardPage.currentPage}/1|}">首页</a>
                         </li>
-                        <li th:class="|page-item ${holePage.current==1?'disabled':''}|">
-                            <a class="page-link" th:href="@{|${holePage.path}/${cardPage.current}/${holePage.current - 1}|}">上一页</a></li>
-                        <li th:class="|page-item ${i==holePage.current?'active':''}|" th:each="i:${#numbers.sequence(holePage.from,holePage.to)}">
-                            <a class="page-link" th:href="@{|${holePage.path}/${cardPage.current}/${i}|}" th:text="${i}">1</a>
+                        <li th:class="|page-item ${holePage.currentPage==1?'disabled':''}|">
+                            <a class="page-link" th:href="@{|${holePage.path}/${cardPage.currentPage}/${holePage.currentPage - 1}|}">上一页</a></li>
+                        <li th:class="|page-item ${i==holePage.currentPage?'active':''}|" th:each="i:${#numbers.sequence(holePage.from,holePage.to)}">
+                            <a class="page-link" th:href="@{|${holePage.path}/${cardPage.currentPage}/${i}|}" th:text="${i}">1</a>
                         </li>
-                        <li th:class="|page-item ${holePage.current==holePage.total?'disabled':''}|">
-                            <a class="page-link" th:href="@{|${holePage.path}/${cardPage.current}/${holePage.current + 1}|}">下一页</a>
+                        <li th:class="|page-item ${holePage.currentPage==holePage.total?'disabled':''}|">
+                            <a class="page-link" th:href="@{|${holePage.path}/${cardPage.currentPage}/${holePage.currentPage + 1}|}">下一页</a>
                         </li>
                         <li class="page-item">
-                            <a class="page-link" th:href="@{|${holePage.path}/${cardPage.current}/${holePage.total}|}">末页</a>
+                            <a class="page-link" th:href="@{|${holePage.path}/${cardPage.currentPage}/${holePage.total}|}">末页</a>
                         </li>
                     </ul>
                 </nav>
