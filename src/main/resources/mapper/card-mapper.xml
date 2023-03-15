@@ -28,7 +28,7 @@
         from card
         <where>
             <if test='posterId != "0"'>
-                stu_id = #{posterId}
+                poster_id = #{posterId}
             </if>
         </where>
         order by createTime desc

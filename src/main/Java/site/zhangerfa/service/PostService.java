@@ -1,8 +1,6 @@
 package site.zhangerfa.service;
 
 import site.zhangerfa.pojo.Comment;
-import site.zhangerfa.pojo.Page;
-import site.zhangerfa.pojo.PostDetails;
 
 import java.util.List;
 import java.util.Map;
@@ -10,11 +8,11 @@ import java.util.Map;
 public interface PostService {
 
     /**
-     * 删除指定id的帖子
+     * 删除卡片，并所有该卡片的评论
      * @param id
-     * @return
+     * @return 将删除结果封装为{result : boolean， msg: "提示信息"}
      */
-    boolean deleteById(int id);
+    Map<String, Object> deleteById(int id);
 
     /**
      * 获取帖子总数

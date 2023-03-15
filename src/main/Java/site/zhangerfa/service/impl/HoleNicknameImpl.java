@@ -13,10 +13,18 @@ public class HoleNicknameImpl implements HoleNicknameService {
     @Resource
     private HoleNicknameMapper holeNicknameMapper;
 
+    /**
+     *
+     * @param holeId 树洞id
+     * @param posterId 用户学号
+     *    生成的构成昵称的字符索引：nicknameIndex 构成昵称的字符在字符集中的索引，昵称由多个字符组成，
+     *                      每个字符有其索引，索引之间使用 ； 分割
+     * @return
+     */
     @Override
-    public boolean addHoleNickname(int holeId, String stuId) {
+    public boolean addHoleNickname(int holeId, String posterId) {
         // 先判断该用户是否已经在该树洞发过帖
-        String nickname = holeNicknameMapper.selectHoleNickname(holeId, stuId);
+        String nickname = holeNicknameMapper.selectHoleNickname(holeId, posterId);
         if (nickname != null){
             return true;
         }
@@ -31,14 +39,23 @@ public class HoleNicknameImpl implements HoleNicknameService {
             nicknameIndex += random.nextInt(Constant.FIRSTNAME.length);
             nicknameIndex += (";" + random.nextInt(Constant.SECONDNAME.length));
         } while (nicknamesSet.contains(nicknameIndex));
-        int insertNum = holeNicknameMapper.insertHoleNickname(holeId, stuId, nicknameIndex);
+        int insertNum = holeNicknameMapper.insertHoleNickname(holeId, posterId, nicknameIndex);
         return insertNum > 0;
     }
 
+    /**
+     * 获取用户在传入树洞的昵称
+     * @param holeId 树洞id
+     * @param posterId 用户学号
+     * @return 返回昵称
+     */
     @Override
-    public String getHoleNickname(int holeId, String stuId) {
+    public String getHoleNickname(int holeId, String posterId) {
         // 获取树洞昵称索引
-        String nicknameIndex = holeNicknameMapper.selectHoleNickname(holeId, stuId);
+        String nicknameIndex = holeNicknameMapper.selectHoleNickname(holeId, posterId);
+        if (nicknameIndex == null) {
+            throw new RuntimeException("学号不正确或用户未在此树洞发言");
+        }
         String[] indexArray = nicknameIndex.split(";");
         // 从字符集中获取字符
         String nickname = "";

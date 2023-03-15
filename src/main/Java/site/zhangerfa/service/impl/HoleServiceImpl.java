@@ -6,16 +6,16 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import site.zhangerfa.dao.HoleMapper;
+import site.zhangerfa.pojo.Card;
 import site.zhangerfa.pojo.Comment;
 import site.zhangerfa.pojo.Hole;
-import site.zhangerfa.pojo.Page;
-import site.zhangerfa.pojo.User;
 import site.zhangerfa.service.CommentService;
 import site.zhangerfa.service.HoleNicknameService;
 import site.zhangerfa.service.HoleService;
 import site.zhangerfa.util.Constant;
 import site.zhangerfa.util.HostHolder;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -41,20 +41,34 @@ public class HoleServiceImpl implements HoleService {
     }
 
     @Override
-    public void completePage(Page page) {
-        page.setNumOfPosts(getTotalNums());
-        User user = hostHolder.getUser();
-        List<site.zhangerfa.pojo.Hole> holes = holeMapper.selectOnePageHoles(user.getStuId(), page.getOffset(), page.getLimit());
-        page.setPosts(holes);
-    }
-
-    @Override
-    public boolean deleteById(int id) {
+    public Map<String, Object> deleteById(int id) {
+        Map<String, Object> map = new HashMap<>();
+        if (hostHolder.getUser() == null){
+            map.put("result", false);
+            map.put("msg", "用户未登录");
+            return map;
+        }
+        // 权限验证 只有发帖者可以删除自己发的帖子
+        Hole hole = holeMapper.selectHoleById(id);
+        String stuId = hostHolder.getUser().getStuId();
+        if (!stuId.equals(hole.getPosterId())){
+            map.put("result", false);
+            map.put("msg", "您没有权限删除");
+            return map;
+        }
         // 删除所有该树洞的随机昵称
         holeNicknameService.deleteNicknamesForHole(id);
+        // 删除该树洞的所有评论
+        List<Comment> comments = commentService.getCommentsForEntity(Constant.ENTITY_TYPE_HOLE, id, 0, Integer.MAX_VALUE);
+        for (Comment comment: comments){
+            deleteComment(comment.getId());
+        }
         // 删除树洞
         int deleteNum = holeMapper.deleteHoleById(id);
-        return deleteNum > 0;
+
+        map.put("result", true);
+        map.put("msg", "删除成功");
+        return map;
     }
 
     @Override

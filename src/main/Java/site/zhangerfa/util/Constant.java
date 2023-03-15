@@ -5,9 +5,8 @@ public class Constant {
      * 回帖对象的类型
      */
     public static final int ENTITY_TYPE_CARD = 1; // 卡片
-    public static final int ENTITY_TYPE_COMMENT = 2; // 回帖
+    public static final int ENTITY_TYPE_COMMENT = 2; // 评论
     public static final int ENTITY_TYPE_HOLE = 3; // 树洞
-    public static final int ENTITY_TYPE_HOLE_COMMENT = 4; // 树洞的回帖
 
     /**
      * 获取传入类型的名称
@@ -21,7 +20,7 @@ public class Constant {
         if (type == ENTITY_TYPE_HOLE){
             return "树洞";
         }
-        if (type == ENTITY_TYPE_COMMENT || type == ENTITY_TYPE_HOLE_COMMENT){
+        if (type == ENTITY_TYPE_COMMENT){
             return "评论";
         }
         throw new RuntimeException("传入实体类型不存在");

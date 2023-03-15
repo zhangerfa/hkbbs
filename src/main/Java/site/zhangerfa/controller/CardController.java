@@ -1,6 +1,5 @@
 package site.zhangerfa.controller;
 
-import com.alibaba.fastjson2.JSON;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -14,7 +13,7 @@ import site.zhangerfa.event.EventUtil;
 import site.zhangerfa.pojo.*;
 import site.zhangerfa.service.CardService;
 import site.zhangerfa.service.UserService;
-import site.zhangerfa.util.CardUtil;
+import site.zhangerfa.util.PostUtil;
 import site.zhangerfa.util.Constant;
 import site.zhangerfa.util.HostHolder;
 
@@ -33,7 +32,7 @@ public class CardController {
     @Resource
     private HostHolder hostHolder;
     @Resource
-    private CardUtil cardUtil;
+    private PostUtil postUtil;
     @Resource
     private EventProducer eventProducer;
     @Resource
@@ -74,9 +73,8 @@ public class CardController {
         // 评论集合
         List<Comment> comments = cardService.getComments(cardId, page.getOffset(), page.getLimit());
         // 获取每个评论的详细信息
-        List<CommentDetails> commentsDetails = cardUtil.getCommentsDetails(comments, page.getPageSize());
+        List<CommentDetails> commentsDetails = postUtil.getCommentsDetails(comments, page.getPageSize());
         cardDetails.setCommentDetails(commentsDetails);
-        System.out.println(JSON.toJSONString(cardDetails));
         return new Result<>(Code.GET_OK, cardDetails, "查询成功");
     }
 
