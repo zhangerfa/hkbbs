@@ -37,12 +37,6 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public boolean deleteById(int id) {
-        int deleteNum = cardMapper.deleteCardById(id);
-        return deleteNum > 0;
-    }
-
-    @Override
     public int getTotalNums() {
         return cardMapper.getNumOfCards();
     }
@@ -94,7 +88,7 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public Map<String, Object> deleteCard(int id) {
+    public Map<String, Object> deleteById(int id) {
         // 权限验证 只有发帖者可以删除自己发的帖子
         Card card = cardMapper.selectCardById(id);
         String stuId = hostHolder.getUser().getStuId();

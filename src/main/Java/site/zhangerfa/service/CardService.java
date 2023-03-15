@@ -30,13 +30,6 @@ public interface CardService extends PostService{
     Card getCardById(int id);
 
     /**
-     * 删除卡片，并所有该卡片的评论
-     * @param id
-     * @return
-     */
-    Map<String, Object> deleteCard(int id);
-
-    /**
      * 为帖子增加一条评论
      * @param comment
      * @return

@@ -84,7 +84,7 @@ public class CardController {
     @Operation(summary = "删除卡片", description = "删除卡片及卡片中所有评论")
     @ResponseBody
     public Result<Boolean> deleteCard(@PathVariable int cardId){
-        Map<String, Object> map = cardService.deleteCard(cardId);
+        Map<String, Object> map = cardService.deleteById(cardId);
         return new Result<>(Code.DELETE_OK, (Boolean) map.get("result"), (String) map.get("msg"));
     }
 
