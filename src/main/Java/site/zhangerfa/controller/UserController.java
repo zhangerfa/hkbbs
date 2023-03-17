@@ -31,7 +31,7 @@ import java.util.Date;
 import java.util.Map;
 
 @RestController
-@Tag(name = "用户信息")
+@Tag(name = "用户")
 @RequestMapping("/users")
 public class UserController {
     private static Logger logger = LoggerFactory.getLogger(UserController.class);

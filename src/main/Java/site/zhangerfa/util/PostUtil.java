@@ -6,6 +6,7 @@ import site.zhangerfa.controller.tool.Code;
 import site.zhangerfa.controller.tool.Result;
 import site.zhangerfa.pojo.*;
 import site.zhangerfa.service.*;
+import site.zhangerfa.service.impl.PostServiceImpl;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -19,7 +20,7 @@ public class PostUtil {
     private CommentService commentService;
     @Resource
     private HoleNicknameService holeNicknameService;
-    @Resource(type = CardService.class)
+    @Resource(name = "postServiceImpl")
     private PostService postService;
 
     /**
@@ -38,8 +39,11 @@ public class PostUtil {
         // 作者信息
         User poster = userService.getUserByStuId(card.getPosterId());
         postDetails.setPoster(poster);
+        // 分页信息
+        page.completePage(commentService.getNumOfCommentsForEntity(postType, postId));
+        postDetails.setPage(page);
         // 评论集合
-        List<Comment> comments = postService.getComments(postId, page.getOffset(), page.getLimit());
+        List<Comment> comments = postService.getComments(Constant.ENTITY_TYPE_COMMENT, postId, page);
         // 获取每个评论的详细信息
         List<CommentDetails> commentsDetails;
         if (postType == Constant.ENTITY_TYPE_CARD){

@@ -4,16 +4,12 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="site.zhangerfa.dao.PostMapper">
     <sql id="select">
-        id, stu_id as posterId, title, content, create_at as createTime, comment_num, hot
+        id, poster_id, title, content, create_at as createTime, comment_num, hot
     </sql>
 
-    <insert id="addCard">
-        insert into post (stu_id, title, content, type)
-        values(#{posterId}, #{title}, #{content}, @site.zhangerfa.util.Constant@ENTITY_TYPE_CARD)
-    </insert>
-    <insert id="addHole">
-        insert into post (stu_id, title, content, type)
-        values(#{posterId}, #{title}, #{content}, @site.zhangerfa.util.Constant@ENTITY_TYPE_HOLE)
+    <insert id="add">
+        insert into post (poster_id, title, content, type)
+        values(#{posterId}, #{title}, #{content}, #{postType})
     </insert>
     <update id="commentNumPlusOne">
         update post set comment_num = comment_num + 1
@@ -27,41 +23,29 @@
         delete from post
         where id = #{id}
     </delete>
-    <select id="selectOnePageCards" resultType="Card">
+    <select id="selectOnePagePosts" resultType="Post">
         select <include refid="select"/>
         from post
         <where>
-            type = @site.zhangerfa.util.Constant@ENTITY_TYPE_CARD and
+            type = #{postType}
             <if test='posterId != "0"'>
+                and
                 poster_id = #{posterId}
             </if>
         </where>
         order by createTime desc
         limit #{offset}, #{limit}
     </select>
-    <select id="getNumOfCards" resultType="java.lang.Integer">
+    <select id="getNumOfPosts" resultType="java.lang.Integer">
         select count(*) from post
-        where type = @site.zhangerfa.util.Constant@ENTITY_TYPE_HOLE
+        where type = #{postType}
     </select>
     <select id="selectPostById" resultType="Post">
         select <include refid="select"/>
         from post
         where id = #{id}
     </select>
-    <select id="selectOnePageHoles" resultType="site.zhangerfa.pojo.Hole">
-        select <include refid="select"/>
-        from post
-        <where>
-            type = @site.zhangerfa.util.Constant@ENTITY_TYPE_HOLE and
-            <if test='posterId != "0"'>
-                poster_id = #{posterId}
-            </if>
-        </where>
-        order by createTime desc
-        limit #{offset}, #{limit}
-    </select>
-    <select id="getNumOfHoles" resultType="java.lang.Integer">
-        select count(*) from post
-        where type = @site.zhangerfa.util.Constant@ENTITY_TYPE_HOLE
+    <select id="getPostType" resultType="java.lang.Integer">
+        select type from post where id = #{id}
     </select>
 </mapper>

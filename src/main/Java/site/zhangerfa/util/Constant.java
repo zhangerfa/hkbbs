@@ -5,8 +5,8 @@ public class Constant {
      * 回帖对象的类型
      */
     public static final int ENTITY_TYPE_CARD = 1; // 卡片
-    public static final int ENTITY_TYPE_COMMENT = 2; // 评论
-    public static final int ENTITY_TYPE_HOLE = 3; // 树洞
+    public static final int ENTITY_TYPE_HOLE = 2; // 树洞
+    public static final int ENTITY_TYPE_COMMENT = 3; // 评论
 
     /**
      * 获取传入类型的名称

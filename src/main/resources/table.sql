@@ -1,4 +1,4 @@
-create table friends.user
+create table user
 (
     stu_id     varchar(10)                         not null comment '学号'
         primary key,
@@ -10,74 +10,56 @@ create table friends.user
 )
     charset = utf8mb3;
 
-
-
-create table friends.card
+create table post
 (
-    id          smallint auto_increment
+    id          int auto_increment
         primary key,
-    stu_id      varchar(10)                         null,
+    poster_id   varchar(10)                         null,
     title       varchar(100)                        null comment '卡片名',
     content     text                                null comment '卡片内容',
     create_at   timestamp default CURRENT_TIMESTAMP not null comment '发帖时间',
     comment_num smallint  default 0                 null comment '评论数量',
     hot         smallint  default 0                 null comment '帖子 热度',
-    constraint card_ibfk_1
-        foreign key (stu_id) references friends.user (stu_id)
+    type        int                                 null comment '帖子类型， 1-card，2-hole',
+    constraint post_ibfk_1
+        foreign key (poster_id) references user (stu_id)
 )
-    comment '卡片表' charset = utf8mb3;
+    comment '帖子表' charset = utf8mb3;
 
 create index stu_id
-    on friends.card (stu_id);
+    on post (poster_id);
 
-
-create table friends.comment
+create table comment
 (
     id          int auto_increment
         primary key,
-    stu_id      varchar(10)   not null comment '评论人学号',
+    poster_id   varchar(10)   not null comment '评论人学号',
     entity_type int default 1 not null comment '被评论对象的类型：1-card，2-comment',
     entity_id   int           not null comment '被评论对象的id',
     content     text          not null comment '回帖内容',
     create_time timestamp     not null comment '回帖时间',
     constraint comment_ibfk_1
-        foreign key (stu_id) references friends.user (stu_id)
+        foreign key (poster_id) references user (stu_id)
 )
     comment '评论表' charset = utf8mb3;
 
 create index stu_id
-    on friends.comment (stu_id);
+    on comment (poster_id);
 
-create table friends.hole
+create table hole_nickname
 (
-    id          int auto_increment
-        primary key,
-    poster_id   varchar(10)                         not null comment '发帖人的学号',
-    title       text                                not null comment '标题',
-    content     text                                not null comment '帖子内容',
-    create_time timestamp default CURRENT_TIMESTAMP not null comment '发帖时间',
-    comment_num smallint  default 0                 not null comment '评论数量',
-    hot         smallint  default 0                 not null comment '帖子热度',
-    constraint id
-        unique (id)
-)
-    comment '树洞发帖';
-
-create table friends.hole_nickname
-(
-    hole_id  int         not null comment '树洞帖子的id',
-    stu_id   varchar(10) not null comment '发帖人id',
-    nickname varchar(7)  not null comment '由两个数字组成的字符，表示在两个字符集中的字符索引，由两个字符集中对应的两个字符拼接为昵称',
-    primary key (hole_id, stu_id),
-    constraint hole_nickname_hole_null_fk
-        foreign key (hole_id) references friends.hole (id),
+    hole_id   int         not null comment '树洞帖子的id',
+    poster_id varchar(10) not null comment '发帖人id',
+    nickname  varchar(7)  not null comment '由两个数字组成的字符，表示在两个字符集中的字符索引，由两个字符集中对应的两个字符拼接为昵称',
     constraint hole_nickname_ibfk_1
-        foreign key (stu_id) references friends.user (stu_id)
+        foreign key (poster_id) references user (stu_id),
+    constraint hole_nickname_post_null_fk
+        foreign key (hole_id) references post (id)
 )
     comment '存储随机昵称，每个树洞帖子中的一个用户将拥有一个唯一的随机昵称' charset = utf8mb3;
 
 create index stu_id
-    on friends.hole_nickname (stu_id);
+    on hole_nickname (poster_id);
 
 create table friends.loggin_ticket
 (

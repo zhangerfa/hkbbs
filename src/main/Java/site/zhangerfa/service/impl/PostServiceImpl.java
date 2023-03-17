@@ -1,12 +1,16 @@
 package site.zhangerfa.service.impl;
 
 import jakarta.annotation.Resource;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.HtmlUtils;
+import site.zhangerfa.controller.tool.Code;
+import site.zhangerfa.controller.tool.Result;
 import site.zhangerfa.dao.PostMapper;
 import site.zhangerfa.pojo.Comment;
+import site.zhangerfa.pojo.Page;
 import site.zhangerfa.pojo.Post;
 import site.zhangerfa.service.CommentService;
 import site.zhangerfa.service.PostService;
@@ -17,7 +21,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class PostServiceImpl implements PostService {
+
+/**
+ * 帖子对卡片接口的实现类
+ */
+@Service
+public class PostServiceImpl implements PostService {
     @Resource
     private HostHolder hostHolder;
     @Resource
@@ -31,14 +40,15 @@ public abstract class PostServiceImpl implements PostService {
      */
     @Override
     @Transactional(isolation= Isolation.READ_COMMITTED, propagation = Propagation.NESTED)
-    public boolean add(Post post) {
+    public boolean add(Post post, int postType) {
         if (post == null){
             throw new IllegalArgumentException("发帖内容为空");
         }
         // 转义HTML标记，防止HTML注入
         post.setTitle(HtmlUtils.htmlEscape(post.getTitle()));
         post.setContent(HtmlUtils.htmlEscape(post.getContent()));
-        return true;
+        int addNum = postMapper.add(post, postType);
+        return addNum != 0;
     }
 
     @Override
@@ -78,6 +88,11 @@ public abstract class PostServiceImpl implements PostService {
     }
 
     @Override
+    public int getTotalNums(int postType) {
+        return postMapper.getNumOfPosts(postType);
+    }
+
+    @Override
     @Transactional(isolation= Isolation.READ_COMMITTED, propagation = Propagation.NESTED)
     public Map<String, Object> deleteComment(int commentId) {
         // 帖子表评论数减一
@@ -97,12 +112,23 @@ public abstract class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<Comment> getComments(int id) {
-        return getComments(id, 0, Integer.MAX_VALUE);
+    public List<Comment> getComments(int entityType, int entityId, Page page) {
+        page.completePage(commentService.getNumOfCommentsForEntity(entityType, entityId));
+        return commentService.getCommentsForEntity(entityType, entityId, page.getOffset(), page.getLimit());
     }
 
     @Override
-    public List<Comment> getComments(int id, int offset, int limit) {
-        return commentService.getCommentsForEntity(Constant.ENTITY_TYPE_HOLE, id, offset, limit);
+    public int getPostType(int id) {
+        Integer postType = postMapper.getPostType(id);
+        if (postType == null) return -1;
+        return postType;
+    }
+
+    @Override
+    public Result<List<Post>> getOnePagePosts(String stuId, Page page, int postType) {
+        if (stuId == null) return new Result<>(Code.GET_ERR, null, "未输入学号");
+        page.completePage(getTotalNums(postType));
+        return new Result<>(Code.GET_OK,
+                postMapper.selectOnePagePosts(postType, stuId, page.getOffset(), page.getLimit()), "获取成功");
     }
 }

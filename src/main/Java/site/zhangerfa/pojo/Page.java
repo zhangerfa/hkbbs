@@ -14,7 +14,7 @@ public class Page {
     @Schema(description = "总页数")
     private int totalPage;
     @Schema(description = "总帖子数")
-    private int numOfPosts;
+    private int numOfPosts = -1;
 
     public Page(int currentPage, int pageSize){
         if (pageSize < 1) throw new RuntimeException("每页显示帖子数量至少为1");
@@ -32,16 +32,18 @@ public class Page {
         totalPage = (numOfPosts % pageSize) == 0? totalPage: totalPage + 1;
 
         if (currentPage < totalPage)  numOfPostsOnPage = pageSize;
+        else if (totalPage == 0) numOfPostsOnPage = 0;
         else numOfPostsOnPage = numOfPosts - (totalPage - 1) * pageSize;
     }
 
     /**
-     * 返回当前页首行
+     * 返回当前页首行，在使用 getOffset前需要设置 总的帖子数
      * @return
      */
     @JsonIgnore
     public int getOffset(){
-        return (currentPage - 1) * pageSize;
+        if (numOfPosts == -1) throw new RuntimeException("未设置总帖子数，无法计算 当前页的offset");
+        return Math.min((currentPage - 1) * pageSize, totalPage);
     }
 
     /**

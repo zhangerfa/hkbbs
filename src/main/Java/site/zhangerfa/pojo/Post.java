@@ -7,7 +7,6 @@ import java.util.Date;
 
 @Schema(description = "帖子")
 public class Post {
-    @JsonIgnore
     private int id;
     @Schema(description = "发帖人学号")
     private String posterId;

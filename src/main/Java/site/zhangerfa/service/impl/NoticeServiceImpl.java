@@ -19,7 +19,7 @@ public class NoticeServiceImpl implements NoticeService {
     private UserService userService;
     @Resource
     private HoleNicknameService holeNicknameService;
-    @Resource(type = CardService.class)
+    @Resource(name = "postServiceImpl")
     private PostService postService;
     @Resource
     private CommentService commentService;
