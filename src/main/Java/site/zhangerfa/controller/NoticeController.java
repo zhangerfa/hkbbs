@@ -7,12 +7,18 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
 import site.zhangerfa.controller.tool.Code;
+import site.zhangerfa.controller.tool.NoticeInfo;
 import site.zhangerfa.controller.tool.Result;
 import site.zhangerfa.pojo.Notice;
 import site.zhangerfa.pojo.Page;
+import site.zhangerfa.service.CommentService;
 import site.zhangerfa.service.NoticeService;
+import site.zhangerfa.service.PostService;
+import site.zhangerfa.service.UserService;
+import site.zhangerfa.util.Constant;
 import site.zhangerfa.util.HostHolder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -23,6 +29,12 @@ public class NoticeController {
     private HostHolder hostHolder;
     @Resource
     private NoticeService noticeService;
+    @Resource
+    private UserService userService;
+    @Resource(name = "postServiceImpl")
+    private PostService postService;
+    @Resource
+    private CommentService commentService;
 
     @GetMapping("")
     @Operation(summary = "获取一页通知", description = "获取当前会话用户的一页通知，当未读通知数量≥一页通知的个数时返回最新的一页未读通知，" +
@@ -31,7 +43,7 @@ public class NoticeController {
             @Parameter(name = "currentPage", description = "当前页码", required = true),
             @Parameter(name = "pageSize", description = "当前页要展示的评论数量", required = true),
     })
-    public Result<List<Notice>> getNotices(@Parameter(hidden = true) Page page){
+    public Result<List<NoticeInfo>> getNotices(@Parameter(hidden = true) Page page){
         // 查询所有未读的通知
         if (hostHolder.getUser() == null) return new Result<>(Code.GET_ERR, null, "用户未登录");
         String stuId = hostHolder.getUser().getStuId();
@@ -42,7 +54,27 @@ public class NoticeController {
                     new Page(1, page.getPageSize() - notices.size()));
             notices.addAll(readNotices);
         }
-        return new Result<>(Code.GET_OK, notices, "查询成功");
+        List<NoticeInfo> noticeInfos = new ArrayList<>();
+        for (Notice notice : notices) {
+            NoticeInfo noticeInfo = new NoticeInfo(userService.getUserByStuId(notice.getActionUserId()));
+            noticeInfo.setEntityType(Constant.getEntityTye(notice.getEntityType()));
+            // 被动作指向实体的内容，如果是帖子为标题，评论则为内容
+            if (notice.getEntityType() == Constant.ENTITY_TYPE_COMMENT){
+                noticeInfo.setEntityContent(commentService.getCommentById(notice.getEntityId()).getContent());
+            }else {
+                noticeInfo.setEntityContent(postService.getPostById(notice.getEntityId()).getTitle());
+            }
+            // 动作内容，如果为评论则为评论内容，动作无具体内容则为空字符串
+            if (notice.getActionType() == Constant.ACTION_COMMENT){
+                noticeInfo.setActionContent(commentService.getCommentById(notice.getCommentId()).getContent());
+            }else {
+                noticeInfo.setActionContent("");
+            }
+            noticeInfo.setPostId(notice.getEntityOwnerId());
+
+            noticeInfos.add(noticeInfo);
+        }
+        return new Result<>(Code.GET_OK, noticeInfos, "查询成功");
     }
 
     @Operation(summary = "通知已读", description = "将用户已读的通知的id以数组形式返回")
