@@ -4,17 +4,15 @@ import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
 import site.zhangerfa.pojo.Comment;
 import site.zhangerfa.pojo.Notice;
-import site.zhangerfa.service.CardService;
 import site.zhangerfa.service.CommentService;
-import site.zhangerfa.service.HoleService;
+import site.zhangerfa.service.PostService;
+import site.zhangerfa.service.impl.CardServiceImpl;
 import site.zhangerfa.util.Constant;
 
 @Component
 public class EventUtil {
-    @Resource
-    private CardService cardService;
-    @Resource
-    private HoleService holeService;
+    @Resource(type = CardServiceImpl.class)
+    private PostService postService;
     @Resource
     private CommentService commentService;
 
@@ -22,12 +20,10 @@ public class EventUtil {
         Notice notice = new Notice();
         // 被评论人的学号
         String receivingUserId = null;
-        if (comment.getEntityType() == Constant.ENTITY_TYPE_CARD){
-            receivingUserId = cardService.getCardById(comment.getEntityId()).getPosterId();
-        } else if (comment.getEntityType() == Constant.ENTITY_TYPE_HOLE) {
-            receivingUserId = holeService.getHoleById(comment.getEntityId()).getPosterId();
-        } else if (comment.getEntityType() == Constant.ENTITY_TYPE_COMMENT) {
+        if (comment.getEntityType() == Constant.ENTITY_TYPE_COMMENT){
             receivingUserId = commentService.getCommentById(comment.getEntityId()).getPosterId();
+        } else {
+            receivingUserId = postService.getPostById(comment.getEntityId()).getPosterId();
         }
         notice.setReceivingUserId(receivingUserId);
         notice.setActionType(Constant.ACTION_COMMENT);

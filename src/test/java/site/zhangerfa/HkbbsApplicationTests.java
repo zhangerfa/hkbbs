@@ -6,6 +6,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.util.DigestUtils;
 import site.zhangerfa.pojo.User;
+import site.zhangerfa.service.CardService;
 
 import java.util.UUID;
 
@@ -15,11 +16,10 @@ class HkbbsApplicationTests {
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
 
+    @Resource
+    private CardService cardService;
+
     @Test
     public void test() {
-        String salt = UUID.randomUUID().toString().substring(0, 6);
-        String password = DigestUtils.md5DigestAsHex(("z15147001162" + salt).getBytes());
-        System.out.println(salt);
-        System.out.println(password);
     }
 }

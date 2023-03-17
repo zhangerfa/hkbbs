@@ -2,9 +2,7 @@ package site.zhangerfa.controller.aop;
 
 import jakarta.annotation.Resource;
 import org.aspectj.lang.annotation.AfterReturning;
-import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
-import org.springframework.stereotype.Component;
 import org.springframework.ui.Model;
 import site.zhangerfa.service.NoticeService;
 import site.zhangerfa.util.HostHolder;
@@ -12,8 +10,8 @@ import site.zhangerfa.util.HostHolder;
 /**
  * 为需要显示未读消息数量的页面增加未读消息数量数据
  */
-@Component
-@Aspect
+//@Component
+//@Aspect
 public class NoticeAspect {
     @Resource
     private NoticeService noticeService;

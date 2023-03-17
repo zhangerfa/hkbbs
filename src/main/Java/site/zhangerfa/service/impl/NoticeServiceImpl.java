@@ -18,11 +18,9 @@ public class NoticeServiceImpl implements NoticeService {
     @Resource
     private UserService userService;
     @Resource
-    private HoleService holeService;
-    @Resource
     private HoleNicknameService holeNicknameService;
-    @Resource
-    private CardService cardService;
+    @Resource(type = CardService.class)
+    private PostService postService;
     @Resource
     private CommentService commentService;
 
@@ -60,26 +58,22 @@ public class NoticeServiceImpl implements NoticeService {
         if (entityType == Constant.ENTITY_TYPE_CARD || entityType == Constant.ENTITY_TYPE_COMMENT){
             // 评论人的用户名
             username = actionUser.getUsername();
-        } else if (entityType == Constant.ENTITY_TYPE_HOLE || entityType == Constant.ENTITY_TYPE_HOLE_COMMENT) {
+        } else if (entityType == Constant.ENTITY_TYPE_HOLE) {
             // 评论人的树洞昵称
             username = holeNicknameService.getHoleNickname(entityId, actionUser.getStuId());
         }
 
         // 动作指向实体的内容
         String content = "";
-        if (entityType == Constant.ENTITY_TYPE_CARD){
-            // 被评论卡片的标题
-            content = cardService.getCardById(entityId).getTitle();
-        } else if (entityType == Constant.ENTITY_TYPE_HOLE) {
-            // 被评论树洞的标题
-            content = holeService.getHoleById(entityId).getTitle();
-        } else if (entityType == Constant.ENTITY_TYPE_COMMENT || entityType == Constant.ENTITY_TYPE_HOLE_COMMENT) {
+        if (entityType == Constant.ENTITY_TYPE_COMMENT) {
             // 被评论的内容
             content = commentService.getCommentById(entityId).getContent();
             // 被评论内容最长展示十五字
             if (content.length() > 15){
                 content = content.substring(0, 15) + "...";
             }
+        } else {
+            content = postService.getPostById(entityId).getTitle();
         }
 
         // 评论内容

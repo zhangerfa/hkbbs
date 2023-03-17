@@ -1,15 +1,10 @@
 package site.zhangerfa.service;
 
-import site.zhangerfa.pojo.Comment;
 import site.zhangerfa.pojo.Hole;
 
 import java.util.List;
 
 public interface HoleService extends PostService{
-    boolean add(Hole hole);
-
-    Hole getHoleById(int id);
-
     /**
      * 学号为 0时获取一页卡片
      * 学号不为 0时获取所有该学号用户发的卡片中的某一页
@@ -21,6 +16,4 @@ public interface HoleService extends PostService{
      * @return
      */
     List<Hole> getOnePageHoles(String posterId, int offset, int limit);
-
-    boolean addComment(Comment comment, int holeId);
 }

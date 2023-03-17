@@ -1,11 +1,13 @@
 package site.zhangerfa.service;
 
 import site.zhangerfa.pojo.Comment;
+import site.zhangerfa.pojo.Post;
 
 import java.util.List;
 import java.util.Map;
 
 public interface PostService {
+    boolean add(Post post);
 
     /**
      * 删除卡片，并所有该卡片的评论
@@ -42,4 +44,19 @@ public interface PostService {
      * @return
      */
     List<Comment> getComments(int id, int offset, int limit);
+
+    /**
+     * 获取指定 id 的帖子数据
+     */
+    Post getPostById(int id);
+
+
+    /**
+     * 为帖子增加一条评论
+     *
+     * @param comment
+     * @param postId
+     * @return
+     */
+    boolean addComment(Comment comment, int postId);
 }

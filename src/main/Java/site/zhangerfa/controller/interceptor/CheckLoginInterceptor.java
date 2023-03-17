@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
+import site.zhangerfa.pojo.LoginTicket;
 import site.zhangerfa.pojo.User;
 import site.zhangerfa.service.LoginTicketService;
 import site.zhangerfa.service.UserService;
@@ -33,7 +34,9 @@ public class CheckLoginInterceptor implements HandlerInterceptor {
                              Object handler) throws Exception {
         String ticket = CookieUtil.getValue(request, "ticket");
         if (1 == 1){
-            String stuId = loginTicketService.getLoginTicketByTicket(ticket).getStuId();
+            LoginTicket loginTicketByTicket = loginTicketService.getLoginTicketByTicket(ticket);
+            if (loginTicketByTicket == null) return true;
+            String stuId = loginTicketByTicket.getStuId();
             hostHolder.setUser(userService.getUserByStuId(stuId));
             return true;
         }

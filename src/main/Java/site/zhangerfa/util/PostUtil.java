@@ -2,13 +2,10 @@ package site.zhangerfa.util;
 
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
-import site.zhangerfa.pojo.Comment;
-import site.zhangerfa.pojo.CommentDetails;
-import site.zhangerfa.pojo.Page;
-import site.zhangerfa.pojo.User;
-import site.zhangerfa.service.CommentService;
-import site.zhangerfa.service.HoleNicknameService;
-import site.zhangerfa.service.UserService;
+import site.zhangerfa.controller.tool.Code;
+import site.zhangerfa.controller.tool.Result;
+import site.zhangerfa.pojo.*;
+import site.zhangerfa.service.*;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -22,6 +19,37 @@ public class PostUtil {
     private CommentService commentService;
     @Resource
     private HoleNicknameService holeNicknameService;
+    @Resource(type = CardService.class)
+    private PostService postService;
+
+    /**
+     * 获取帖子和发帖人详细信息
+     * @param postId
+     * @param page
+     * @param postType 帖子类型
+     * @return
+     */
+    public Result<PostDetails<Post>> getPostAndPosterDetails(int postId, Page page, int postType){
+        PostDetails<Post> postDetails = new PostDetails<>();
+        // 帖子信息
+        Post card = postService.getPostById(postId);
+        if (card == null) return new Result<>(Code.GET_ERR, null, "您访问的帖子已被删除");
+        postDetails.setPost(card);
+        // 作者信息
+        User poster = userService.getUserByStuId(card.getPosterId());
+        postDetails.setPoster(poster);
+        // 评论集合
+        List<Comment> comments = postService.getComments(postId, page.getOffset(), page.getLimit());
+        // 获取每个评论的详细信息
+        List<CommentDetails> commentsDetails;
+        if (postType == Constant.ENTITY_TYPE_CARD){
+             commentsDetails = getCommentsDetails(comments, page.getPageSize());
+        }else {
+            commentsDetails = getCommentDetailsForHole(postId, comments, page.getPageSize());
+        }
+        postDetails.setCommentDetails(commentsDetails);
+        return new Result<>(Code.GET_OK, postDetails, "查询成功");
+    }
 
     /**
      * 获取传入所有评论的详细信息
@@ -30,7 +58,7 @@ public class PostUtil {
      * @param pageSize
      * @return
      */
-    public List<CommentDetails> getCommentsDetails(List<Comment> comments, int pageSize){
+    private List<CommentDetails> getCommentsDetails(List<Comment> comments, int pageSize){
         return getCommentsDetails(comments, 0, pageSize);
     }
 
@@ -42,7 +70,7 @@ public class PostUtil {
      * @param pageSize
      * @return
      */
-    public List<CommentDetails> getCommentDetailsForHole(int holeId, List<Comment> comments, int pageSize){
+    private List<CommentDetails> getCommentDetailsForHole(int holeId, List<Comment> comments, int pageSize){
         // 获取评论详情
         List<CommentDetails> commentsDetails = getCommentsDetails(comments, 0, pageSize);
         // 将评论详情中 发帖人的 username 用随机昵称覆盖

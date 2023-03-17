@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 
 @Schema(description = "封装帖子的详细数据，包括帖子内容，发布者信息，评论信息，评论的分页信息")
-public class  PostDetails<T> {
+public class PostDetails<T> {
     @Schema(description = "帖子相关信息")
     private T post;
     @Schema(description = "发布者信息")

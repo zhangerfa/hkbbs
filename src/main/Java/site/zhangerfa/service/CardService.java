@@ -1,10 +1,8 @@
 package site.zhangerfa.service;
 
 import site.zhangerfa.pojo.Card;
-import site.zhangerfa.pojo.Comment;
 
 import java.util.List;
-import java.util.Map;
 
 public interface CardService extends PostService{
     /**
@@ -18,21 +16,4 @@ public interface CardService extends PostService{
      * @return
      */
     List<Card> getOnePageCards(String stuId, int offset, int limit);
-
-    /**
-     * 添加卡片
-     *
-     * @param card
-     * @return
-     */
-    boolean add(Card card);
-
-    Card getCardById(int id);
-
-    /**
-     * 为帖子增加一条评论
-     * @param comment
-     * @return
-     */
-    boolean addComment(Comment comment);
 }

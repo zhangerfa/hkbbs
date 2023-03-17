@@ -4,7 +4,6 @@ import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import site.zhangerfa.dao.CommentMapper;
 import site.zhangerfa.pojo.Comment;
-import site.zhangerfa.pojo.Page;
 import site.zhangerfa.service.CommentService;
 import site.zhangerfa.util.Constant;
 import site.zhangerfa.util.HostHolder;
