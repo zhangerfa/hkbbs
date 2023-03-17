@@ -1,9 +1,10 @@
-package site.zhangerfa.pojo;
+package site.zhangerfa.controller.tool;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import site.zhangerfa.pojo.Comment;
 
 @Schema(description = "封装评论的详细数据，包括评论内容，发布者信息，评论信息，评论的分页信息")
-public class CommentDetails extends PostDetails<Comment>{
+public class CommentDetails extends PostDetails<Comment> {
     @Schema(description = "评论深度")
     private int deep;
 

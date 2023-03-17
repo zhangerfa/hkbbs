@@ -3,11 +3,9 @@ package site.zhangerfa.service.impl;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import site.zhangerfa.dao.NoticeMapper;
-import site.zhangerfa.pojo.Comment;
 import site.zhangerfa.pojo.Notice;
-import site.zhangerfa.pojo.User;
+import site.zhangerfa.pojo.Page;
 import site.zhangerfa.service.*;
-import site.zhangerfa.util.Constant;
 
 import java.util.List;
 
@@ -15,14 +13,6 @@ import java.util.List;
 public class NoticeServiceImpl implements NoticeService {
     @Resource
     private NoticeMapper noticeMapper;
-    @Resource
-    private UserService userService;
-    @Resource
-    private HoleNicknameService holeNicknameService;
-    @Resource(name = "postServiceImpl")
-    private PostService postService;
-    @Resource
-    private CommentService commentService;
 
     @Override
     public boolean add(Notice notice) {
@@ -36,66 +26,47 @@ public class NoticeServiceImpl implements NoticeService {
     }
 
     @Override
-    public List<Notice> getNoticesForUser(String stuId, int offset, int limit) {
-        return noticeMapper.selectNoticesForUser(stuId, 0, offset, limit);
+    public List<Notice> getReadNoticesForUser(String stuId, Page page) {
+        page.completePage(getNumOfReadNotice(stuId));
+        return noticeMapper.selectReadNoticesForUser(stuId, 0, page.getOffset(), page.getLimit());
     }
 
     @Override
-    public List<Notice> getNoticesForUser(String stuId, int actionType, int offset, int limit) {
-        return noticeMapper.selectNoticesForUser(stuId, actionType, offset, limit);
+    public List<Notice> getReadNoticesForUser(String stuId, int actionType, Page page) {
+        page.completePage(getNumOfReadNotice(stuId, actionType));
+        return noticeMapper.selectReadNoticesForUser(stuId, actionType, page.getOffset(), page.getLimit());
     }
 
     @Override
-    public String getNotice(Notice notice) {
-        int actionType = notice.getActionType();
-        int entityType = notice.getEntityType(); // 动作指向实体的类型
-        int entityId = notice.getEntityId(); // 动作指向实体的id
-        // 发出动作的用户
-        User actionUser = userService.getUserByStuId(notice.getActionUserId());
-
-        // 如何称呼动作发出者
-        String username = "";
-        if (entityType == Constant.ENTITY_TYPE_CARD || entityType == Constant.ENTITY_TYPE_COMMENT){
-            // 评论人的用户名
-            username = actionUser.getUsername();
-        } else if (entityType == Constant.ENTITY_TYPE_HOLE) {
-            // 评论人的树洞昵称
-            username = holeNicknameService.getHoleNickname(entityId, actionUser.getStuId());
-        }
-
-        // 动作指向实体的内容
-        String content = "";
-        if (entityType == Constant.ENTITY_TYPE_COMMENT) {
-            // 被评论的内容
-            content = commentService.getCommentById(entityId).getContent();
-            // 被评论内容最长展示十五字
-            if (content.length() > 15){
-                content = content.substring(0, 15) + "...";
-            }
-        } else {
-            content = postService.getPostById(entityId).getTitle();
-        }
-
-        // 评论内容
-        Comment comment = commentService.getCommentById(notice.getCommentId());
-        String commentStr = comment == null? "该评论已删除": comment.getContent();
-
-        return username + "评论了\"" + content + "\"\n" + commentStr;
+    public List<Notice> getUnreadNoticesForUser(String stuId, Page page) {
+        page.completePage(getNumOfReadNotice(stuId));
+        return noticeMapper.selectUnreadNoticesForUser(stuId, 0, page.getOffset(), page.getLimit());
     }
 
     @Override
-    public int getNumOfNotice(String stuId) {
-        return noticeMapper.getNumOfNotice(stuId, null);
+    public List<Notice> getUnreadNoticesForUser(String stuId, int actionType, Page page) {
+        page.completePage(getNumOfReadNotice(stuId, actionType));
+        return noticeMapper.selectUnreadNoticesForUser(stuId, actionType, page.getOffset(), page.getLimit());
     }
 
     @Override
-    public int getNumOfNotice(String stuId, int actionType) {
-        return noticeMapper.getNumOfNotice(stuId, actionType);
+    public boolean updateNoticeById(int id) {
+        return noticeMapper.updateStatusById(id) > 0;
+    }
+
+    @Override
+    public int getNumOfReadNotice(String stuId) {
+        return noticeMapper.getNumOfReadNotice(stuId, -1);
+    }
+
+    @Override
+    public int getNumOfReadNotice(String stuId, int actionType) {
+        return noticeMapper.getNumOfReadNotice(stuId, actionType);
     }
 
     @Override
     public int getNumOfUnreadNotice(String stuId) {
-        return noticeMapper.getNumOfUnreadNotice(stuId, null);
+        return noticeMapper.getNumOfUnreadNotice(stuId, -1);
     }
 
     @Override

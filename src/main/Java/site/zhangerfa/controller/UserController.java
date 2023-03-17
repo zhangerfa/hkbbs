@@ -47,7 +47,7 @@ public class UserController {
 
     @Operation(summary = "判断用户是否注册")
     @GetMapping ("/isExist")
-    @Parameter(name = "stuId", description = "用户学号", required = true)
+    @Parameter(name = "stuId", description = "用户学号")
     public Result<Boolean> isExist(String stuId) {
         boolean flag = userService.isExist(stuId);
         return new Result<>(flag ? Code.GET_OK : Code.GET_ERR, flag, flag? "已注册": "未注册");
@@ -60,7 +60,9 @@ public class UserController {
             @Parameter(name = "password", description = "用户输入密码", required = true,
                     schema = @Schema(pattern = "[a-zA-Z0-9]{6,16}"))})
     @PostMapping("/login")
-    public Result<Boolean> login(@Parameter(hidden = true) User user, boolean rememberMe, HttpServletResponse response){
+    public Result<Boolean> login(@Parameter(hidden = true) User user,
+                                 @RequestParam(required = false, defaultValue = "false") boolean rememberMe,
+                                 HttpServletResponse response){
         Map<String, Object> map = userService.login(user, rememberMe);
         if (!(boolean) map.get("result")){
             return new Result<>(Code.SAVE_ERR, false, (String) map.get("msg"));
@@ -110,9 +112,10 @@ public class UserController {
 
     @Operation(summary = "修改用户信息", description = "用户名、密码、头像传入非空则进行修改")
     @PutMapping
-    public Result<Boolean> updateUser(@Parameter(description = "新密码", schema = @Schema(pattern = "[a-zA-Z0-9]{6,16}")) String newPassword,
-                                      @Parameter(description = "新用户名") String username,
-                                      @Parameter(description = "新头像") MultipartFile headerImage){
+    public Result<Boolean> updateUser(@Parameter(description = "新密码", schema = @Schema(pattern = "[a-zA-Z0-9]{6,16}"))
+                                          @RequestParam(required = false) String newPassword,
+                                      @Parameter(description = "新用户名") @RequestParam(required = false) String username,
+                                      @Parameter(description = "新头像") @RequestParam(required = false) MultipartFile headerImage){
         User user = hostHolder.getUser();
         if (user == null) return new Result<>(Code.UPDATE_ERR, false, "用户未登录");
         String stuId = user.getStuId();
@@ -142,26 +145,26 @@ public class UserController {
         return new Result<>(code, flag, msg);
     }
 
-    @Operation(summary = "发送图片验证码")
-    @GetMapping("/sendImageCode")
-    public void getKaptcha(HttpSession session, HttpServletResponse response){
-        // 生成图片验证码
-        String text = defaultKaptcha.createText();
-        // 将验证码存储到session中
-        session.setAttribute("imageCode", text);
-        // 生成验证码图片
-        BufferedImage image = defaultKaptcha.createImage(text);
-        // 设置响应体格式
-        response.setContentType("image/png");
-        // 将验证码图片写入响应中
-        try {
-            ServletOutputStream outputStream = response.getOutputStream();
-            ImageIO.write(image, "png", outputStream);
-        } catch (IOException e) {
-            logger.error("向响应中写入图片验证码失败");
-            throw new RuntimeException(e);
-        }
-    }
+//    @Operation(summary = "发送图片验证码")
+//    @GetMapping("/sendImageCode")
+//    public void getKaptcha(HttpSession session, HttpServletResponse response){
+//        // 生成图片验证码
+//        String text = defaultKaptcha.createText();
+//        // 将验证码存储到session中
+//        session.setAttribute("imageCode", text);
+//        // 生成验证码图片
+//        BufferedImage image = defaultKaptcha.createImage(text);
+//        // 设置响应体格式
+//        response.setContentType("image/png");
+//        // 将验证码图片写入响应中
+//        try {
+//            ServletOutputStream outputStream = response.getOutputStream();
+//            ImageIO.write(image, "png", outputStream);
+//        } catch (IOException e) {
+//            logger.error("向响应中写入图片验证码失败");
+//            throw new RuntimeException(e);
+//        }
+//    }
 
     @Operation(summary = "获取用户信息", description = "获取指定用户信息，当传入用户学号为空时表示获取当前用户的信息")
     @GetMapping("/{stuId}")

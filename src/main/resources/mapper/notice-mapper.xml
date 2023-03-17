@@ -13,32 +13,52 @@
                #{entityId}, #{actionUserId}, #{actionType}, #{commentId},
                #{entityOwnerId})
     </insert>
+    <update id="updateStatusById">
+        update notice set status = 1
+    </update>
     <select id="selectNoticeById" resultType="Notice">
         select * from notice where id = #{id}
     </select>
-    <select id="selectNoticesForUser" resultType="Notice">
+    <select id="selectReadNoticesForUser" resultType="Notice">
         select * from notice
         <where>
-            receiving_user_id = #{posterId}
+            receiving_user_id = #{stuId}
+            and status = 1
             <if test="actionType != 0">
                 and action_type = #{actionType}
             </if>
         </where>
         order by id desc
     </select>
-    <select id="getNumOfNotice" resultType="java.lang.Integer">
+    <select id="getNumOfReadNotice" resultType="java.lang.Integer">
         select count(*) from notice
-        where receiving_user_id = #{posterId}
-        <if test="actionType != null">
-            and action_type = #{actionType}
-        </if>
+        <where>
+            <if test='stuId != "0"'>
+                receiving_user_id = #{stuId}
+            </if>
+            <if test="actionType != -1">
+                and action_type = #{actionType}
+            </if>
+            and status = 1
+        </where>
     </select>
     <select id="getNumOfUnreadNotice" resultType="java.lang.Integer">
         select count(*) from notice
-        where receiving_user_id = #{posterId}
+        where receiving_user_id = #{stuId}
         <if test="actionType != null">
             and action_type = #{actionType}
         </if>
         and status = 0
+    </select>
+    <select id="selectUnreadNoticesForUser" resultType="site.zhangerfa.pojo.Notice">
+        select * from notice
+        <where>
+            receiving_user_id = #{stuId}
+            <if test="actionType != 0">
+                and action_type = #{actionType}
+            </if>
+        </where>
+        and status = 0
+        order by id desc
     </select>
 </mapper>

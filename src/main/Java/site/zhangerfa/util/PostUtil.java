@@ -3,10 +3,11 @@ package site.zhangerfa.util;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
 import site.zhangerfa.controller.tool.Code;
+import site.zhangerfa.controller.tool.CommentDetails;
+import site.zhangerfa.controller.tool.PostDetails;
 import site.zhangerfa.controller.tool.Result;
 import site.zhangerfa.pojo.*;
 import site.zhangerfa.service.*;
-import site.zhangerfa.service.impl.PostServiceImpl;
 
 import java.util.ArrayList;
 import java.util.LinkedList;

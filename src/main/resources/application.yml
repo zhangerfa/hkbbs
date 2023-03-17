@@ -1,5 +1,5 @@
 server:
-  port: 80
+  port: 8080
   # 开发阶段浏览器不设置缓存，静态资源更新后立马就能访问到
   tomcat:
     processor-cache: 0
@@ -95,7 +95,7 @@ springdoc:
   api-docs:
     path: /v3/api-docs # json文档的访问路径
   group-configs:
-    - group: 'controller' # 定义一个文档 group
+    - group: 'hkbbs' # 定义一个文档 group
       # 注释文档包含的包列表
       packages-to-scan: site.zhangerfa.controller
       # 注释文档要包含的路径列表

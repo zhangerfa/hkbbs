@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
 import site.zhangerfa.controller.tool.Code;
+import site.zhangerfa.controller.tool.PostDetails;
 import site.zhangerfa.controller.tool.PostInfo;
 import site.zhangerfa.controller.tool.Result;
 import site.zhangerfa.event.EventProducer;
