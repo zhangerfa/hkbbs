@@ -1067,7 +1067,7 @@ sys|schema||mysql.sys|localhost|TRIGGER|G</Grants>
       <CollationName>utf8mb3_general_ci</CollationName>
     </table>
     <column id="306" parent="299" name="id">
-      <AutoIncrement>11</AutoIncrement>
+      <AutoIncrement>13</AutoIncrement>
       <DataType>int|0s</DataType>
       <NotNull>1</NotNull>
       <Position>1</Position>
@@ -1172,7 +1172,7 @@ sys|schema||mysql.sys|localhost|TRIGGER|G</Grants>
     </column>
     <column id="325" parent="301" name="url">
       <Comment>图片url</Comment>
-      <DataType>varchar(100)|0s</DataType>
+      <DataType>varchar(120)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>3</Position>
     </column>
@@ -1235,7 +1235,7 @@ sys|schema||mysql.sys|localhost|TRIGGER|G</Grants>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
     <column id="337" parent="303" name="id">
-      <AutoIncrement>3</AutoIncrement>
+      <AutoIncrement>5</AutoIncrement>
       <DataType>int|0s</DataType>
       <NotNull>1</NotNull>
       <Position>1</Position>
@@ -1319,7 +1319,7 @@ sys|schema||mysql.sys|localhost|TRIGGER|G</Grants>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
     <column id="353" parent="304" name="id">
-      <AutoIncrement>4</AutoIncrement>
+      <AutoIncrement>9</AutoIncrement>
       <DataType>int|0s</DataType>
       <NotNull>1</NotNull>
       <Position>1</Position>

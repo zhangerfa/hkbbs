@@ -8,12 +8,14 @@ import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import site.zhangerfa.controller.tool.Code;
+import site.zhangerfa.controller.tool.NewPost;
 import site.zhangerfa.controller.tool.Result;
 import site.zhangerfa.event.EventProducer;
 import site.zhangerfa.event.EventUtil;
 import site.zhangerfa.pojo.Comment;
 import site.zhangerfa.pojo.Hole;
 import site.zhangerfa.pojo.Notice;
+import site.zhangerfa.pojo.Post;
 import site.zhangerfa.service.PostService;
 import site.zhangerfa.service.impl.HoleServiceImpl;
 import site.zhangerfa.util.Constant;
@@ -40,17 +42,15 @@ public class HoleController{
 
     @PostMapping
     @Operation(summary = "发布树洞")
-    @Parameters({
-            @Parameter(name = "title", description = "标题", required = true),
-            @Parameter(name = "content", description = "内容", required = true),
-            @Parameter(name = "images", description = "帖子中的图片集合")})
-    public Result<Boolean> addHole(@RequestBody @Parameter(hidden = true) Hole hole, MultipartFile[] images){
-        // 将传入图片上传到图床，并将url集合添加到card中
-        imgShackUtil.addImagesForPost(hole, images);
-        // 发布树洞
+    public Result<Boolean> addHole(NewPost newPost){
         if (hostHolder.getUser() == null) return new Result<>(Code.SAVE_ERR, false, "用户未登录");
-        hole.setPosterId(hostHolder.getUser().getStuId());
-        holeService.add(hole, Constant.ENTITY_TYPE_HOLE);
+        // 将传入图片上传到图床，并将url集合添加到card中
+        Post post = new Post(newPost);
+        imgShackUtil.addImagesForPost(post, newPost.getImages());
+        // 发布卡片
+        String stuId = hostHolder.getUser().getStuId();
+        post.setPosterId(stuId);
+        holeService.add(post, Constant.ENTITY_TYPE_HOLE);
         return new Result<>(Code.SAVE_OK, true, "发布成功");
     }
 

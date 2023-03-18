@@ -108,7 +108,7 @@ create table image
     id      int auto_increment
         primary key,
     post_id int          not null comment '图片所属的帖子id',
-    url     varchar(100) not null comment '图片url',
+    url     varchar(120) not null comment '图片url',
     constraint image_post_null_fk
         foreign key (post_id) references post (id)
 )

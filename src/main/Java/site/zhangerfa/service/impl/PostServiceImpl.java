@@ -53,8 +53,10 @@ public class PostServiceImpl implements PostService {
         post.setContent(HtmlUtils.htmlEscape(post.getContent()));
         // post表中添加post
         int addNum = postMapper.add(post, postType);
-        // image表中添加图片url
+        // post.images中的postId，因为未发帖前没有postId
         for (Image image : post.getImages()) {
+            // 更新images中Image中的postId
+            image.setPostId(post.getId());
             imageService.add(image);
         }
         return addNum != 0;
