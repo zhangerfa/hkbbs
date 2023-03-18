@@ -1,5 +1,5 @@
 server:
-  port: 8021
+  port: 80
   # 开发阶段浏览器不设置缓存，静态资源更新后立马就能访问到
   tomcat:
     processor-cache: 0
@@ -21,6 +21,7 @@ spring:
         # 连接池配置
         pool:
           max-active: 8
+
 
 
   # Kafka配置信息
@@ -94,9 +95,10 @@ springdoc:
     operations-sorter: alpha
   api-docs:
     path: /v3/api-docs # json文档的访问路径
+    enabled: true
   group-configs:
     - group: 'hkbbs' # 定义一个文档 group
       # 注释文档包含的包列表
-      packages-to-scan: site.zhangerfa.controller
+      packages-to-scan: site.zhangerfa.controller, site.zhangerfa.pojo
       # 注释文档要包含的路径列表
       paths-to-match: '/**'

@@ -14,10 +14,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
+import site.zhangerfa.pojo.Image;
+import site.zhangerfa.pojo.Post;
 import site.zhangerfa.pojo.User;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -39,6 +43,20 @@ public class ImgShackUtil {
     private String bucketName;
     @Value("${cos.path}")
     private String path;
+
+    /**
+     * 将图片上传到图床并将URL放入post的图片URL集合中
+     * @param post
+     * @param images
+     */
+    public void addImagesForPost(Post post, MultipartFile[] images){
+        // 将传入图片上传到图床，并将url集合添加到card中
+        List<Image> imageUrl = new ArrayList<>();
+        for (MultipartFile image : images) {
+            imageUrl.add(new Image(post.getId(), add(image)));
+        }
+        post.setImages(imageUrl);
+    }
 
     /**
      * 以UUID作为图片名上传到图床并返回访问url

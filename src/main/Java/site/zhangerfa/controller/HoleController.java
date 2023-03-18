@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import site.zhangerfa.controller.tool.Code;
 import site.zhangerfa.controller.tool.Result;
 import site.zhangerfa.event.EventProducer;
@@ -17,6 +18,7 @@ import site.zhangerfa.service.PostService;
 import site.zhangerfa.service.impl.HoleServiceImpl;
 import site.zhangerfa.util.Constant;
 import site.zhangerfa.util.HostHolder;
+import site.zhangerfa.util.ImgShackUtil;
 
 import java.util.Map;
 
@@ -33,13 +35,19 @@ public class HoleController{
     private EventProducer eventProducer;
     @Resource
     private EventUtil eventUtil;
+    @Resource
+    private ImgShackUtil imgShackUtil;
 
     @PostMapping
     @Operation(summary = "发布树洞")
     @Parameters({
             @Parameter(name = "title", description = "标题", required = true),
-            @Parameter(name = "content", description = "内容", required = true)})
-    public Result<Boolean> addHole(@RequestBody @Parameter(hidden = true) Hole hole){
+            @Parameter(name = "content", description = "内容", required = true),
+            @Parameter(name = "images", description = "帖子中的图片集合")})
+    public Result<Boolean> addHole(@RequestBody @Parameter(hidden = true) Hole hole, MultipartFile[] images){
+        // 将传入图片上传到图床，并将url集合添加到card中
+        imgShackUtil.addImagesForPost(hole, images);
+        // 发布树洞
         if (hostHolder.getUser() == null) return new Result<>(Code.SAVE_ERR, false, "用户未登录");
         hole.setPosterId(hostHolder.getUser().getStuId());
         holeService.add(hole, Constant.ENTITY_TYPE_HOLE);

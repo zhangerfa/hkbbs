@@ -52,11 +52,7 @@ public class PostController {
     public Result<Boolean> addCard(@RequestBody @Parameter(hidden = true) Card card, MultipartFile[] images){
         if (hostHolder.getUser() == null) return new Result<>(Code.SAVE_ERR, false, "用户未登录");
         // 将传入图片上传到图床，并将url集合添加到card中
-        List<Image> imageUrl = new ArrayList<>();
-        for (MultipartFile image : images) {
-            imageUrl.add(new Image(card.getId(), imgShackUtil.add(image)));
-        }
-        card.setImages(imageUrl);
+        imgShackUtil.addImagesForPost(card, images);
         // 发布卡片
         String stuId = hostHolder.getUser().getStuId();
         card.setPosterId(stuId);
