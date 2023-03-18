@@ -10,9 +10,11 @@ import site.zhangerfa.controller.tool.Code;
 import site.zhangerfa.controller.tool.Result;
 import site.zhangerfa.dao.PostMapper;
 import site.zhangerfa.pojo.Comment;
+import site.zhangerfa.pojo.Image;
 import site.zhangerfa.pojo.Page;
 import site.zhangerfa.pojo.Post;
 import site.zhangerfa.service.CommentService;
+import site.zhangerfa.service.ImageService;
 import site.zhangerfa.service.PostService;
 import site.zhangerfa.util.Constant;
 import site.zhangerfa.util.HostHolder;
@@ -33,6 +35,8 @@ public class PostServiceImpl implements PostService {
     private CommentService commentService;
     @Resource
     private PostMapper postMapper;
+    @Resource
+    private ImageService imageService;
     /**
      * 判空及HTML转义处理
      * @param post
@@ -47,13 +51,21 @@ public class PostServiceImpl implements PostService {
         // 转义HTML标记，防止HTML注入
         post.setTitle(HtmlUtils.htmlEscape(post.getTitle()));
         post.setContent(HtmlUtils.htmlEscape(post.getContent()));
+        // post表中添加post
         int addNum = postMapper.add(post, postType);
+        // image表中添加图片url
+        for (Image image : post.getImages()) {
+            imageService.add(image);
+        }
         return addNum != 0;
     }
 
     @Override
     public Post getPostById(int id) {
-        return postMapper.selectPostById(id);
+        Post post = postMapper.selectPostById(id);
+        // 获取帖子中图片
+        post.setImages(imageService.getImagesForPost(id));
+        return post;
     }
 
     /**
@@ -73,13 +85,15 @@ public class PostServiceImpl implements PostService {
             map.put("msg", "您没有权限删除");
             return map;
         }
-        // 删除卡片的评论
+        // 删除帖子的评论
         List<Comment> comments = commentService.getCommentsForEntity(Constant.ENTITY_TYPE_CARD, id, 0, Integer.MAX_VALUE);
         for (Comment comment : comments) {
             deleteComment(comment.getId());
         }
-        // 删除卡片
+        // 删除帖子
         postMapper.deletePostById(id);
+        // 删除帖子中的所有图片
+        imageService.deleteImageById(id);
 
         Map<String, Object> map = new HashMap<>();
         map.put("result", true);
@@ -128,7 +142,11 @@ public class PostServiceImpl implements PostService {
     public Result<List<Post>> getOnePagePosts(String stuId, Page page, int postType) {
         if (stuId == null) return new Result<>(Code.GET_ERR, null, "未输入学号");
         page.completePage(getTotalNums(postType));
-        return new Result<>(Code.GET_OK,
-                postMapper.selectOnePagePosts(postType, stuId, page.getOffset(), page.getLimit()), "获取成功");
+        List<Post> posts = postMapper.selectOnePagePosts(postType, stuId, page.getOffset(), page.getLimit());
+        // 补充帖子中的图片
+        for (Post post : posts) {
+            post.setImages(imageService.getImagesForPost(post.getId()));
+        }
+        return new Result<>(Code.GET_OK, posts, "获取成功");
     }
 }

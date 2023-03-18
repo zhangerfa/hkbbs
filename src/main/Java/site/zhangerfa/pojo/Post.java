@@ -1,9 +1,9 @@
 package site.zhangerfa.pojo;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.Date;
+import java.util.List;
 
 @Schema(description = "帖子")
 public class Post {
@@ -20,6 +20,8 @@ public class Post {
     private int commentNum = 0;
     @Schema(description = "热度")
     private int hot = 0;
+    @Schema(description = "帖子中图片URL集合")
+    private List<Image> images;
 
     public int getId() {
         return id;
@@ -75,5 +77,13 @@ public class Post {
 
     public void setHot(int hot) {
         this.hot = hot;
+    }
+
+    public List<Image> getImages() {
+        return images;
+    }
+
+    public void setImages(List<Image> images) {
+        this.images = images;
     }
 }

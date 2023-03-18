@@ -1,7 +1,6 @@
 package site.zhangerfa.controller.tool;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import site.zhangerfa.controller.tool.CommentDetails;
 import site.zhangerfa.pojo.Page;
 import site.zhangerfa.pojo.User;
 
