@@ -1,5 +1,5 @@
 server:
-  port: 80
+  port: 8019
   # 开发阶段浏览器不设置缓存，静态资源更新后立马就能访问到
   tomcat:
     processor-cache: 0
@@ -21,9 +21,6 @@ spring:
         # 连接池配置
         pool:
           max-active: 8
-
-
-
   # Kafka配置信息
   kafka:
     bootstrap-servers: localhost:9092
@@ -33,7 +30,9 @@ spring:
       auto-commit-interval: 3000 # 自动提交间隔（ms）
   # Tomcat配置信息
   servlet:
+    # 启用文件上传
     multipart:
+      enabled: true
       max-file-size: 10MB
       max-request-size: 20MB
   datasource:

@@ -3,14 +3,14 @@ package site.zhangerfa.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import site.zhangerfa.controller.tool.Code;
-import site.zhangerfa.controller.tool.PostDetails;
-import site.zhangerfa.controller.tool.PostInfo;
-import site.zhangerfa.controller.tool.Result;
+import site.zhangerfa.controller.tool.*;
 import site.zhangerfa.event.EventProducer;
 import site.zhangerfa.event.EventUtil;
 import site.zhangerfa.pojo.*;
@@ -43,20 +43,16 @@ public class PostController {
     private ImgShackUtil imgShackUtil;
 
     @Tag(name = "卡片")
-    @Operation(summary = "发布卡片")
-    @Parameters({
-            @Parameter(name = "title", description = "标题", required = true),
-            @Parameter(name = "content", description = "内容", required = true),
-            @Parameter(name = "images", description = "帖子中的图片集合")})
-    @PostMapping
-    public Result<Boolean> addCard(@RequestBody @Parameter(hidden = true) Card card, MultipartFile[] images){
+    @Operation(summary = "发布卡片", description = "传入标题和内容，图片是可选的，可以传入若干张图片")
+    @PostMapping(value = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public Result<Boolean> addCard(NewPost newPost){
         if (hostHolder.getUser() == null) return new Result<>(Code.SAVE_ERR, false, "用户未登录");
         // 将传入图片上传到图床，并将url集合添加到card中
-        imgShackUtil.addImagesForPost(card, images);
+        Post post = imgShackUtil.addImagesForPost(newPost);
         // 发布卡片
         String stuId = hostHolder.getUser().getStuId();
-        card.setPosterId(stuId);
-        boolean flag = postService.add(card, Constant.ENTITY_TYPE_CARD);
+        post.setPosterId(stuId);
+        boolean flag = postService.add(post, Constant.ENTITY_TYPE_CARD);
         return new Result<>(flag? Code.SAVE_OK: Code.SAVE_ERR, flag);
     }
 

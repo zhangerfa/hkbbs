@@ -7,9 +7,9 @@
         id, poster_id, title, content, create_at as createTime, comment_num, hot
     </sql>
 
-    <insert id="add">
+    <insert id="add" keyProperty="post.id">
         insert into post (poster_id, title, content, type)
-        values(#{posterId}, #{title}, #{content}, #{postType})
+        values(#{post.posterId}, #{post.title}, #{post.content}, #{postType})
     </insert>
     <update id="commentNumPlusOne">
         update post set comment_num = comment_num + 1
