@@ -18,6 +18,7 @@ import site.zhangerfa.pojo.User;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.UUID;
 
 /**
  * 图床工具类
@@ -38,6 +39,17 @@ public class ImgShackUtil {
     private String bucketName;
     @Value("${cos.path}")
     private String path;
+
+    /**
+     * 以UUID作为图片名上传到图床并返回访问url
+     * @param image
+     * @return
+     */
+    public String add(MultipartFile image){
+        // 生成唯一标识符作为文件名
+        String uuidFilename = UUID.randomUUID().toString() + getSuffix(image);
+        return add(image, uuidFilename);
+    }
 
     /**
      * 将传入图片添加到图床中，返回其访问路径
@@ -67,8 +79,7 @@ public class ImgShackUtil {
             PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, key, file);
             PutObjectResult putObjectResult = cosClient.putObject(putObjectRequest);
             // 更新当前用户的头像访问路径
-            String headerUrl = "https://" + bucketName + ".cos." + cosRegion + ".myqcloud.com/" + key;
-            return headerUrl;
+            return "https://" + bucketName + ".cos." + cosRegion + ".myqcloud.com/" + key;
         } catch (IOException e) {
             logger.error("头像上传失败" + e.getMessage());
             System.out.println(e.getMessage());
@@ -82,7 +93,6 @@ public class ImgShackUtil {
     public String getSuffix(MultipartFile image){
         // 修改图片文件名：学号_原文件名.原后缀名
         String originalFilename = image.getOriginalFilename();
-        String suffix = originalFilename.substring(originalFilename.lastIndexOf("."));
-        return suffix;
+        return originalFilename.substring(originalFilename.lastIndexOf("."));
     }
 }

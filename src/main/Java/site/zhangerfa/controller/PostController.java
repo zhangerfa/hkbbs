@@ -54,7 +54,7 @@ public class PostController {
         // 将传入图片上传到图床，并将url集合添加到card中
         List<Image> imageUrl = new ArrayList<>();
         for (MultipartFile image : images) {
-            imageUrl.add(new Image(card.getId(), imgShackUtil.add(image, "")));
+            imageUrl.add(new Image(card.getId(), imgShackUtil.add(image)));
         }
         card.setImages(imageUrl);
         // 发布卡片
