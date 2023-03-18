@@ -1,3 +1,5 @@
+create database if not exists friends;
+
 create table user
 (
     stu_id     varchar(10)                         not null comment '学号'
@@ -100,4 +102,17 @@ create index notice_comment_null_fk
 
 create index receiving_user_id
     on friends.notice (receiving_user_id);
+
+create table image
+(
+    id      int auto_increment
+        primary key,
+    post_id int          not null comment '图片所属的帖子id',
+    url     varchar(100) not null comment '图片url',
+    constraint image_post_null_fk
+        foreign key (post_id) references post (id)
+)
+    comment '存储帖子中的图片';
+
+
 
