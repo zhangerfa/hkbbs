@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import site.zhangerfa.controller.tool.Code;
 import site.zhangerfa.controller.tool.PostDetails;
 import site.zhangerfa.controller.tool.PostInfo;
@@ -17,6 +18,7 @@ import site.zhangerfa.service.PostService;
 import site.zhangerfa.service.UserService;
 import site.zhangerfa.util.Constant;
 import site.zhangerfa.util.HostHolder;
+import site.zhangerfa.util.ImgShackUtil;
 import site.zhangerfa.util.PostUtil;
 
 import java.util.ArrayList;
@@ -37,15 +39,25 @@ public class PostController {
     private UserService userService;
     @Resource
     private HostHolder hostHolder;
+    @Resource
+    private ImgShackUtil imgShackUtil;
 
     @Tag(name = "卡片")
     @Operation(summary = "发布卡片")
     @Parameters({
             @Parameter(name = "title", description = "标题", required = true),
-            @Parameter(name = "content", description = "内容", required = true)})
+            @Parameter(name = "content", description = "内容", required = true),
+            @Parameter(name = "images", description = "帖子中的图片集合")})
     @PostMapping
-    public Result<Boolean> addCard(@RequestBody @Parameter(hidden = true) Card card){
+    public Result<Boolean> addCard(@RequestBody @Parameter(hidden = true) Card card, MultipartFile[] images){
         if (hostHolder.getUser() == null) return new Result<>(Code.SAVE_ERR, false, "用户未登录");
+        // 将传入图片上传到图床，并将url集合添加到card中
+        List<Image> imageUrl = new ArrayList<>();
+        for (MultipartFile image : images) {
+            imageUrl.add(new Image(card.getId(), imgShackUtil.add(image, "")));
+        }
+        card.setImages(imageUrl);
+        // 发布卡片
         String stuId = hostHolder.getUser().getStuId();
         card.setPosterId(stuId);
         boolean flag = postService.add(card, Constant.ENTITY_TYPE_CARD);

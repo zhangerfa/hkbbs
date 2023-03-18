@@ -10,6 +10,11 @@ public class Image {
     @Schema(description = "图片URL")
     private String url;
 
+    public Image(int postId, String url){
+        this.postId = postId;
+        this.url = url;
+    }
+
     public int getId() {
         return id;
     }

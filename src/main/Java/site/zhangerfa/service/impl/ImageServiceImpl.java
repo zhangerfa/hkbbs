@@ -1,6 +1,7 @@
 package site.zhangerfa.service.impl;
 
 import jakarta.annotation.Resource;
+import org.springframework.stereotype.Service;
 import site.zhangerfa.controller.tool.Code;
 import site.zhangerfa.controller.tool.Result;
 import site.zhangerfa.dao.ImageMapper;
@@ -10,6 +11,7 @@ import site.zhangerfa.service.ImageService;
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class ImageServiceImpl implements ImageService {
     @Resource
     private ImageMapper imageMapper;
