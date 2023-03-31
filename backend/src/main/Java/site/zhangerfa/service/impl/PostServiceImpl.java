@@ -89,7 +89,7 @@ public class PostServiceImpl implements PostService {
             return map;
         }
         // 删除帖子的评论
-        List<Comment> comments = commentService.getCommentsForEntity(Constant.ENTITY_TYPE_CARD, id, 0, Integer.MAX_VALUE);
+        List<Comment> comments = commentService.getCommentsForEntity(Constant.ENTITY_TYPE_POST, id, 0, Integer.MAX_VALUE);
         for (Comment comment : comments) {
             deleteComment(comment.getId());
         }

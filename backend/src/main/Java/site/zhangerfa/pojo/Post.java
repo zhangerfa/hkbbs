@@ -1,8 +1,6 @@
 package site.zhangerfa.pojo;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
-import org.springframework.web.multipart.MultipartFile;
 import site.zhangerfa.controller.tool.NewPost;
 
 import java.util.Date;
@@ -25,22 +23,12 @@ public class Post {
     private int hot = 0;
     @Schema(description = "帖子中图片URL集合")
     private List<Image> images;
-    @JsonIgnore
-    private MultipartFile[] imageFiles;
 
     public Post(){}
 
     public Post(NewPost newPost){
         title = newPost.getTitle();
         content = newPost.getContent();
-    }
-
-    public MultipartFile[] getImageFiles() {
-        return imageFiles;
-    }
-
-    public void setImageFiles(MultipartFile[] imageFiles) {
-        this.imageFiles = imageFiles;
     }
 
     public int getId() {

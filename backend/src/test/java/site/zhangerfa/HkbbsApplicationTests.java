@@ -22,7 +22,7 @@ class HkbbsApplicationTests {
         Post post = new Post();
         post.setTitle("111");
         post.setContent("222");
-        postMapper.add(post, Constant.ENTITY_TYPE_CARD);
+        postMapper.add(post, Constant.ENTITY_TYPE_POST);
         System.out.println(postMapper.getPostType(post.getId()));
     }
 }

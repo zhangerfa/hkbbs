@@ -4,7 +4,7 @@ public class Constant {
     /**
      * 回帖对象的类型
      */
-    public static final int ENTITY_TYPE_CARD = 1; // 卡片
+    public static final int ENTITY_TYPE_POST = 1; // 帖子
     public static final int ENTITY_TYPE_HOLE = 2; // 树洞
     public static final int ENTITY_TYPE_COMMENT = 3; // 评论
 
@@ -14,7 +14,7 @@ public class Constant {
      * @return
      */
     public static String getEntityTye(int type){
-        if (type == ENTITY_TYPE_CARD){
+        if (type == ENTITY_TYPE_POST){
             return "卡片";
         }
         if (type == ENTITY_TYPE_HOLE){
@@ -25,6 +25,14 @@ public class Constant {
         }
         throw new RuntimeException("传入实体类型不存在");
     }
+
+    /**
+     * 交友目标
+     */
+    public static final int CARD_GOAL_LOVE = 0;
+    public static final int CARD_GOAL_GAME = 1;
+    public static final int CARD_GOAL_BOARD_GAME = 2;
+    public static final int CARD_GOAL_STUDY = 3;
 
     /**
      * 通知中的动作类型

@@ -47,7 +47,7 @@ public class PostUtil {
         List<Comment> comments = postService.getComments(Constant.ENTITY_TYPE_COMMENT, postId, page);
         // 获取每个评论的详细信息
         List<CommentDetails> commentsDetails;
-        if (postType == Constant.ENTITY_TYPE_CARD){
+        if (postType == Constant.ENTITY_TYPE_POST){
              commentsDetails = getCommentsDetails(comments, page.getPageSize());
         }else {
             commentsDetails = getCommentDetailsForHole(postId, comments, page.getPageSize());
