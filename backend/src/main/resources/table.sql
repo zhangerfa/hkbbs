@@ -114,5 +114,19 @@ create table image
 )
     comment '存储帖子中的图片';
 
+create table card
+(
+    id          int auto_increment
+        primary key,
+    about_me    text                                not null comment '关于我',
+    goal        int                                 not null comment '交友目标',
+    post_id     varchar(10)                         not null comment '发布者学号',
+    expect      text                                not null comment '征友期望',
+    create_time timestamp default CURRENT_TIMESTAMP null comment '发布时间',
+    constraint card_user_null_fk
+        foreign key (post_id) references user (stu_id)
+)
+    comment '卡片墙卡片' charset = utf8mb3;
+
 
 
