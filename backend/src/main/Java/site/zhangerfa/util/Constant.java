@@ -7,6 +7,7 @@ public class Constant {
     public static final int ENTITY_TYPE_POST = 1; // 帖子
     public static final int ENTITY_TYPE_HOLE = 2; // 树洞
     public static final int ENTITY_TYPE_COMMENT = 3; // 评论
+    public static final int ENTITY_TYPE_CARD = 4; // 卡片
 
     /**
      * 获取传入类型的名称

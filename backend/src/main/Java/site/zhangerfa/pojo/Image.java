@@ -6,12 +6,16 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public class Image {
     private int id;
     @JsonIgnore
-    private int postId;
+    @Schema(title = "所属实体类型")
+    private int entityType;
+    @JsonIgnore
+    @Schema(title = "所属实体ID")
+    private int entityId;
     @Schema(description = "图片URL")
     private String url;
 
     public Image(int postId, String url){
-        this.postId = postId;
+        this.entityId = postId;
         this.url = url;
     }
 
@@ -23,12 +27,12 @@ public class Image {
         this.id = id;
     }
 
-    public int getPostId() {
-        return postId;
+    public int getEntityId() {
+        return entityId;
     }
 
-    public void setPostId(int postId) {
-        this.postId = postId;
+    public void setEntityId(int entityId) {
+        this.entityId = entityId;
     }
 
     public String getUrl() {

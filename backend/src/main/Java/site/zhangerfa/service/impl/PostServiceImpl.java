@@ -57,7 +57,7 @@ public class PostServiceImpl implements PostService {
         if (post.getImages() == null) return addNum != 0;
         for (Image image : post.getImages()) {
             // 更新images中Image中的postId
-            image.setPostId(post.getId());
+            image.setEntityId(post.getId());
             imageService.add(image);
         }
         return addNum != 0;
@@ -67,7 +67,7 @@ public class PostServiceImpl implements PostService {
     public Post getPostById(int id) {
         Post post = postMapper.selectPostById(id);
         // 获取帖子中图片
-        post.setImages(imageService.getImagesForPost(id));
+        post.setImages(imageService.getImagesForEntity(Constant.ENTITY_TYPE_POST, id));
         return post;
     }
 
@@ -148,7 +148,7 @@ public class PostServiceImpl implements PostService {
         List<Post> posts = postMapper.selectOnePagePosts(postType, stuId, page.getOffset(), page.getLimit());
         // 补充帖子中的图片
         for (Post post : posts) {
-            post.setImages(imageService.getImagesForPost(post.getId()));
+            post.setImages(imageService.getImagesForEntity(Constant.ENTITY_TYPE_POST, post.getId()));
         }
         return new Result<>(Code.GET_OK, posts, "获取成功");
     }

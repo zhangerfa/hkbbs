@@ -1089,7 +1089,7 @@ sys|schema||mysql.sys|localhost|TRIGGER|G</Grants>
       <NotNull>1</NotNull>
       <Position>3</Position>
     </column>
-    <column id="310" parent="299" name="post_id">
+    <column id="310" parent="299" name="poster_id">
       <Comment>发布者学号</Comment>
       <DataType>varchar(10)|0s</DataType>
       <NotNull>1</NotNull>
@@ -1107,142 +1107,142 @@ sys|schema||mysql.sys|localhost|TRIGGER|G</Grants>
       <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
       <Position>6</Position>
     </column>
-    <column id="313" parent="299" name="images">
-      <Comment>卡片中图片集合，存储image表中图片的id，以&apos;;&apos;分隔</Comment>
-      <DataType>varchar(400)|0s</DataType>
-      <Position>7</Position>
-    </column>
-    <foreign-key id="314" parent="299" name="card_user_null_fk">
-      <ColNames>post_id</ColNames>
+    <foreign-key id="313" parent="299" name="card_user_null_fk">
+      <ColNames>poster_id</ColNames>
       <RefColNames>stu_id</RefColNames>
       <RefTableName>user</RefTableName>
     </foreign-key>
-    <index id="315" parent="299" name="PRIMARY">
+    <index id="314" parent="299" name="PRIMARY">
       <ColNames>id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="316" parent="299" name="card_user_null_fk">
-      <ColNames>post_id</ColNames>
+    <index id="315" parent="299" name="card_user_null_fk">
+      <ColNames>poster_id</ColNames>
       <Type>btree</Type>
     </index>
-    <key id="317" parent="299" name="PRIMARY">
+    <key id="316" parent="299" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <column id="318" parent="300" name="id">
+    <column id="317" parent="300" name="id">
       <AutoIncrement>12</AutoIncrement>
       <DataType>int|0s</DataType>
       <NotNull>1</NotNull>
       <Position>1</Position>
     </column>
-    <column id="319" parent="300" name="poster_id">
+    <column id="318" parent="300" name="poster_id">
       <Comment>评论人学号</Comment>
       <DataType>varchar(10)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>2</Position>
     </column>
-    <column id="320" parent="300" name="entity_type">
+    <column id="319" parent="300" name="entity_type">
       <Comment>被评论对象的类型：1-card，2-comment</Comment>
       <DataType>int|0s</DataType>
       <DefaultExpression>1</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>3</Position>
     </column>
-    <column id="321" parent="300" name="entity_id">
+    <column id="320" parent="300" name="entity_id">
       <Comment>被评论对象的id</Comment>
       <DataType>int|0s</DataType>
       <NotNull>1</NotNull>
       <Position>4</Position>
     </column>
-    <column id="322" parent="300" name="content">
+    <column id="321" parent="300" name="content">
       <Comment>回帖内容</Comment>
       <DataType>text|0s</DataType>
       <NotNull>1</NotNull>
       <Position>5</Position>
     </column>
-    <column id="323" parent="300" name="create_time">
+    <column id="322" parent="300" name="create_time">
       <Comment>回帖时间</Comment>
       <DataType>timestamp|0s</DataType>
       <NotNull>1</NotNull>
       <Position>6</Position>
     </column>
-    <foreign-key id="324" parent="300" name="comment_ibfk_1">
+    <foreign-key id="323" parent="300" name="comment_ibfk_1">
       <ColNames>poster_id</ColNames>
       <RefColNames>stu_id</RefColNames>
       <RefTableName>user</RefTableName>
     </foreign-key>
-    <index id="325" parent="300" name="PRIMARY">
+    <index id="324" parent="300" name="PRIMARY">
       <ColNames>id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="326" parent="300" name="stu_id">
+    <index id="325" parent="300" name="stu_id">
       <ColNames>poster_id</ColNames>
       <Type>btree</Type>
     </index>
-    <key id="327" parent="300" name="PRIMARY">
+    <key id="326" parent="300" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <column id="328" parent="301" name="hole_id">
+    <column id="327" parent="301" name="hole_id">
       <Comment>树洞帖子的id</Comment>
       <DataType>int|0s</DataType>
       <NotNull>1</NotNull>
       <Position>1</Position>
     </column>
-    <column id="329" parent="301" name="poster_id">
+    <column id="328" parent="301" name="poster_id">
       <Comment>发帖人id</Comment>
       <DataType>varchar(10)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>2</Position>
     </column>
-    <column id="330" parent="301" name="nickname">
+    <column id="329" parent="301" name="nickname">
       <Comment>由两个数字组成的字符，表示在两个字符集中的字符索引，由两个字符集中对应的两个字符拼接为昵称</Comment>
       <DataType>varchar(7)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>3</Position>
     </column>
-    <foreign-key id="331" parent="301" name="hole_nickname_post_null_fk">
+    <foreign-key id="330" parent="301" name="hole_nickname_post_null_fk">
       <ColNames>hole_id</ColNames>
       <RefColNames>id</RefColNames>
       <RefTableName>post</RefTableName>
     </foreign-key>
-    <foreign-key id="332" parent="301" name="hole_nickname_ibfk_1">
+    <foreign-key id="331" parent="301" name="hole_nickname_ibfk_1">
       <ColNames>poster_id</ColNames>
       <RefColNames>stu_id</RefColNames>
       <RefTableName>user</RefTableName>
     </foreign-key>
-    <index id="333" parent="301" name="hole_nickname_post_null_fk">
+    <index id="332" parent="301" name="hole_nickname_post_null_fk">
       <ColNames>hole_id</ColNames>
       <Type>btree</Type>
     </index>
-    <index id="334" parent="301" name="stu_id">
+    <index id="333" parent="301" name="stu_id">
       <ColNames>poster_id</ColNames>
       <Type>btree</Type>
     </index>
-    <column id="335" parent="302" name="id">
+    <column id="334" parent="302" name="id">
       <AutoIncrement>6</AutoIncrement>
       <DataType>int|0s</DataType>
       <NotNull>1</NotNull>
       <Position>1</Position>
     </column>
-    <column id="336" parent="302" name="post_id">
-      <Comment>图片所属的帖子id</Comment>
+    <column id="335" parent="302" name="entity_id">
+      <Comment>图片所属的实体id</Comment>
       <DataType>int|0s</DataType>
       <NotNull>1</NotNull>
       <Position>2</Position>
     </column>
-    <column id="337" parent="302" name="url">
+    <column id="336" parent="302" name="url">
       <Comment>图片url</Comment>
       <DataType>varchar(120)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>3</Position>
     </column>
+    <column id="337" parent="302" name="entity_type">
+      <Comment>图片所属实体的类型</Comment>
+      <DataType>int|0s</DataType>
+      <Position>4</Position>
+    </column>
     <foreign-key id="338" parent="302" name="image_post_null_fk">
-      <ColNames>post_id</ColNames>
+      <ColNames>entity_id</ColNames>
       <RefColNames>id</RefColNames>
       <RefTableName>post</RefTableName>
     </foreign-key>
@@ -1252,7 +1252,7 @@ sys|schema||mysql.sys|localhost|TRIGGER|G</Grants>
       <Unique>1</Unique>
     </index>
     <index id="340" parent="302" name="image_post_null_fk">
-      <ColNames>post_id</ColNames>
+      <ColNames>entity_id</ColNames>
       <Type>btree</Type>
     </index>
     <key id="341" parent="302" name="PRIMARY">

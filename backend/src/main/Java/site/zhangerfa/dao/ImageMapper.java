@@ -16,27 +16,27 @@ public interface ImageMapper {
      * @param image
      * @return
      */
-    @Insert("insert into image(post_id, url) values(#{postId}, #{url})")
+    @Insert("insert into image(entity_type, entity_id, url) values(#{entityType} ,#{entityId}, #{url})")
     int addImage(Image image);
 
     @Delete("delete from image where id = #{id}")
     int deleteImageById(int id);
 
     /**
-     * 删除帖子所有图片
-     * @param postId
+     * 删除实体对向所有图片
+     * @param
      * @return
      */
-    @Delete("delete from image where post_id = #{postId}")
-    int deleteImageForPost(int postId);
+    @Delete("delete from image where entity_type = #{entityType} and entity_id = #{entityId}")
+    int deleteImageForEntity(int entityType, int entityId);
 
     /**
      * 获取帖子所有图片
-     * @param postId
+     * @param
      * @return
      */
-    @Select("select * from image where post_id = #{postId}")
-    List<Image> getImageForPost(int postId);
+    @Select("select * from image where entity_type = #{entityType} and entity_id = #{entityId}")
+    List<Image> getImageForEntity(int entityType, int entityId);
 
     @Select("select * from image where id = #{id}")
     Image getImageById(int id);

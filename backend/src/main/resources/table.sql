@@ -105,14 +105,16 @@ create index receiving_user_id
 
 create table image
 (
-    id      int auto_increment
+    id          int auto_increment
         primary key,
-    post_id int          not null comment '图片所属的帖子id',
-    url     varchar(120) not null comment '图片url',
+    entity_id   int          not null comment '图片所属的实体id',
+    url         varchar(120) not null comment '图片url',
+    entity_type int          null comment '图片所属实体的类型',
     constraint image_post_null_fk
-        foreign key (post_id) references post (id)
+        foreign key (entity_id) references post (id)
 )
     comment '存储帖子中的图片';
+
 
 create table card
 (
@@ -120,7 +122,7 @@ create table card
         primary key,
     about_me    text                                not null comment '关于我',
     goal        int                                 not null comment '交友目标',
-    post_id     varchar(10)                         not null comment '发布者学号',
+    poster_id     varchar(10)                         not null comment '发布者学号',
     expect      text                                not null comment '征友期望',
     create_time timestamp default CURRENT_TIMESTAMP null comment '发布时间',
     constraint card_user_null_fk

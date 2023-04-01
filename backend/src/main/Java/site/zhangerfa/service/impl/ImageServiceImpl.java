@@ -22,8 +22,8 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public List<Image> getImagesForPost(int postId) {
-        List<Image> imageForPost = imageMapper.getImageForPost(postId);
+    public List<Image> getImagesForEntity(int entityType, int entityId) {
+        List<Image> imageForPost = imageMapper.getImageForEntity(entityType, entityId);
         if (imageForPost == null) return new ArrayList<>();
         else return imageForPost;
     }
@@ -39,7 +39,7 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public Result<Integer> deleteImagesForPost(int postId) {
-        return new Result<>(Code.DELETE_OK, imageMapper.deleteImageForPost(postId));
+    public Result<Integer> deleteImagesForEntity(int entityType, int entityId) {
+        return new Result<>(Code.DELETE_OK, imageMapper.deleteImageForEntity(entityType, entityId));
     }
 }

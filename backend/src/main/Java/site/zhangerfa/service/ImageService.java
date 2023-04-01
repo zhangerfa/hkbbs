@@ -11,10 +11,10 @@ public interface ImageService {
     /**
      * 获取帖子的所有图片：id，url
      *
-     * @param postId
+     * @param
      * @return
      */
-    List<Image> getImagesForPost(int postId);
+    List<Image> getImagesForEntity(int entityType, int entityId);
 
     boolean deleteImageById(int id);
 
@@ -22,8 +22,8 @@ public interface ImageService {
 
     /**
      * 删除帖子所有图片，返回删除图片的个数
-     * @param postId
+     * @param
      * @return
      */
-    Result<Integer> deleteImagesForPost(int postId);
+    Result<Integer> deleteImagesForEntity(int entityType, int entityId);
 }
