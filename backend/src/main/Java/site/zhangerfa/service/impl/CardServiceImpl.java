@@ -5,9 +5,12 @@ import org.springframework.stereotype.Service;
 import site.zhangerfa.controller.tool.CardContainStuId;
 import site.zhangerfa.controller.tool.CardContainsPoster;
 import site.zhangerfa.dao.CardMapper;
+import site.zhangerfa.pojo.Image;
 import site.zhangerfa.pojo.Page;
 import site.zhangerfa.service.CardService;
+import site.zhangerfa.service.ImageService;
 import site.zhangerfa.service.UserService;
+import site.zhangerfa.util.Constant;
 
 import java.util.List;
 
@@ -17,10 +20,18 @@ public class CardServiceImpl implements CardService {
     private CardMapper cardMapper;
     @Resource
     private UserService userService;
+    @Resource
+    private ImageService imageService;
 
     @Override
     public boolean add(CardContainStuId card) {
-        return cardMapper.add(card) > 0;
+        // 发布卡片
+        cardMapper.add(card);
+        // 将帖子中图片放入image表中
+        for (String imageUrl : card.getImageUrls()) {
+            imageService.add(new Image(Constant.ENTITY_TYPE_CARD, card.getId(), imageUrl));
+        }
+        return true;
     }
 
     @Override

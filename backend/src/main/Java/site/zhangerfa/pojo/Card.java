@@ -8,9 +8,15 @@ import java.util.List;
 
 @Schema(description = "卡片")
 public class Card {
+    public Card(){}
+
+    public Card(String aboutMe, String expect){
+        this.aboutMe = aboutMe;
+        this.expected = expect;
+    }
     int id;
-    @Schema(description = "照片集合")
-    List<Image> images;
+    @Schema(description = "照片url集合")
+    List<String> imageUrls;
     @Schema(description = "年级")
     String age;
     @Schema(title = "关于我", description = "自我介绍")
@@ -64,12 +70,12 @@ public class Card {
         this.age = age;
     }
 
-    public List<Image> getImages() {
-        return images;
+    public List<String> getImageUrls() {
+        return imageUrls;
     }
 
-    public void setImages(List<Image> images) {
-        this.images = images;
+    public void setImageUrls(List<String> imageUrls) {
+        this.imageUrls = imageUrls;
     }
 
     public String getAboutMe() {

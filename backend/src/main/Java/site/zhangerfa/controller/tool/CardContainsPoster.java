@@ -8,6 +8,10 @@ public class CardContainsPoster extends Card {
     @Schema(title = "发布者信息")
     User poster;
 
+    public CardContainsPoster(String aboutMe, String expect) {
+        super(aboutMe, expect);
+    }
+
     public User getPoster() {
         return poster;
     }
