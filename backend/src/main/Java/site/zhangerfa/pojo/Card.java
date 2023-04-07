@@ -3,10 +3,12 @@ package site.zhangerfa.pojo;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 @Schema(description = "卡片")
 public class Card {
+    int id;
     @Schema(description = "照片集合")
     List<Image> images;
     @Schema(description = "年级")
@@ -17,6 +19,8 @@ public class Card {
     int goal;
     @Schema(description = "期望的TA", defaultValue = "描述期望中的理想征友对象")
     String expected;
+    @Schema(description = "发布时间")
+    Date create_time;
 
     /**
      * 由学号推出年级（如果本科毕业两年称为大六）
@@ -34,6 +38,22 @@ public class Card {
         int years = Calendar.getInstance().get(Calendar.YEAR) - Integer.parseInt(stuId.substring(1, 5));
         age.append(String.valueOf(years));
         this.age = age.toString();
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public Date getCreate_time() {
+        return create_time;
+    }
+
+    public void setCreate_time(Date create_time) {
+        this.create_time = create_time;
     }
 
     public String getAge() {
