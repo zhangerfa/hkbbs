@@ -6,22 +6,22 @@ import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import site.zhangerfa.controller.tool.Code;
 import site.zhangerfa.controller.tool.NewPost;
+import site.zhangerfa.controller.tool.PostInfo;
 import site.zhangerfa.controller.tool.Result;
 import site.zhangerfa.event.EventProducer;
 import site.zhangerfa.event.EventUtil;
-import site.zhangerfa.pojo.Comment;
-import site.zhangerfa.pojo.Hole;
-import site.zhangerfa.pojo.Notice;
-import site.zhangerfa.pojo.Post;
+import site.zhangerfa.pojo.*;
 import site.zhangerfa.service.PostService;
+import site.zhangerfa.service.UserService;
 import site.zhangerfa.service.impl.HoleServiceImpl;
 import site.zhangerfa.util.Constant;
 import site.zhangerfa.util.HostHolder;
 import site.zhangerfa.util.ImgShackUtil;
+import site.zhangerfa.util.PostUtil;
 
+import java.util.List;
 import java.util.Map;
 
 
@@ -39,6 +39,12 @@ public class HoleController{
     private EventUtil eventUtil;
     @Resource
     private ImgShackUtil imgShackUtil;
+    @Resource(name = "postServiceImpl")
+    private PostService postService;
+    @Resource
+    private PostUtil postUtil;
+    @Resource
+    private UserService userService;
 
     @PostMapping
     @Operation(summary = "发布树洞", description = "传入标题和内容，图片是可选的，可以传入若干张图片")
@@ -76,5 +82,21 @@ public class HoleController{
         Map<String, Object> map = holeService.deleteById(postId);
         Boolean result = (Boolean) map.get("result");
         return new Result<>(result? Code.DELETE_OK: Code.DELETE_ERR, result, (String) map.get("msg"));
+    }
+
+    @Operation(summary = "获取一页树洞", description = "返回一页树洞，包含id,标题，内容和作者id，发帖时间，评论数量，热度")
+    @Parameters({
+            @Parameter(name = "currentPage", description = "当前页码", required = true),
+            @Parameter(name = "pageSize", description = "当前页要展示的帖子数量", required = true),
+            @Parameter(name = "stuId", description = "当要获取指定用户发送的树洞时，传入其学号，当要获取最新发布的一页树洞时，传入'0'")
+    })
+    @GetMapping("/{stuId}")
+    public Result<List<PostInfo>> getOnePageHoles(@Parameter(hidden = true) Page page, @PathVariable String stuId){
+        if (stuId == null || (!stuId.equals("0") && !userService.isExist(stuId)))
+            return new Result<>(Code.SAVE_ERR, null, "学号错误");
+        Result<List<Post>> result = postService.getOnePagePosts(stuId, page, Constant.ENTITY_TYPE_HOLE);
+        if (result.getCode() == Code.GET_ERR) return new Result<>(Code.GET_ERR, null, result.getMsg());
+        List<PostInfo> postInfos = postUtil.completePostInfo(result);
+        return new Result<>(Code.GET_OK, postInfos, "查询成功");
     }
 }

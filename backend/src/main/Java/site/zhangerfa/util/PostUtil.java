@@ -2,10 +2,7 @@ package site.zhangerfa.util;
 
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
-import site.zhangerfa.controller.tool.Code;
-import site.zhangerfa.controller.tool.CommentDetails;
-import site.zhangerfa.controller.tool.PostDetails;
-import site.zhangerfa.controller.tool.Result;
+import site.zhangerfa.controller.tool.*;
 import site.zhangerfa.pojo.*;
 import site.zhangerfa.service.*;
 
@@ -23,6 +20,23 @@ public class PostUtil {
     private HoleNicknameService holeNicknameService;
     @Resource(name = "postServiceImpl")
     private PostService postService;
+
+    /**
+     * 补充帖子、树洞详细信息中发帖人的信息
+     * @param result
+     * @return
+     */
+    public List<PostInfo> completePostInfo(Result<List<Post>> result){
+        List<PostInfo> postInfos = new ArrayList<>();
+        for (Post post : result.getData()) {
+            PostInfo postInfo = new PostInfo(post);
+            // 补充发帖人信息
+            postInfo.setPoster(userService.getUserByStuId(post.getPosterId()));
+
+            postInfos.add(postInfo);
+        }
+        return postInfos;
+    }
 
     /**
      * 获取帖子和发帖人详细信息

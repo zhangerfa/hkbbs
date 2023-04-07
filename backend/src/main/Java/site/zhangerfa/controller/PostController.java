@@ -18,7 +18,6 @@ import site.zhangerfa.util.HostHolder;
 import site.zhangerfa.util.ImgShackUtil;
 import site.zhangerfa.util.PostUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -62,7 +61,7 @@ public class PostController {
         return new Result<>(result? Code.DELETE_OK: Code.DELETE_ERR, result, (String) map.get("msg"));
     }
 
-    @Tag(name = "帖子（包括树洞）共有")
+    @Tag(name = "帖子、树洞共有")
     @DeleteMapping("/delete/comment/{commentId}")
     @Operation(summary = "删除评论", description = "删除评论及评论中的子评论")
     @ResponseBody
@@ -72,7 +71,7 @@ public class PostController {
         return new Result<>(code, (Boolean) map.get("result"), (String)map.get("msg"));
     }
 
-    @Tag(name = "帖子（包括树洞）共有")
+    @Tag(name = "帖子、树洞共有")
     @Operation(summary = "帖子详情", description = "返回帖子详细数据，包括帖子内容，发布者信息，评论信息，评论的分页信息")
     @Parameters({
             @Parameter(name = "currentPage", description = "当前页码", required = true),
@@ -116,36 +115,7 @@ public class PostController {
             return new Result<>(Code.SAVE_ERR, null, "学号错误");
         Result<List<Post>> result = postService.getOnePagePosts(stuId, page, Constant.ENTITY_TYPE_POST);
         if (result.getCode() == Code.GET_ERR) return new Result<>(Code.GET_ERR, null, result.getMsg());
-        List<PostInfo> postInfos = completePostInfo(result);
+        List<PostInfo> postInfos = postUtil.completePostInfo(result);
         return new Result<>(Code.GET_OK, postInfos, "查询成功");
-    }
-
-    @Tag(name = "树洞")
-    @Operation(summary = "获取一页树洞", description = "返回一页树洞，包含id,标题，内容和作者id，发帖时间，评论数量，热度")
-    @Parameters({
-            @Parameter(name = "currentPage", description = "当前页码", required = true),
-            @Parameter(name = "pageSize", description = "当前页要展示的帖子数量", required = true),
-            @Parameter(name = "stuId", description = "当要获取指定用户发送的树洞时，传入其学号，当要获取最新发布的一页树洞时，传入'0'")
-    })
-    @GetMapping("/holes/{stuId}")
-    public Result<List<PostInfo>> getOnePageHoles(@Parameter(hidden = true)Page page, @PathVariable String stuId){
-        if (stuId == null || (!stuId.equals("0") && !userService.isExist(stuId)))
-            return new Result<>(Code.SAVE_ERR, null, "学号错误");
-        Result<List<Post>> result = postService.getOnePagePosts(stuId, page, Constant.ENTITY_TYPE_HOLE);
-        if (result.getCode() == Code.GET_ERR) return new Result<>(Code.GET_ERR, null, result.getMsg());
-        List<PostInfo> postInfos = completePostInfo(result);
-        return new Result<>(Code.GET_OK, postInfos, "查询成功");
-    }
-
-    private List<PostInfo> completePostInfo(Result<List<Post>> result){
-        List<PostInfo> postInfos = new ArrayList<>();
-        for (Post post : result.getData()) {
-            PostInfo postInfo = new PostInfo(post);
-            // 补充发帖人信息
-            postInfo.setPoster(userService.getUserByStuId(post.getPosterId()));
-
-            postInfos.add(postInfo);
-        }
-        return postInfos;
     }
 }
