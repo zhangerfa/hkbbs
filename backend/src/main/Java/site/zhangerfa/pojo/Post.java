@@ -22,7 +22,7 @@ public class Post {
     @Schema(description = "热度")
     private int hot = 0;
     @Schema(description = "帖子中图片URL集合")
-    private List<Image> images;
+    private List<String> images;
 
     public Post(){}
 
@@ -87,11 +87,11 @@ public class Post {
         this.hot = hot;
     }
 
-    public List<Image> getImages() {
+    public List<String> getImages() {
         return images;
     }
 
-    public void setImages(List<Image> images) {
+    public void setImages(List<String> images) {
         this.images = images;
     }
 }

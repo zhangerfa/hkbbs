@@ -44,7 +44,8 @@ public class PostController {
     public Result<Boolean> addPost(NewPost newPost){
         if (hostHolder.getUser() == null) return new Result<>(Code.SAVE_ERR, false, "用户未登录");
         // 将传入图片上传到图床，并将url集合添加到post中
-        Post post = imgShackUtil.addImagesForPost(newPost);
+        Post post = new Post(newPost);
+        post.setImages(imgShackUtil.getImageUrls(newPost.getImages()));
         // 发布帖子
         String stuId = hostHolder.getUser().getStuId();
         post.setPosterId(stuId);

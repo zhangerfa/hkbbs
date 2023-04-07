@@ -14,11 +14,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-import site.zhangerfa.controller.tool.Code;
-import site.zhangerfa.controller.tool.NewPost;
-import site.zhangerfa.controller.tool.Result;
-import site.zhangerfa.pojo.Image;
-import site.zhangerfa.pojo.Post;
 import site.zhangerfa.pojo.User;
 
 import java.io.File;
@@ -48,21 +43,17 @@ public class ImgShackUtil {
     private String path;
 
     /**
-     * 将图片上传到图床并将URL放入post的图片URL集合中
-     * @param post
+     * 将图片上传到图床并将URL集合返回
      * @param images
+     * @return
      */
-    public Post addImagesForPost(NewPost newPost){
-        // 将传入图片上传到图床，并将url集合添加到card中
-        Post post = new Post(newPost);
-        if (newPost.getImages() != null && newPost.getImages().length > 0){
-            List<Image> imageUrl = new ArrayList<>();
-            for (MultipartFile image : newPost.getImages()) {
-                imageUrl.add(new Image(post.getId(), add(image)));
-            }
-            post.setImages(imageUrl);
+    public List<String> getImageUrls(List<MultipartFile> images){
+        // 将传入图片上传到图床
+        List<String> imageUrl = new ArrayList<>();
+        for (MultipartFile image : images) {
+            imageUrl.add(add(image));
         }
-        return post;
+        return imageUrl;
     }
 
     /**
