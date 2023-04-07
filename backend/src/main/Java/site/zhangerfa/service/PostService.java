@@ -20,9 +20,11 @@ public interface PostService {
 
     /**
      * 获取指定类型的帖子总数
+     * @param postType 当传入 -1 时获取所有卡片总数，否则获取指定类型卡片总数
+     * @param posterId 当传入 "0" 时获取所有用户卡片总数，否则获取指定用户卡片总数
      * @return
      */
-    int getTotalNums(int postType);
+    int getTotalNums(int postType, String posterId);
 
     /**
      * 删除帖子的评论

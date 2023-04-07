@@ -105,8 +105,8 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public int getTotalNums(int postType) {
-        return postMapper.getNumOfPosts(postType);
+    public int getTotalNums(int postType, String posterId) {
+        return postMapper.getNumOfPosts(postType, posterId);
     }
 
     @Override
@@ -144,7 +144,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public Result<List<Post>> getOnePagePosts(String stuId, Page page, int postType) {
         if (stuId == null) return new Result<>(Code.GET_ERR, null, "未输入学号");
-        page.completePage(getTotalNums(postType));
+        page.completePage(getTotalNums(postType, stuId));
         List<Post> posts = postMapper.selectOnePagePosts(postType, stuId, page.getOffset(), page.getLimit());
         // 补充帖子中的图片
         for (Post post : posts) {

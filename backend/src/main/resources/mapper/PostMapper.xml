@@ -38,7 +38,14 @@
     </select>
     <select id="getNumOfPosts" resultType="java.lang.Integer">
         select count(*) from post
-        where type = #{postType}
+        <where>
+            <if test="postType != -1">
+                type = #{postType}
+            </if>
+            <if test="posterId != '0'">
+                and poster_id = posterId
+            </if>
+        </where>
     </select>
     <select id="selectPostById" resultType="Post">
         select <include refid="select"/>

@@ -25,10 +25,12 @@ public interface PostMapper {
     List<Post> selectOnePagePosts(int postType, String posterId, int offset, int limit);
 
     /**
-     * 获取传入类型的卡片总数
+     * 获取卡片总数
+     * @param postType 当传入 -1 时获取所有卡片总数，否则获取指定类型卡片总数
+     * @param posterId 当传入 "0" 时获取所有用户卡片总数，否则获取指定用户卡片总数
      * @return
      */
-    int getNumOfPosts(int postType);
+    int getNumOfPosts(int postType, String posterId);
 
     /**
      * 新增帖子
