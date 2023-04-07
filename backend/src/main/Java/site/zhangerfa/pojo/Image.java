@@ -14,8 +14,9 @@ public class Image {
     @Schema(description = "图片URL")
     private String url;
 
-    public Image(int postId, String url){
-        this.entityId = postId;
+    public Image(int entityType, int entityId, String url){
+        this.entityId = entityId;
+        this.entityType = entityType;
         this.url = url;
     }
 
@@ -33,13 +34,5 @@ public class Image {
 
     public void setEntityId(int entityId) {
         this.entityId = entityId;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
     }
 }

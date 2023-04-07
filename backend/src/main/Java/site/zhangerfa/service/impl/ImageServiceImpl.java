@@ -22,8 +22,8 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public List<Image> getImagesForEntity(int entityType, int entityId) {
-        List<Image> imageForPost = imageMapper.getImageForEntity(entityType, entityId);
+    public List<String> getImagesForEntity(int entityType, int entityId) {
+        List<String> imageForPost = imageMapper.getImageForEntity(entityType, entityId);
         if (imageForPost == null) return new ArrayList<>();
         else return imageForPost;
     }

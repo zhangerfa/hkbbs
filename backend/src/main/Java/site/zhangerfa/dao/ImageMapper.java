@@ -35,8 +35,8 @@ public interface ImageMapper {
      * @param
      * @return
      */
-    @Select("select * from image where entity_type = #{entityType} and entity_id = #{entityId}")
-    List<Image> getImageForEntity(int entityType, int entityId);
+    @Select("select url from image where entity_type = #{entityType} and entity_id = #{entityId}")
+    List<String> getImageForEntity(int entityType, int entityId);
 
     @Select("select * from image where id = #{id}")
     Image getImageById(int id);

@@ -14,7 +14,7 @@ public interface ImageService {
      * @param
      * @return
      */
-    List<Image> getImagesForEntity(int entityType, int entityId);
+    List<String> getImagesForEntity(int entityType, int entityId);
 
     boolean deleteImageById(int id);
 
