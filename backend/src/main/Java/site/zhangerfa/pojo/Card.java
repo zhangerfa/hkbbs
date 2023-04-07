@@ -15,8 +15,8 @@ public class Card {
     String age;
     @Schema(title = "关于我", description = "自我介绍")
     String aboutMe;
-    @Schema(title = "交友目标", description = "0-恋爱， 1-电子游戏， 2-桌游， 3-学习")
-    int goal;
+    @Schema(title = "交友目标", description = "0-恋爱， 1-电子游戏， 2-桌游， 3-学习, -1-默认")
+    int goal = -1;
     @Schema(description = "期望的TA", defaultValue = "描述期望中的理想征友对象")
     String expected;
     @Schema(description = "发布时间")
