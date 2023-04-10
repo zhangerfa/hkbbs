@@ -51,7 +51,9 @@ public class HoleController{
     public Result<Boolean> addHole(NewPost newPost){
         if (hostHolder.getUser() == null) return new Result<>(Code.SAVE_ERR, false, "用户未登录");
         // 将传入图片上传到图床，并将url集合添加到card中
-        Post post = imgShackUtil.addImagesForPost(newPost);
+        List<String> imageUrls = imgShackUtil.getImageUrls(newPost.getImages());
+        Post post = new Post(newPost);
+        post.setImages(imageUrls);
         // 发布卡片
         String stuId = hostHolder.getUser().getStuId();
         post.setPosterId(stuId);
