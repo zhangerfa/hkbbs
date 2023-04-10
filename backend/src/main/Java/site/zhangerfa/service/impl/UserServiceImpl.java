@@ -5,10 +5,6 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.multipart.MultipartFile;
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.Context;
-import site.zhangerfa.controller.tool.Result;
-import site.zhangerfa.dao.LoginTicketMapper;
 import site.zhangerfa.dao.UserMapper;
 import site.zhangerfa.pojo.LoginTicket;
 import site.zhangerfa.pojo.User;
@@ -23,8 +19,6 @@ import java.util.*;
 public class UserServiceImpl implements UserService {
     @Resource
     private UserMapper userMapper;
-    @Resource
-    private TemplateEngine templateEngine;
     @Resource
     private MailClient mailClient;
     @Resource
@@ -146,12 +140,8 @@ public class UserServiceImpl implements UserService {
         session.setAttribute("code", code);
         System.out.println(code);
         // 设置thymeleaf参数
-        Context context = new Context();
-        context.setVariable("code", code);
-        // 生成动态HTML
-        String content = templateEngine.process("mail/register.html", context);
         // 发送邮件
-        return mailClient.send(stuId + "@hust.edu.cn", subject, content);
+        return mailClient.send(stuId + "@hust.edu.cn", subject, code);
     }
 
     @Override
