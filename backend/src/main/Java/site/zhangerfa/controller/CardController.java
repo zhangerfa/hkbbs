@@ -41,7 +41,7 @@ public class CardController {
         return new Result<>(Code.SAVE_OK, true);
     }
 
-    @Operation(description = "删除卡片")
+    @Operation(summary = "删除卡片", description = "删除卡片")
     @DeleteMapping("/{cardId}")
     public Result<Boolean> deleteCard(@PathVariable int cardId){
         if (cardService.getById(cardId) == null)
@@ -50,7 +50,7 @@ public class CardController {
         return new Result<>(Code.DELETE_OK, true);
     }
 
-    @Operation(description = "修改卡片的文字内容，包括修改 关于我 期望中的TA")
+    @Operation(summary = "修改卡片", description = "修改卡片的文字内容，包括修改 关于我 期望中的TA")
     @PutMapping("/{cardId}")
     public Result<Boolean> updateCard(@PathVariable int cardId, String aboutMe, String expected){
         if (cardService.getById(cardId) == null)
@@ -61,7 +61,7 @@ public class CardController {
         return new Result<>(Code.UPDATE_OK, true);
     }
 
-    @Operation(description = "获取指定id的卡片信息，包含其发布者的信息")
+    @Operation(summary = "获取卡片", description = "获取指定id的卡片信息，包含其发布者的信息")
     @GetMapping("/{cardId}")
     public Result<CardContainsPoster> getCard(@PathVariable int cardId){
         if (cardService.getById(cardId) == null)
@@ -69,7 +69,7 @@ public class CardController {
         return new Result<>(Code.GET_OK, cardService.getById(cardId));
     }
 
-    @Operation(description = "获取一页卡片")
+    @Operation(summary = "获取一页卡片", description = "获取一页卡片")
     @GetMapping("/")
     @Parameters({
             @Parameter(name = "currentPage", description = "当前页码", required = true),
