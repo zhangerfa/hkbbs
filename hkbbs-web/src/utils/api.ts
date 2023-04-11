@@ -5,27 +5,28 @@ const TIMEOUT = 10000
 
 const req = new Request(BASE_URL, TIMEOUT)
 
+
 //card 卡片
 class Card {
 
-    URL = "/cards/"
+    private static path = "/cards/"
 
     static get(args: { posterId: string, goal: number, currentPage: number, pageSize: number }): Promise<any> {
         return req.get({
-            url: URL.toString(),
+            url: this.path,
             params: args
         })
     }
 
     static getById(args: { cardId: number }): Promise<any> {
         return req.get({
-            url: URL.toString() + args.cardId.toString()
+            url: this.path + args.cardId.toString()
         })
     }
 
     static publish(args: { posterId: string, images: string[], aboutMe: string, goal: number, expected: string }): Promise<any> {
         return req.post({
-            url: URL.toString(),
+            url: this.path,
             data: {
                 newCard: args
             }
@@ -35,7 +36,7 @@ class Card {
 
     static update(args: { cardId: number, aboutMe: string, expected: string }): Promise<any> {
         return req.put({
-            url: URL.toString() + args.cardId.toString(),
+            url: this.path + args.cardId.toString(),
             data: {
                 aboutMe: args.aboutMe,
                 expected: args.expected
@@ -45,7 +46,7 @@ class Card {
 
     static delete(args: { cardId: number }): Promise<any> {
         return req.delete({
-            url: URL.toString() + args.cardId.toString()
+            url: this.path + args.cardId.toString()
         })
     }
 }
@@ -53,11 +54,11 @@ class Card {
 //hole 树洞
 class Hole {
 
-    URL = "/holes/"
+    private static path = "/holes/"
 
     static get(args: { stuId: string, currentPage: string, pageSize: string }): Promise<any> {
         return req.get({
-            url: URL.toString() + args.stuId,
+            url: this.path + args.stuId,
             params: {
                 currentPage: args.currentPage,
                 pageSize: args.pageSize
@@ -67,7 +68,7 @@ class Hole {
 
     static publish(args: { title: string, content: string, images: string[] }): Promise<any> {
         return req.post({
-            url: URL.toString(),
+            url: this.path,
             data: {
                 newPost: args
             }
@@ -76,14 +77,14 @@ class Hole {
 
     static comment(args: { cardId: number, entityType: string, entityId: string, content: string }): Promise<any> {
         return req.post({
-            url: URL.toString() + "comment",
+            url: this.path + "comment",
             data: args
         })
     }
 
     static delete(args: { postId: number }): Promise<any> {
         return req.delete({
-            url: URL.toString() + "delete/post/" + args.postId.toString()
+            url: this.path + "delete/post/" + args.postId.toString()
         })
     }
 }
@@ -91,11 +92,11 @@ class Hole {
 //post 帖子
 class Post {
 
-    URL = "/"
+    private static path = "/"
 
     static get(args: { stuId: string, currentPage: string, pageSize: string }): Promise<any> {
         return req.get({
-            url: URL.toString() + args.stuId,
+            url: this.path + args.stuId,
             params: {
                 currentPage: args.currentPage,
                 pageSize: args.pageSize
@@ -105,7 +106,7 @@ class Post {
 
     static publish(args: { title: string, content: string, images: string[] }): Promise<any> {
         return req.post({
-            url: URL.toString(),
+            url: this.path,
             data: {
                 newPost: args
             }
@@ -114,14 +115,14 @@ class Post {
 
     static comment(args: { cardId: number, entityType: string, entityId: string, content: string }): Promise<any> {
         return req.post({
-            url: URL.toString() + "comment",
+            url: this.path + "comment",
             data: args
         })
     }
 
     static delete(args: { postId: number }): Promise<any> {
         return req.delete({
-            url: URL.toString() + "delete/" + args.postId.toString()
+            url: this.path + "delete/" + args.postId.toString()
         })
     }
 }
@@ -148,25 +149,25 @@ class Both {
 //notice 通知
 class Notice {
 
-    URL = "/notices/"
+    private static path = "/notices/"
 
     static get(args: { currentPage: number, pageSize: number }): Promise<any> {
         return req.get({
-            url: URL.toString(),
+            url: this.path,
             params: args
         })
     }
 
     static readCount(args: { ids: number[] }): Promise<any> {
         return req.put({
-            url: URL.toString() + "read",
+            url: this.path + "read",
             data: args
         })
     }
 
     static unreadCount(args: { actionType: number }): Promise<any> {
         return req.get({
-            url: URL.toString() + "unread",
+            url: this.path + "unread",
             params: args
         })
     }
@@ -175,51 +176,51 @@ class Notice {
 //user 用户
 class User {
 
-    URL = "/users/"
+    private static path = "/users/"
 
     static get(args: { stuId: string }): Promise<any> {
         return req.get({
-            url: URL.toString() + args.stuId,
+            url: this.path + args.stuId,
         })
     }
 
     static login(args: { rememberMe: boolean, stuId: string, password: string }): Promise<any> {
         return req.post({
-            url: URL.toString() + "login",
+            url: this.path + "login",
             data: args
         })
     }
 
     static logout(): Promise<any> {
         return req.put({
-            url: URL.toString() + "logout"
+            url: this.path + "logout"
         })
     }
 
     static register(args: { code: string, stuId: string, username: string, password: string }): Promise<any> {
         return req.post({
-            url: URL.toString() + "register",
+            url: this.path + "register",
             data: args
         })
     }
 
     static change(args: { newPassword: string, username: string }): Promise<any> {
         return req.put({
-            url: URL.toString(),
+            url: this.path,
             data: args
         })
     }
 
     static exist(args: { stuId: string }): Promise<any> {
         return req.get({
-            url: URL.toString() + "isExist",
+            url: this.path + "isExist",
             params: args
         })
     }
 
     static sendCode(args: { stuId: string }): Promise<any> {
         return req.get({
-            url: URL.toString() + "sendCode",
+            url: this.path + "sendCode",
             params: args
         })
     }
