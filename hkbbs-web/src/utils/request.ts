@@ -1,23 +1,20 @@
-import axios, {AxiosInstance} from 'axios'
-
-const BASE_URL = "http://zhangerfa.site"
-const TIMEOUT = 10000
+import axios, { AxiosInstance } from 'axios'
 
 // 二次封装axios
-class Request{
+class Request {
     instance: AxiosInstance
-    constructor(baseURL: string, timeout: number= 10000) {
+    constructor(baseURL: string, timeout: number = 10000) {
         this.instance = axios.create({
             baseURL,
             timeout
         })
-
+        //添加请求拦截器
         this.instance.interceptors.request.use(config => {
             return config
         }, err => {
             return err
         })
-
+        //添加响应拦截器
         this.instance.interceptors.response.use(res => {
             return res
         }, err => {
@@ -35,13 +32,25 @@ class Request{
         })
     }
 
-    get(config: any) {
+    get(config: {url:string,params?:any}):Promise<any> {
         return this.request({ ...config, method: "get" })
     }
 
-    post(config: any) {
+    post(config: {url:string,data:any}):Promise<any> {
         return this.request({ ...config, method: "post" })
+    }
+
+    put(config: {url:string,data?:any}):Promise<any> {
+        return this.request({ ...config, method: "put" })
+    }
+
+    delete(config: {url:string}):Promise<any> {
+        return this.request({ ...config, method: "delete" })
+    }
+
+    setToken(token:string):void{
+        this.instance.defaults.headers.common['Authorization'] = token
     }
 }
 
-export default new Request(BASE_URL, TIMEOUT)
+export default Request;
