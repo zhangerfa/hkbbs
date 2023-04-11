@@ -32,22 +32,25 @@ class Request {
         })
     }
 
-    get(config: any) {
+    get(config: {url:string,params?:any}):Promise<any> {
         return this.request({ ...config, method: "get" })
     }
 
-    post(config: any) {
+    post(config: {url:string,data:any}):Promise<any> {
         return this.request({ ...config, method: "post" })
     }
 
-    put(config: any) {
+    put(config: {url:string,data?:any}):Promise<any> {
         return this.request({ ...config, method: "put" })
     }
 
-    delete(config: any) {
+    delete(config: {url:string}):Promise<any> {
         return this.request({ ...config, method: "delete" })
     }
 
+    setToken(token:string):void{
+        this.instance.defaults.headers.common['Authorization'] = token
+    }
 }
 
 export default Request;
