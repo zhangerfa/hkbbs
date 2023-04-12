@@ -36,7 +36,7 @@ public class NoticeController {
     @Resource
     private CommentService commentService;
 
-    @GetMapping("")
+    @GetMapping("/")
     @Operation(summary = "获取一页通知", description = "获取当前会话用户的一页通知，当未读通知数量≥一页通知的个数时返回最新的一页未读通知，" +
             "当未读通知不满一页时使用最新的已读通知填充")
     @Parameters({

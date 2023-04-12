@@ -40,7 +40,7 @@ public class PostController {
 
     @Tag(name = "帖子")
     @Operation(summary = "发布帖子", description = "传入标题和内容，图片是可选的，可以传入若干张图片")
-    @PostMapping(value = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/posts/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public Result<Boolean> addPost(NewPost newPost){
         if (hostHolder.getUser() == null) return new Result<>(Code.SAVE_ERR, false, "用户未登录");
         // 将传入图片上传到图床，并将url集合添加到post中
@@ -54,7 +54,7 @@ public class PostController {
     }
 
     @Tag(name = "帖子")
-    @DeleteMapping("/delete/{postId}")
+    @DeleteMapping("/posts/delete/{postId}")
     @Operation(summary = "删除帖子", description = "删除帖子及帖子中所有评论")
     public Result<Boolean> delete(@PathVariable int postId){
         Map<String, Object> map = postService.deleteById(postId);
@@ -87,7 +87,7 @@ public class PostController {
 
     @Tag(name = "帖子")
     @Operation(summary = "发布评论（包括对评论评论）", description = "需要传入被评论实体的类型和id，以及被评论实体所属的帖子id")
-    @PostMapping("/comment")
+    @PostMapping("/posts/comment")
     @Parameters({
             @Parameter(name = "entityType", description = "被评论实体的类型", required = true),
             @Parameter(name = "entityId", description = "被评论实体的id", required = true),
@@ -110,7 +110,7 @@ public class PostController {
             @Parameter(name = "pageSize", description = "当前页要展示的帖子数量", required = true),
             @Parameter(name = "stuId", description = "当要获取指定用户发送的帖子时，传入其学号，当要获取最新发布的一页帖子时，传入'0'")
     })
-    @GetMapping("/{stuId}")
+    @GetMapping("/posts/{stuId}")
     public Result<List<PostInfo>> getOnePagePosts(@Parameter(hidden = true)Page page, @PathVariable String stuId){
         if (stuId == null || (!stuId.equals("0") && !userService.isExist(stuId)))
             return new Result<>(Code.SAVE_ERR, null, "学号错误");

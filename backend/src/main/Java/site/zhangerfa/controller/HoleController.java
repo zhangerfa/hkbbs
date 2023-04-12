@@ -46,7 +46,7 @@ public class HoleController{
     @Resource
     private UserService userService;
 
-    @PostMapping
+    @PostMapping("/")
     @Operation(summary = "发布树洞", description = "传入标题和内容，图片是可选的，可以传入若干张图片")
     public Result<Boolean> addHole(NewPost newPost){
         if (hostHolder.getUser() == null) return new Result<>(Code.SAVE_ERR, false, "用户未登录");

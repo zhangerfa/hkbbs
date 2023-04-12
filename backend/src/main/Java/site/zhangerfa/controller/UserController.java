@@ -107,7 +107,7 @@ public class UserController {
     }
 
     @Operation(summary = "修改用户信息", description = "用户名、密码、头像传入非空则进行修改")
-    @PutMapping
+    @PutMapping("/")
     public Result<Boolean> updateUser(@Parameter(description = "新密码", schema = @Schema(pattern = "[a-zA-Z0-9]{6,16}"))
                                           @RequestParam(required = false) String newPassword,
                                       @Parameter(description = "新用户名") @RequestParam(required = false) String username,
