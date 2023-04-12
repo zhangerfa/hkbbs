@@ -9,7 +9,7 @@ const req = new Request(BASE_URL, TIMEOUT)
 //card 卡片
 class Card {
 
-    private static path = "/cards/"
+    private static path: string = "/cards/"
 
     static get(args: { posterId: string, goal: number, currentPage: number, pageSize: number }): Promise<any> {
         return req.get({
@@ -54,7 +54,7 @@ class Card {
 //hole 树洞
 class Hole {
 
-    private static path = "/holes/"
+    private static path: string = "/holes/"
 
     static get(args: { stuId: string, currentPage: string, pageSize: string }): Promise<any> {
         return req.get({
@@ -92,7 +92,7 @@ class Hole {
 //post 帖子
 class Post {
 
-    private static path = "/"
+    private static path: string = "/posts/"
 
     static get(args: { stuId: string, currentPage: string, pageSize: string }): Promise<any> {
         return req.get({
@@ -149,7 +149,7 @@ class Both {
 //notice 通知
 class Notice {
 
-    private static path = "/notices/"
+    private static path: string = "/notices/"
 
     static get(args: { currentPage: number, pageSize: number }): Promise<any> {
         return req.get({
@@ -176,7 +176,7 @@ class Notice {
 //user 用户
 class User {
 
-    private static path = "/users/"
+    private static path: string = "/users/"
 
     static get(args: { stuId: string }): Promise<any> {
         return req.get({
@@ -226,4 +226,6 @@ class User {
     }
 }
 
-export default { Card, Hole, Post, Both, Notice, User }
+const api = { Card, Hole, Post, Both, Notice, User }
+
+export default api
