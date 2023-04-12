@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import site.zhangerfa.controller.tool.Code;
@@ -107,11 +108,13 @@ public class UserController {
     }
 
     @Operation(summary = "修改用户信息", description = "用户名、密码、头像传入非空则进行修改")
-    @PutMapping("/")
-    public Result<Boolean> updateUser(@Parameter(description = "新密码", schema = @Schema(pattern = "[a-zA-Z0-9]{6,16}"))
-                                          @RequestParam(required = false) String newPassword,
-                                      @Parameter(description = "新用户名") @RequestParam(required = false) String username,
-                                      @Parameter(description = "新头像") @RequestParam(required = false) MultipartFile headerImage){
+    @PutMapping(value = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Parameters({@Parameter(name = "newPassword", description = "新密码", schema = @Schema(pattern = "[a-zA-Z0-9]{6,16}")),
+            @Parameter(name = "username",description = "新用户名")})
+    public Result<Boolean> updateUser(@RequestParam(required = false) String newPassword,
+                                      @RequestParam(required = false) String username,
+                                      @Parameter(description = "新头像") @RequestPart(required = false)
+                                          MultipartFile headerImage){
         User user = hostHolder.getUser();
         if (user == null) return new Result<>(Code.UPDATE_ERR, false, "用户未登录");
         String stuId = user.getStuId();

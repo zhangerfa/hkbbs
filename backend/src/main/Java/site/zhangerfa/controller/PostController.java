@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import site.zhangerfa.controller.tool.*;
 import site.zhangerfa.event.EventProducer;
 import site.zhangerfa.event.EventUtil;
@@ -41,11 +42,14 @@ public class PostController {
     @Tag(name = "帖子")
     @Operation(summary = "发布帖子", description = "传入标题和内容，图片是可选的，可以传入若干张图片")
     @PostMapping(value = "/posts/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public Result<Boolean> addPost(NewPost newPost){
+    @Parameters({@Parameter(name = "title", description = "标题"),
+            @Parameter(name = "content", description = "内容")})
+    public Result<Boolean> addPost(String title, String content,
+                                   @RequestPart @Parameter(description = "图片集合，可选") List<MultipartFile> images){
         if (hostHolder.getUser() == null) return new Result<>(Code.SAVE_ERR, false, "用户未登录");
         // 将传入图片上传到图床，并将url集合添加到post中
-        Post post = new Post(newPost);
-        post.setImages(imgShackUtil.getImageUrls(newPost.getImages()));
+        Post post = new Post(title, content);
+        post.setImages(imgShackUtil.getImageUrls(images));
         // 发布帖子
         String stuId = hostHolder.getUser().getStuId();
         post.setPosterId(stuId);
@@ -89,7 +93,7 @@ public class PostController {
     @Operation(summary = "发布评论（包括对评论评论）", description = "需要传入被评论实体的类型和id，以及被评论实体所属的帖子id")
     @PostMapping("/posts/comment")
     @Parameters({
-            @Parameter(name = "entityType", description = "被评论实体的类型", required = true),
+            @Parameter(name = "entityType", description = "被评论实体的类型（1-帖子， 3-评论）", required = true),
             @Parameter(name = "entityId", description = "被评论实体的id", required = true),
             @Parameter(name = "content", description = "评论内容", required = true),
             @Parameter(name = "postId", description = "被评论实体所属帖子的id", required = true)

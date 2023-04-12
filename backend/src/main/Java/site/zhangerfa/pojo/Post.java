@@ -1,7 +1,6 @@
 package site.zhangerfa.pojo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import site.zhangerfa.controller.tool.NewPost;
 
 import java.util.Date;
 import java.util.List;
@@ -26,9 +25,9 @@ public class Post {
 
     public Post(){}
 
-    public Post(NewPost newPost){
-        title = newPost.getTitle();
-        content = newPost.getContent();
+    public Post(String title, String content){
+        this.title = title;
+        this.content = content;
     }
 
     public int getId() {

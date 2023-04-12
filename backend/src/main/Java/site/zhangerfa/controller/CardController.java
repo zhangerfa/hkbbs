@@ -59,7 +59,8 @@ public class CardController {
 
     @Operation(summary = "修改卡片", description = "修改卡片的文字内容，包括修改 关于我 期望中的TA。只需为需要修改值的字段传入新值")
     @PutMapping("/{cardId}")
-    public Result<Boolean> updateCard(@PathVariable int cardId, String aboutMe, String expected){
+    public Result<Boolean> updateCard(@PathVariable int cardId, @RequestParam(required = false) String aboutMe,
+                                      @RequestParam(required = false) String expected){
         if (cardService.getById(cardId) == null)
             return new Result<>(Code.UPDATE_ERR, false, "您要修改的卡片不存在");
         CardContainStuId card = new CardContainStuId(aboutMe, expected);
