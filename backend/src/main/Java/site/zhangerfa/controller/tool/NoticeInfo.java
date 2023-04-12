@@ -3,7 +3,7 @@ package site.zhangerfa.controller.tool;
 import io.swagger.v3.oas.annotations.media.Schema;
 import site.zhangerfa.pojo.User;
 
-@Schema(name = "通知信息", description = "谁对一个帖子中的实体进行了什么动作" +
+@Schema(description = "谁对一个帖子中的实体进行了什么动作" +
         "actionUser.username + actionType + \"了您的\" + entityType + \"(\" +\n" +
         "        entityContent + \"):\" + actionContent" +
         "举例：东九小韭菜评论了您的帖子（今晚三国杀）:约呀")

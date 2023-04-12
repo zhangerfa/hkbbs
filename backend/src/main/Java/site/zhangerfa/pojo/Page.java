@@ -3,7 +3,7 @@ package site.zhangerfa.pojo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@Schema(name = "分页", description = "记录分页信息，并封装当前页的数据")
+@Schema(description = "记录分页信息，并封装当前页的数据")
 public class Page {
     @Schema(description = "当前页码")
     private int currentPage = 1;

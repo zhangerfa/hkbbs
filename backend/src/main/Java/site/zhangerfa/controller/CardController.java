@@ -31,7 +31,7 @@ public class CardController {
     @PostMapping(value = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Parameters({@Parameter(name = "posterId", description = "发布者学号"),
             @Parameter(name = "aboutMe", description = "关于我：自我介绍"),
-            @Parameter(name = "goal", description = "交友目标: 0-恋爱， 1-电子游戏， 2-桌游， 3-学习, 4-运动, 5-旅游, 6-散步, -1-默认"),
+            @Parameter(name = "goal", description = "交友目标: 0-恋爱， 1-电子游戏， 2-桌游， 3-学习, 4-运动, 5-旅游, 6-散步"),
             @Parameter(name = "expected", description = "期望的TA:描述期望中的理想征友对象")
     })
     public Result<Boolean> addCard( String posterId, String aboutMe, int goal, String expected,
