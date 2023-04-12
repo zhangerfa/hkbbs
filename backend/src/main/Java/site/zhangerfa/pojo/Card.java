@@ -10,9 +10,10 @@ import java.util.List;
 public class Card {
     public Card(){}
 
-    public Card(String aboutMe, String expect){
+    public Card(String aboutMe, String expect, int goal){
         this.aboutMe = aboutMe;
         this.expected = expect;
+        this.goal = goal;
     }
     int id;
     @Schema(description = "照片url集合")
@@ -27,6 +28,11 @@ public class Card {
     String expected;
     @Schema(description = "发布时间")
     Date create_time;
+
+    public Card(String aboutMe, String expect) {
+        this.aboutMe = aboutMe;
+        this.expected = expect;
+    }
 
     /**
      * 由学号推出年级（如果本科毕业两年称为大六）
