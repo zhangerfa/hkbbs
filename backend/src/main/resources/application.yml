@@ -1,5 +1,5 @@
 server:
-  port: 8019
+  port: 80
   # 开发阶段浏览器不设置缓存，静态资源更新后立马就能访问到
   tomcat:
     processor-cache: 0
@@ -101,3 +101,14 @@ springdoc:
       packages-to-scan: site.zhangerfa.controller, site.zhangerfa.pojo
       # 注释文档要包含的路径列表
       paths-to-match: '/**'
+
+knife4j:
+  enable: true
+  setting:
+    language: zh-CN
+  basic:
+    enable: true
+    # Basic认证用户名
+    username: admin
+    # Basic认证密码
+    password: hkbbs
