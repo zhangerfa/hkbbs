@@ -7,4 +7,11 @@ import Tabbar from "./components/Tabbar/Tabbar.vue";
   <Tabbar />
 </template>
 
-<style scoped></style>
+<style scoped>
+@import "./assets/styles/common.scss";
+body,
+html,
+#app {
+  background-color: #f1f1f1;
+}
+</style>
