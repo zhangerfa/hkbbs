@@ -44,7 +44,7 @@ public class CardServiceImpl implements CardService {
     public boolean update(CardContainStuId card) {
         CardContainsPoster oldCard = cardMapper.selectById(card.getId());
         if (card.getAboutMe() == null) card.setAboutMe(oldCard.getAboutMe());
-        if (card.getGoal() == Goal.DEFAULT) card.setGoal(oldCard.getGoal());
+        if (card.getGoal() == -1) card.setGoal(oldCard.getGoal());
         if (card.getExpected() == null) card.setExpected(oldCard.getExpected());
         return cardMapper.updateCard(card) > 0;
     }

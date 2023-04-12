@@ -36,8 +36,8 @@ public class HoleNicknameImpl implements HoleNicknameService {
         do {
             // 生成字符索引
             Random random = new Random();
-            nicknameIndex += random.nextInt(Constant.FIRSTNAME.length);
-            nicknameIndex += (";" + random.nextInt(Constant.SECONDNAME.length));
+            nicknameIndex += random.nextInt(Constant.FIRST_NAME.length);
+            nicknameIndex += (";" + random.nextInt(Constant.SECOND_NAME.length));
         } while (nicknamesSet.contains(nicknameIndex));
         int insertNum = holeNicknameMapper.insertHoleNickname(holeId, posterId, nicknameIndex);
         return insertNum > 0;
@@ -59,8 +59,8 @@ public class HoleNicknameImpl implements HoleNicknameService {
         String[] indexArray = nicknameIndex.split(";");
         // 从字符集中获取字符
         String nickname = "";
-        nickname += Constant.FIRSTNAME[Integer.parseInt(indexArray[0])];
-        nickname += Constant.SECONDNAME[Integer.parseInt(indexArray[1])];
+        nickname += Constant.FIRST_NAME[Integer.parseInt(indexArray[0])];
+        nickname += Constant.SECOND_NAME[Integer.parseInt(indexArray[1])];
 
         return nickname;
     }

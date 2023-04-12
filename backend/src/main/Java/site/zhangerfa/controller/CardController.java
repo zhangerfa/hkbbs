@@ -80,15 +80,12 @@ public class CardController {
 
     @Operation(summary = "获取一页卡片", description = "获取一页卡片")
     @GetMapping("/")
-    @Parameters({
-            @Parameter(name = "currentPage", description = "当前页码", required = true),
-            @Parameter(name = "pageSize", description = "当前页要展示的帖子数量", required = true),
-            @Parameter(name = "posterId", description = "当要获取指定用户发送的卡片时，传入其学号，当要获取最新发布的一页帖子时，传入'0'"),
-            @Parameter(name = "goal", description = "当要获取指定指定类型的卡片时，传入卡片类型编号，否则传入-1，获取所有类型的卡片")
-    })
-    public Result<List<CardContainsPoster>> getOnePageCards(@Parameter(hidden = true) Page page,
-                                                            String posterId, int goal){
-        return new Result<>(Code.GET_OK, cardService.getOnePageCards(posterId, page, goal));
+    @Parameter(name = "posterId", description = "当要获取指定用户发送的卡片时，传入其学号，当要获取最新发布的一页帖子时，传入'0'")
+    public Result<List<CardContainsPoster>> getOnePageCards(InPage inPage,
+                                                            String posterId,
+                                                            Goal goal){
+        Page page = new Page(inPage);
+        return new Result<>(Code.GET_OK, cardService.getOnePageCards(posterId, page, goal.getCode()));
     }
 
 }

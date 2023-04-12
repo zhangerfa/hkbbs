@@ -1,4 +1,4 @@
-package site.zhangerfa.util;
+package site.zhangerfa.Constant;
 
 public class Constant {
     /**
@@ -28,14 +28,6 @@ public class Constant {
     }
 
     /**
-     * 交友目标
-     */
-    public static final int CARD_GOAL_LOVE = 0;
-    public static final int CARD_GOAL_GAME = 1;
-    public static final int CARD_GOAL_BOARD_GAME = 2;
-    public static final int CARD_GOAL_STUDY = 3;
-
-    /**
      * 性别
      */
     public static final int GENDER_MALE = 0;
@@ -59,10 +51,10 @@ public class Constant {
     /**
      * 树洞随机昵称生成用的字符集
      */
-    public static String[] FIRSTNAME = {"西一", "西二", "百惠园", "美食屋", "西华园", "百景园",
+    public static String[] FIRST_NAME = {"西一", "西二", "百惠园", "美食屋", "西华园", "百景园",
             "喻园", "集锦园", "集贤楼", "紫荆园", "东一", "东三", "东四", "韵苑",
             "学一", "学二", "东园", "东篱", "东教工"};
-    public static String[] SECONDNAME = {"蒸羊羔", "蒸熊掌", "蒸鹿尾", "烧花鸭", "烧雏鸡",
+    public static String[] SECOND_NAME = {"蒸羊羔", "蒸熊掌", "蒸鹿尾", "烧花鸭", "烧雏鸡",
             "烧子鹅", "炉猪", "炉鸭", "酱鸡", "腊肉", "松花", "小肚", "晾肉",
             "香肠", "什锦苏盘", "熏鸡白肚", "清蒸八宝猪", "江米酿鸭子",
             "罐野鸡", "罐鹌鹑", "卤什件", "卤子鹅", "山鸡", "兔脯", "菜蟒",

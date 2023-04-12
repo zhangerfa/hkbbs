@@ -78,13 +78,10 @@ public class PostController {
 
     @Tag(name = "帖子、树洞共有")
     @Operation(summary = "帖子、树洞详情", description = "返回帖子或树洞中的详细数据，包括帖子或树洞内容，发布者信息，评论信息，评论的分页信息")
-    @Parameters({
-            @Parameter(name = "currentPage", description = "当前页码", required = true),
-            @Parameter(name = "pageSize", description = "当前页要展示的评论数量", required = true),
-    })
     @GetMapping("/details/{postId}")
     public Result<PostDetails<Post>> getDetails(@PathVariable @Parameter(description = "帖子或树洞id") int postId,
-                                                @Parameter(hidden = true) Page page){
+                                                InPage inPage){
+        Page page = new Page(inPage);
         return postUtil.getPostAndPosterDetails(postId, new Page(1,
                 page.getPageSize()), postService.getPostType(postId));
     }
@@ -109,13 +106,10 @@ public class PostController {
 
     @Tag(name = "帖子")
     @Operation(summary = "获取一页帖子", description = "返回一页帖子，包含id,标题，内容和作者id，发帖时间，评论数量，热度")
-    @Parameters({
-            @Parameter(name = "currentPage", description = "当前页码", required = true),
-            @Parameter(name = "pageSize", description = "当前页要展示的帖子数量", required = true),
-            @Parameter(name = "stuId", description = "当要获取指定用户发送的帖子时，传入其学号，当要获取最新发布的一页帖子时，传入'0'")
-    })
+    @Parameter(name = "stuId", description = "当要获取指定用户发送的帖子时，传入其学号，当要获取最新发布的一页帖子时，传入'0'")
     @GetMapping("/posts/{stuId}")
-    public Result<List<PostInfo>> getOnePagePosts(@Parameter(hidden = true)Page page, @PathVariable String stuId){
+    public Result<List<PostInfo>> getOnePagePosts(InPage inPage, @PathVariable String stuId){
+        Page page = new Page(inPage);
         if (stuId == null || (!stuId.equals("0") && !userService.isExist(stuId)))
             return new Result<>(Code.SAVE_ERR, null, "学号错误");
         Result<List<Post>> result = postService.getOnePagePosts(stuId, page, Constant.ENTITY_TYPE_POST);

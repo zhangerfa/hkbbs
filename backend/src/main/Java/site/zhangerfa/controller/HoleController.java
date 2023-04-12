@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import site.zhangerfa.Constant.Constant;
 import site.zhangerfa.controller.tool.Code;
+import site.zhangerfa.controller.tool.InPage;
 import site.zhangerfa.controller.tool.PostInfo;
 import site.zhangerfa.controller.tool.Result;
 import site.zhangerfa.event.EventProducer;
@@ -71,10 +72,11 @@ public class HoleController{
             @Parameter(name = "entityType", description = "被评论实体的类型(2-树洞, 3-评论)", required = true),
             @Parameter(name = "entityId", description = "被评论实体的id", required = true),
             @Parameter(name = "content", description = "评论内容", required = true),
-            @Parameter(name = "cardId", description = "被评论实体所属帖子的id", required = true)
+            @Parameter(name = "holeId", description = "被评论实体所属树洞的id", required = true)
     })
-    public Result<Boolean> addComment(@Parameter(hidden = true) Comment comment, int cardId){
+    public Result<Boolean> addComment(int entityType, int entityId, String content, int cardId){
         // 增加评论
+        Comment comment = new Comment(entityType, entityId, content);
         holeService.addComment(comment, cardId);
         // 发布评论通知
         Notice notice = eventUtil.getNotice(comment, cardId); // 将评论数据包装为notice对象
@@ -91,13 +93,10 @@ public class HoleController{
     }
 
     @Operation(summary = "获取一页树洞", description = "返回一页树洞，包含id,标题，内容和作者id，发帖时间，评论数量，热度")
-    @Parameters({
-            @Parameter(name = "currentPage", description = "当前页码", required = true),
-            @Parameter(name = "pageSize", description = "当前页要展示的帖子数量", required = true),
-            @Parameter(name = "stuId", description = "当要获取指定用户发送的树洞时，传入其学号，当要获取最新发布的一页树洞时，传入'0'")
-    })
+    @Parameter(name = "stuId", description = "当要获取指定用户发送的树洞时，传入其学号，当要获取最新发布的一页树洞时，传入'0'")
     @GetMapping("/{stuId}")
-    public Result<List<PostInfo>> getOnePageHoles(@Parameter(hidden = true) Page page, @PathVariable String stuId){
+    public Result<List<PostInfo>> getOnePageHoles(InPage inPage, @PathVariable String stuId){
+        Page page = new Page(inPage);
         if (stuId == null || (!stuId.equals("0") && !userService.isExist(stuId)))
             return new Result<>(Code.SAVE_ERR, null, "学号错误");
         Result<List<Post>> result = postService.getOnePagePosts(stuId, page, Constant.ENTITY_TYPE_HOLE);

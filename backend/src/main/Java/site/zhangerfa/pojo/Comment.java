@@ -20,6 +20,12 @@ public class Comment {
     @Schema(description = "评论时间")
     private Date createTime = new Date();
 
+    public Comment(int entityType, int entityId, String content) {
+        this.entityId = entityId;
+        this.entityType = entityType;
+        this.content = content;
+    }
+
     public int getId() {
         return id;
     }
