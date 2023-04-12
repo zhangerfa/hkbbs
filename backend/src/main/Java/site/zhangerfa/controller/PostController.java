@@ -73,13 +73,13 @@ public class PostController {
     }
 
     @Tag(name = "帖子、树洞共有")
-    @Operation(summary = "帖子详情", description = "返回帖子详细数据，包括帖子内容，发布者信息，评论信息，评论的分页信息")
+    @Operation(summary = "帖子、树洞详情", description = "返回帖子或树洞中的详细数据，包括帖子或树洞内容，发布者信息，评论信息，评论的分页信息")
     @Parameters({
             @Parameter(name = "currentPage", description = "当前页码", required = true),
             @Parameter(name = "pageSize", description = "当前页要展示的评论数量", required = true),
     })
     @GetMapping("/details/{postId}")
-    public Result<PostDetails<Post>> getDetails(@PathVariable @Parameter(description = "帖子id") int postId,
+    public Result<PostDetails<Post>> getDetails(@PathVariable @Parameter(description = "帖子或树洞id") int postId,
                                                 @Parameter(hidden = true) Page page){
         return postUtil.getPostAndPosterDetails(postId, new Page(1,
                 page.getPageSize()), postService.getPostType(postId));
