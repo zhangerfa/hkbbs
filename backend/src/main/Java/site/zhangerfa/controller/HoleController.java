@@ -84,7 +84,7 @@ public class HoleController{
         return new Result<>(Code.SAVE_OK, true, "发布成功");
     }
 
-    @DeleteMapping("/delete/post/{postId}")
+    @DeleteMapping("/delete/{postId}")
     @Operation(summary = "删除树洞", description = "删除卡片及卡片中所有评论")
     public Result<Boolean> delete(@PathVariable int postId){
         Map<String, Object> map = holeService.deleteById(postId);
