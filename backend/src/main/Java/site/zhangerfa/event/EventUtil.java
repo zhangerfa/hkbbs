@@ -6,7 +6,7 @@ import site.zhangerfa.pojo.Comment;
 import site.zhangerfa.pojo.Notice;
 import site.zhangerfa.service.CommentService;
 import site.zhangerfa.service.PostService;
-import site.zhangerfa.util.Constant;
+import site.zhangerfa.Constant.Constant;
 
 @Component
 public class EventUtil {

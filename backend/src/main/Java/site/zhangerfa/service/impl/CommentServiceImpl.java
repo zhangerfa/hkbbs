@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import site.zhangerfa.dao.CommentMapper;
 import site.zhangerfa.pojo.Comment;
 import site.zhangerfa.service.CommentService;
-import site.zhangerfa.util.Constant;
+import site.zhangerfa.Constant.Constant;
 import site.zhangerfa.util.HostHolder;
 
 import java.util.HashMap;

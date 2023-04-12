@@ -9,7 +9,7 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 import site.zhangerfa.pojo.Notice;
 import site.zhangerfa.service.NoticeService;
-import site.zhangerfa.util.Constant;
+import site.zhangerfa.Constant.Constant;
 
 @Component
 public class EventConsumer {

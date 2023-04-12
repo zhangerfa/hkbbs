@@ -6,7 +6,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.RedisTemplate;
 import site.zhangerfa.dao.PostMapper;
 import site.zhangerfa.pojo.Post;
-import site.zhangerfa.util.Constant;
+import site.zhangerfa.Constant.Constant;
 
 
 @SpringBootTest

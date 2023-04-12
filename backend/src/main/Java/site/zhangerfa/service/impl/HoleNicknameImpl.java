@@ -4,7 +4,7 @@ import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import site.zhangerfa.dao.HoleNicknameMapper;
 import site.zhangerfa.service.HoleNicknameService;
-import site.zhangerfa.util.Constant;
+import site.zhangerfa.Constant.Constant;
 
 import java.util.*;
 

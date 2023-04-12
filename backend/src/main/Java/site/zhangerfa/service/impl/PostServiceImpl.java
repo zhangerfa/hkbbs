@@ -16,7 +16,7 @@ import site.zhangerfa.pojo.Post;
 import site.zhangerfa.service.CommentService;
 import site.zhangerfa.service.ImageService;
 import site.zhangerfa.service.PostService;
-import site.zhangerfa.util.Constant;
+import site.zhangerfa.Constant.Constant;
 import site.zhangerfa.util.HostHolder;
 
 import java.util.HashMap;

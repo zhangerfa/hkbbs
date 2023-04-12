@@ -10,7 +10,7 @@ import site.zhangerfa.pojo.Page;
 import site.zhangerfa.service.CardService;
 import site.zhangerfa.service.ImageService;
 import site.zhangerfa.service.UserService;
-import site.zhangerfa.util.Constant;
+import site.zhangerfa.Constant.Constant;
 
 import java.util.List;
 

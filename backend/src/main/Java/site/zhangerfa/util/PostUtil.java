@@ -2,6 +2,7 @@ package site.zhangerfa.util;
 
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
+import site.zhangerfa.Constant.Constant;
 import site.zhangerfa.controller.tool.*;
 import site.zhangerfa.pojo.*;
 import site.zhangerfa.service.*;
