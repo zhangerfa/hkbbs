@@ -4,8 +4,8 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="site.zhangerfa.dao.UserMapper">
     <insert id="add">
-        insert into user(stu_id, username, password, header_url, salt)
-        values(#{stuId}, #{username}, #{password}, #{headerUrl}, #{salt})
+        insert into user(stu_id, username, password, header_url, salt, gender)
+        values(#{stuId}, #{username}, #{password}, #{headerUrl}, #{salt}, #{gender})
     </insert>
 
     <update id="updateUsername">
@@ -30,7 +30,7 @@
     </delete>
 
     <select id="selectUserByStuId" resultType="User">
-        select stu_id, username, password, create_at as createTime, header_url, salt
+        select stu_id, username, password, create_at as createTime, header_url, gender
         from user
         where stu_id = #{stuId}
     </select>

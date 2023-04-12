@@ -36,6 +36,13 @@ public class Constant {
     public static final int CARD_GOAL_STUDY = 3;
 
     /**
+     * 性别
+     */
+    public static final int GENDER_MALE = 0;
+    public static final int GENDER_FEMALE = 1;
+
+
+    /**
      * 通知中的动作类型
      */
     public static final int ACTION_COMMENT = 0; // 评论

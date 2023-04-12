@@ -97,7 +97,8 @@ public class UserController {
                     schema = @Schema(pattern = "[UMD][0-9]{9}")),
             @Parameter(name = "username", description = "用户名", required = true),
             @Parameter(name = "password", description = "密码", required = true,
-                    schema = @Schema(pattern = "[a-zA-Z0-9]{6,16}"))})
+                    schema = @Schema(pattern = "[a-zA-Z0-9]{6,16}")),
+            @Parameter(name = "gender", description = "性别：0-男，1-女", required = true)})
     @PostMapping("/register")
     public Result<Boolean> register(@Parameter(hidden = true) User user, String code, HttpSession session){
         if (!userService.checkCode(code, session)){

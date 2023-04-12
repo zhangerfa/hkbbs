@@ -21,6 +21,8 @@ public class User {
     private String password; // 密码
     @Schema(description = "头像地址")
     private String headerUrl = "https://zhangerfa-1316526930.cos.ap-guangzhou.myqcloud.com/hkbbs/default.jpg";
+    @Schema(description = "用户性别")
+    private int gender;
     @JsonIgnore
     private Date createTime; // 创建时间
     @JsonIgnore
@@ -31,15 +33,29 @@ public class User {
         return "User{" +
                 "stuId='" + stuId + '\'' +
                 ", username='" + username + '\'' +
+                ", gender=" + gender +
                 '}';
     }
 
     public User(){}
 
+    public User(String stuId, String username, String password, int gender){
+        this(stuId, username, password);
+        this.gender = gender;
+    }
+
     public User(String stuId, String username, String password){
         this.password = password;
         this.username = username;
         this.stuId = stuId;
+    }
+
+    public int getGender() {
+        return gender;
+    }
+
+    public void setGender(int gender) {
+        this.gender = gender;
     }
 
     public String getSalt() {

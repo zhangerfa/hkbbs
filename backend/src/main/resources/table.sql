@@ -8,7 +8,8 @@ create table user
     password   varchar(32)                         not null comment '密码',
     create_at  timestamp default CURRENT_TIMESTAMP not null comment '注册时间',
     header_url varchar(100)                        null comment '用户头像地址',
-    salt       char(6)                             not null comment 'password中存储用户密码 + salt经过MD5算法加密后的字符串'
+    salt       char(6)                             not null comment 'password中存储用户密码 + salt经过MD5算法加密后的字符串',
+    gender     int                                 null comment '性别: 0-男 1-女'
 )
     charset = utf8mb3;
 
