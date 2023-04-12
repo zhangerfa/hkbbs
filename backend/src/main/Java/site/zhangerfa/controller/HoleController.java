@@ -84,10 +84,10 @@ public class HoleController{
         return new Result<>(Code.SAVE_OK, true, "发布成功");
     }
 
-    @DeleteMapping("/delete/post/{postId}")
+    @DeleteMapping("/delete/post/{holeId}")
     @Operation(summary = "删除树洞", description = "删除卡片及卡片中所有评论")
-    public Result<Boolean> delete(@PathVariable int postId){
-        Map<String, Object> map = holeService.deleteById(postId);
+    public Result<Boolean> delete(@PathVariable int holeId){
+        Map<String, Object> map = holeService.deleteById(holeId);
         Boolean result = (Boolean) map.get("result");
         return new Result<>(result? Code.DELETE_OK: Code.DELETE_ERR, result, (String) map.get("msg"));
     }
