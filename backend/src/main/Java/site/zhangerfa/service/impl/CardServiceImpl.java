@@ -2,6 +2,7 @@ package site.zhangerfa.service.impl;
 
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
+import site.zhangerfa.Constant.Goal;
 import site.zhangerfa.controller.tool.CardContainStuId;
 import site.zhangerfa.controller.tool.CardContainsPoster;
 import site.zhangerfa.dao.CardMapper;
@@ -43,7 +44,7 @@ public class CardServiceImpl implements CardService {
     public boolean update(CardContainStuId card) {
         CardContainsPoster oldCard = cardMapper.selectById(card.getId());
         if (card.getAboutMe() == null) card.setAboutMe(oldCard.getAboutMe());
-        if (card.getGoal() == -1) card.setGoal(oldCard.getGoal());
+        if (card.getGoal() == Goal.DEFAULT) card.setGoal(oldCard.getGoal());
         if (card.getExpected() == null) card.setExpected(oldCard.getExpected());
         return cardMapper.updateCard(card) > 0;
     }

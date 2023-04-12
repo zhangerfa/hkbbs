@@ -8,13 +8,6 @@ import java.util.List;
 
 @Schema(description = "卡片")
 public class Card {
-    public Card(){}
-
-    public Card(String aboutMe, String expect, int goal){
-        this.aboutMe = aboutMe;
-        this.expected = expect;
-        this.goal = goal;
-    }
     int id;
     @Schema(description = "照片url集合")
     List<String> imageUrls;
@@ -22,8 +15,8 @@ public class Card {
     String age;
     @Schema(title = "关于我", description = "自我介绍")
     String aboutMe;
-    @Schema(title = "交友目标", description = "0-恋爱， 1-电子游戏， 2-桌游， 3-学习, -1-默认")
-    int goal = -1;
+    @Schema(title = "交友目标")
+    int goal;
     @Schema(description = "期望的TA", defaultValue = "描述期望中的理想征友对象")
     String expected;
     @Schema(description = "发布时间")
@@ -32,6 +25,14 @@ public class Card {
     public Card(String aboutMe, String expect) {
         this.aboutMe = aboutMe;
         this.expected = expect;
+    }
+
+    public Card(){}
+
+    public Card(String aboutMe, String expect, int goal){
+        this.aboutMe = aboutMe;
+        this.expected = expect;
+        this.goal = goal;
     }
 
     /**

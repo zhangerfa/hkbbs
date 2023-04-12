@@ -1,6 +1,7 @@
 package site.zhangerfa.controller.tool;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import site.zhangerfa.Constant.Goal;
 import site.zhangerfa.pojo.Card;
 
 public class CardContainStuId extends Card {

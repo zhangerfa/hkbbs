@@ -8,6 +8,7 @@ import jakarta.annotation.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import site.zhangerfa.Constant.Goal;
 import site.zhangerfa.controller.tool.*;
 import site.zhangerfa.pojo.Page;
 import site.zhangerfa.service.CardService;
@@ -31,17 +32,17 @@ public class CardController {
     @PostMapping(value = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Parameters({@Parameter(name = "posterId", description = "发布者学号"),
             @Parameter(name = "aboutMe", description = "关于我：自我介绍"),
-            @Parameter(name = "goal", description = "交友目标: 0-恋爱， 1-电子游戏， 2-桌游， 3-学习, 4-运动, 5-旅游, 6-散步"),
+            @Parameter(name = "goal", description = "交友目标"),
             @Parameter(name = "expected", description = "期望的TA:描述期望中的理想征友对象")
     })
-    public Result<Boolean> addCard( String posterId, String aboutMe, int goal, String expected,
+    public Result<Boolean> addCard( String posterId, String aboutMe, Goal goal, String expected,
                                     @RequestPart @Parameter(description = "卡片中的图片集合，至少包含一张图片") List<MultipartFile> images){
         if (images.size() == 0)
             return new Result<>(Code.SAVE_ERR, false, "请至少上床一张图片");
         if (posterId == null || !userService.isExist(posterId))
             return new Result<>(Code.SAVE_ERR, null, "学号错误");
         // 将图片上传到图床
-        CardContainStuId card = new CardContainStuId(posterId, aboutMe, expected, goal);
+        CardContainStuId card = new CardContainStuId(posterId, aboutMe, expected, goal.getCode());
         card.setImageUrls(imgShackUtil.getImageUrls(images));
         // 发布卡片
         cardService.add(card);
@@ -83,7 +84,7 @@ public class CardController {
             @Parameter(name = "currentPage", description = "当前页码", required = true),
             @Parameter(name = "pageSize", description = "当前页要展示的帖子数量", required = true),
             @Parameter(name = "posterId", description = "当要获取指定用户发送的卡片时，传入其学号，当要获取最新发布的一页帖子时，传入'0'"),
-            @Parameter(name = "goal", description = "当要获取指定指定类型的卡片时，传入卡片类型编号（0-恋爱， 1-电子游戏， 2-桌游， 3-学习, 4-运动, 5-旅游, 6-散步），否则传入-1，获取所有类型的卡片")
+            @Parameter(name = "goal", description = "当要获取指定指定类型的卡片时，传入卡片类型编号，否则传入-1，获取所有类型的卡片")
     })
     public Result<List<CardContainsPoster>> getOnePageCards(@Parameter(hidden = true) Page page,
                                                             String posterId, int goal){
