@@ -5,9 +5,10 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import site.zhangerfa.controller.tool.Code;
-import site.zhangerfa.controller.tool.NewPost;
 import site.zhangerfa.controller.tool.PostInfo;
 import site.zhangerfa.controller.tool.Result;
 import site.zhangerfa.event.EventProducer;
@@ -16,10 +17,10 @@ import site.zhangerfa.pojo.*;
 import site.zhangerfa.service.PostService;
 import site.zhangerfa.service.UserService;
 import site.zhangerfa.service.impl.HoleServiceImpl;
-import site.zhangerfa.controller.aop.util.Constant;
-import site.zhangerfa.controller.aop.util.HostHolder;
-import site.zhangerfa.controller.aop.util.ImgShackUtil;
-import site.zhangerfa.controller.aop.util.PostUtil;
+import site.zhangerfa.util.Constant;
+import site.zhangerfa.util.HostHolder;
+import site.zhangerfa.util.ImgShackUtil;
+import site.zhangerfa.util.PostUtil;
 
 import java.util.List;
 import java.util.Map;
@@ -46,13 +47,16 @@ public class HoleController{
     @Resource
     private UserService userService;
 
-    @PostMapping("/")
+    @PostMapping(value = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "发布树洞", description = "传入标题和内容，图片是可选的，可以传入若干张图片")
-    public Result<Boolean> addHole(NewPost newPost){
+    @Parameters({@Parameter(name = "title", description = "标题"),
+            @Parameter(name = "content", description = "内容")})
+    public Result<Boolean> addHole(String title, String content,
+                                   @RequestPart @Parameter(description = "图片集合，可选") List<MultipartFile> images){
         if (hostHolder.getUser() == null) return new Result<>(Code.SAVE_ERR, false, "用户未登录");
         // 将传入图片上传到图床，并将url集合添加到card中
-        List<String> imageUrls = imgShackUtil.getImageUrls(newPost.getImages());
-        Post post = new Post(newPost);
+        List<String> imageUrls = imgShackUtil.getImageUrls(images);
+        Post post = new Post(title, content);
         post.setImages(imageUrls);
         // 发布卡片
         String stuId = hostHolder.getUser().getStuId();
@@ -64,7 +68,7 @@ public class HoleController{
     @Operation(summary = "发布评论（包括对评论评论）", description = "需要传入被评论实体的类型和id，以及被评论实体所属的帖子id")
     @PostMapping("/comment")
     @Parameters({
-            @Parameter(name = "entityType", description = "被评论实体的类型", required = true),
+            @Parameter(name = "entityType", description = "被评论实体的类型(2-树洞, 3-评论)", required = true),
             @Parameter(name = "entityId", description = "被评论实体的id", required = true),
             @Parameter(name = "content", description = "评论内容", required = true),
             @Parameter(name = "cardId", description = "被评论实体所属帖子的id", required = true)
