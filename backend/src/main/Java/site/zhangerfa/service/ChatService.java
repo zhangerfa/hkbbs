@@ -20,7 +20,7 @@ public interface ChatService {
      * @param stuId 查询的用户学号
      * @param chatToStuId 聊天对象学号
      * @param page
-     * @return 如果双方未发送消息则返回null
+     * @return
      */
     Chat selectOnePageMessagesForChat(String stuId, String chatToStuId, Page page);
 

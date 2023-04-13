@@ -18,6 +18,12 @@
         order by create_time desc
         limit #{offset}, #{limit};
     </select>
+    <select id="selectLatestMessages" resultType="site.zhangerfa.pojo.Message">
+        select * from message
+        where chat_id = #{chatId}
+        order by c by create_time desc
+        limit 0, 1;
+    </select>
     <select id="selectMessagesNumForChat" resultType="java.lang.Integer">
         select count(*) from message where chat_id = #{chatId};
     </select>

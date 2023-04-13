@@ -1,7 +1,6 @@
 package site.zhangerfa.dao;
 
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
 import site.zhangerfa.pojo.Message;
 
 import java.util.List;
@@ -27,30 +26,16 @@ public interface MessageMapper {
     List<Message> selectOnePageMessagesForChat(String stuId, int chatId, int offset, int limit);
 
     /**
+     * 获取用户指定聊天中最新的消息
+     * @param chatId 聊天id
+     * @return
+     */
+    Message selectLatestMessages(int chatId);
+
+    /**
      * 查询该聊天总的聊天消息数
      * @param chatId
      * @return
      */
     int selectMessagesNumForChat(int chatId);
-
-    /**
-     * 查询用户一页聊天，聊天是以最新发送的信息的时间来排序
-     * @param stuId
-     * @return
-     */
-    @Select("select * from message where id in" +
-            "(select max(id) from message group by chat_id) " +
-            "order by create_time limit #{offset}, #{limit}")
-    List<Message> selectOnePageChatsForUser(String stuId, int offset, int limit);
-
-    @Select("select * from message where id = #{id}}")
-    Message selectMessageById(int id);
-
-    /**
-     * 查询消息所属的聊天id
-     * @param id
-     * @return
-     */
-    @Select("select chat_id from message where id = #{id}}")
-    int selectChatIdById(int id);
 }

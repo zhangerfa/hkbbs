@@ -2,7 +2,6 @@ package site.zhangerfa.dao;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
-import site.zhangerfa.pojo.Message;
 
 import java.util.List;
 
@@ -33,7 +32,7 @@ public interface ChatMapper {
      * @return
      */
     @Select("select id from chat where user1 = #{stuId} or user2 = #{stuId}")
-    List<Integer> selectAllChatsForUser(String stuId);
+    List<Integer> selectChatsForUser(String stuId);
 
     /**
      * 获取聊天双方的学号
