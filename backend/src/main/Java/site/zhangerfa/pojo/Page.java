@@ -2,7 +2,7 @@ package site.zhangerfa.pojo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
-import site.zhangerfa.controller.tool.InPage;
+import site.zhangerfa.controller.in.InPage;
 
 @Schema(description = "记录分页信息，并封装当前页的数据")
 public class Page {

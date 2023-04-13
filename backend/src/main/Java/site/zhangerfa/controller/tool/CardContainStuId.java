@@ -1,7 +1,7 @@
 package site.zhangerfa.controller.tool;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import site.zhangerfa.Constant.Goal;
+import site.zhangerfa.controller.in.InCard;
 import site.zhangerfa.pojo.Card;
 
 public class CardContainStuId extends Card {
@@ -16,8 +16,8 @@ public class CardContainStuId extends Card {
         super(aboutMe, expect, goal);
     }
 
-    public CardContainStuId(String posterId, String aboutMe, String expect, int goal){
-        this(aboutMe, expect, goal);
+    public CardContainStuId(String posterId, InCard inCard){
+        this(inCard.getAboutMe(), inCard.getAboutMe(), inCard.getGoal().getCode());
         this.posterId = posterId;
     }
 

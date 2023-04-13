@@ -2,17 +2,19 @@ package site.zhangerfa.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import site.zhangerfa.Constant.Goal;
+import site.zhangerfa.controller.in.InCard;
+import site.zhangerfa.controller.in.InPage;
+import site.zhangerfa.controller.tool.CardContainStuId;
 import site.zhangerfa.controller.tool.*;
 import site.zhangerfa.pojo.Page;
 import site.zhangerfa.service.CardService;
 import site.zhangerfa.service.UserService;
+import site.zhangerfa.util.HostHolder;
 import site.zhangerfa.util.ImgShackUtil;
 
 import java.util.List;
@@ -22,28 +24,21 @@ import java.util.List;
 @RequestMapping("/cards")
 public class CardController {
     @Resource
-    private UserService userService;
-    @Resource
     private CardService cardService;
     @Resource
     private ImgShackUtil imgShackUtil;
+    @Resource
+    private HostHolder hostHolder;
 
     @Operation(summary = "发布卡片", description = "图片至少上传一张")
     @PostMapping(value = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @Parameters({@Parameter(name = "posterId", description = "发布者学号"),
-            @Parameter(name = "aboutMe", description = "关于我：自我介绍"),
-            @Parameter(name = "goal", description = "交友目标"),
-            @Parameter(name = "expected", description = "期望的TA:描述期望中的理想征友对象")
-    })
-    public Result<Boolean> addCard( String posterId, String aboutMe, Goal goal, String expected,
-                                    @RequestPart @Parameter(description = "卡片中的图片集合，至少包含一张图片") List<MultipartFile> images){
-        if (images.size() == 0)
+    public Result<Boolean> addCard(InCard inCard){
+        String posterId = hostHolder.getUser().getStuId();
+        if (inCard.getImages().size() == 0)
             return new Result<>(Code.SAVE_ERR, false, "请至少上床一张图片");
-        if (posterId == null || !userService.isExist(posterId))
-            return new Result<>(Code.SAVE_ERR, null, "学号错误");
         // 将图片上传到图床
-        CardContainStuId card = new CardContainStuId(posterId, aboutMe, expected, goal.getCode());
-        card.setImageUrls(imgShackUtil.getImageUrls(images));
+        CardContainStuId card = new CardContainStuId(posterId, inCard);
+        card.setImageUrls(imgShackUtil.getImageUrls(inCard.getImages()));
         // 发布卡片
         cardService.add(card);
         return new Result<>(Code.SAVE_OK, true);

@@ -2,14 +2,13 @@ package site.zhangerfa.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import site.zhangerfa.controller.tool.Code;
-import site.zhangerfa.controller.tool.InMessage;
-import site.zhangerfa.controller.tool.InPage;
+import site.zhangerfa.controller.in.InMessage;
+import site.zhangerfa.controller.in.InPage;
 import site.zhangerfa.controller.tool.Result;
 import site.zhangerfa.pojo.Chat;
 import site.zhangerfa.pojo.Page;

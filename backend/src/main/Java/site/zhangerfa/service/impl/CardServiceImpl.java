@@ -2,7 +2,6 @@ package site.zhangerfa.service.impl;
 
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
-import site.zhangerfa.Constant.Goal;
 import site.zhangerfa.controller.tool.CardContainStuId;
 import site.zhangerfa.controller.tool.CardContainsPoster;
 import site.zhangerfa.dao.CardMapper;

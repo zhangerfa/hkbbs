@@ -1,4 +1,4 @@
-package site.zhangerfa.controller.tool;
+package site.zhangerfa.controller.in;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 

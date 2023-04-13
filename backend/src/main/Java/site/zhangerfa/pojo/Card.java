@@ -7,31 +7,23 @@ import java.util.Date;
 import java.util.List;
 
 @Schema(description = "卡片")
-public class Card {
+public class Card extends BaseCard {
     int id;
-    @Schema(description = "照片url集合")
-    List<String> imageUrls;
     @Schema(description = "年级")
     String age;
-    @Schema(title = "关于我", description = "自我介绍")
-    String aboutMe;
-    @Schema(title = "交友目标")
-    int goal;
-    @Schema(description = "期望的TA", defaultValue = "描述期望中的理想征友对象")
-    String expected;
     @Schema(description = "发布时间")
     Date create_time;
+    @Schema(description = "交友目标")
+    private int goal;
+    @Schema(description = "图片url集合")
+    private List<String> imageUrls;
 
     public Card(String aboutMe, String expect) {
-        this.aboutMe = aboutMe;
-        this.expected = expect;
+        super(aboutMe, expect);
     }
 
-    public Card(){}
-
-    public Card(String aboutMe, String expect, int goal){
-        this.aboutMe = aboutMe;
-        this.expected = expect;
+    public Card(String aboutMe, String expect, int goal) {
+        super(aboutMe, expect);
         this.goal = goal;
     }
 
@@ -51,6 +43,22 @@ public class Card {
         int years = Calendar.getInstance().get(Calendar.YEAR) - Integer.parseInt(stuId.substring(1, 5));
         age.append(String.valueOf(years));
         this.age = age.toString();
+    }
+
+    public int getGoal() {
+        return goal;
+    }
+
+    public void setGoal(int goal) {
+        this.goal = goal;
+    }
+
+    public List<String> getImageUrls() {
+        return imageUrls;
+    }
+
+    public void setImageUrls(List<String> imageUrls) {
+        this.imageUrls = imageUrls;
     }
 
     public int getId() {
@@ -75,37 +83,5 @@ public class Card {
 
     public void setAge(String age) {
         this.age = age;
-    }
-
-    public List<String> getImageUrls() {
-        return imageUrls;
-    }
-
-    public void setImageUrls(List<String> imageUrls) {
-        this.imageUrls = imageUrls;
-    }
-
-    public String getAboutMe() {
-        return aboutMe;
-    }
-
-    public void setAboutMe(String aboutMe) {
-        this.aboutMe = aboutMe;
-    }
-
-    public int getGoal() {
-        return goal;
-    }
-
-    public void setGoal(int goal) {
-        this.goal = goal;
-    }
-
-    public String getExpected() {
-        return expected;
-    }
-
-    public void setExpected(String expected) {
-        this.expected = expected;
     }
 }
