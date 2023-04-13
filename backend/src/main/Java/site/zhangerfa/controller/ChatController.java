@@ -33,10 +33,8 @@ public class ChatController {
 
     @Operation(summary = "获取当前用户的未读消息数量",
             description = "当聊天对象学号传为 ‘0’ 时查询该用户所有聊天的总未读消息数量")
-    @Parameters({@Parameter(name = "stuId", description = "查询未读消息用户的学号"),
-                 @Parameter(name = "chatToStuId", description = "聊天对象的学号")})
     @GetMapping("/unreadNum")
-    public Result<Integer> getUnreadMessagesNum(String chatToStuId){
+    public Result<Integer> getUnreadMessagesNum(@Parameter(description = "聊天对象的学号") String chatToStuId){
         if (!userService.isExist(chatToStuId) && chatToStuId.equals("0"))
             return new Result<>(Code.GET_ERR, "聊天对象不存在");
         String stuId = hostHolder.getUser().getStuId();
