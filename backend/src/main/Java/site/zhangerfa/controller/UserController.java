@@ -179,6 +179,14 @@ public class UserController {
         return new Result<>(user != null? Code.GET_OK: Code.GET_ERR, user, msg);
     }
 
+    @Operation(summary =  "获取当前登录的用户信息")
+    @GetMapping("/")
+    public Result<User> getCurrentUser(){
+        User user = hostHolder.getUser();
+        if (user == null) return new Result<>(Code.GET_ERR, "您还未登录");
+        return new Result<>(Code.GET_OK, user);
+    }
+
     // ########################################## 以下为管理员权限才可以调用的接口
 
     /**
