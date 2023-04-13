@@ -1,4 +1,5 @@
 create database if not exists friends;
+use friends;
 
 create table user
 (
@@ -13,7 +14,7 @@ create table user
 )
     charset = utf8mb3;
 
-create table post
+create table if not exists post
 (
     id          int auto_increment
         primary key,
@@ -32,7 +33,7 @@ create table post
 create index stu_id
     on post (poster_id);
 
-create table comment
+create table if not exists comment
 (
     id          int auto_increment
         primary key,
@@ -49,7 +50,7 @@ create table comment
 create index stu_id
     on comment (poster_id);
 
-create table hole_nickname
+create table if not exists hole_nickname
 (
     hole_id   int         not null comment '树洞帖子的id',
     poster_id varchar(10) not null comment '发帖人id',
@@ -64,7 +65,7 @@ create table hole_nickname
 create index stu_id
     on hole_nickname (poster_id);
 
-create table friends.loggin_ticket
+create table if not exists loggin_ticket
 (
     stu_id  varchar(10) not null comment '学号'
         primary key,
@@ -76,7 +77,7 @@ create table friends.loggin_ticket
 )
     comment '登录凭证表' charset = utf8mb3;
 
-create table friends.notice
+create table if not exists notice
 (
     id                int auto_increment
         primary key,
@@ -104,7 +105,7 @@ create index notice_comment_null_fk
 create index receiving_user_id
     on friends.notice (receiving_user_id);
 
-create table image
+create table if not exists image
 (
     id          int auto_increment
         primary key,
@@ -117,7 +118,7 @@ create table image
     comment '存储帖子中的图片';
 
 
-create table card
+create table if not exists card
 (
     id          int auto_increment
         primary key,
@@ -130,6 +131,30 @@ create table card
         foreign key (post_id) references user (stu_id)
 )
     comment '卡片墙卡片' charset = utf8mb3;
+
+create table if not exists chat
+(
+    id      int auto_increment
+        primary key,
+    user_user varchar(21) not null comment '聊天双方的学号，双方学号小的在前，大的在后，以''_''分隔；学号大小关系为：U<M<D，之后数字以大小关系排序'
+)
+    comment '聊天表（一个chat有若干message组成）' charset = utf8mb3;
+
+create table if not exists message
+(
+    poster_id   varchar(10)                         not null comment '消息发布者学号',
+    id          int                                 not null
+        primary key,
+    content     text charset utf8mb4                null comment '消息内容',
+    create_time timestamp default CURRENT_TIMESTAMP not null comment '信息发布时间',
+    status      int       default 0                 not null comment '信息状态：1-已读，0-未读',
+    chat_id     int                                 not null comment '消息所属的聊天id',
+    constraint message_chat_null_fk
+        foreign key (chat_id) references chat (id),
+    constraint message_user_null_fk
+        foreign key (poster_id) references user (stu_id)
+)
+    comment '站内私信表' charset = utf8mb3;
 
 
 
