@@ -132,18 +132,25 @@ create table if not exists card
 )
     comment '卡片墙卡片' charset = utf8mb3;
 
-create table if not exists chat
+create table chat
 (
-    id      int auto_increment
+    id    int auto_increment
         primary key,
-    user_user varchar(21) not null comment '聊天双方的学号，双方学号小的在前，大的在后，以''_''分隔；学号大小关系为：U<M<D，之后数字以大小关系排序'
+    user1 varchar(10) not null comment '聊天中一方的学号',
+    user2 varchar(10) not null comment '聊天中另一方的学号',
+    constraint chat_user_null_fk
+        foreign key (user1) references user (stu_id),
+    constraint chat_user_stu_id_fk
+        foreign key (user2) references user (stu_id)
 )
     comment '聊天表（一个chat有若干message组成）' charset = utf8mb3;
+
+
 
 create table if not exists message
 (
     poster_id   varchar(10)                         not null comment '消息发布者学号',
-    id          int                                 not null
+    id          int auto_increment
         primary key,
     content     text charset utf8mb4                null comment '消息内容',
     create_time timestamp default CURRENT_TIMESTAMP not null comment '信息发布时间',
