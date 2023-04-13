@@ -3,11 +3,16 @@ import axios, { AxiosInstance } from 'axios'
 // 二次封装axios
 class Request {
     instance: AxiosInstance
-    constructor(baseURL: string, timeout: number = 10000) {
+    constructor(baseURL: string, timeout: number = 10000, token?: string | undefined) {
         this.instance = axios.create({
             baseURL,
             timeout
         })
+
+        //在请求上携带用户token
+        if (token) {
+            this.setToken(token)
+        }
         //添加请求拦截器
         this.instance.interceptors.request.use(config => {
             return config
@@ -32,23 +37,23 @@ class Request {
         })
     }
 
-    get(config: {url:string,params?:any}):Promise<any> {
+    get(config: { url: string, params?: any }): Promise<any> {
         return this.request({ ...config, method: "get" })
     }
 
-    post(config: {url:string,data:any}):Promise<any> {
+    post(config: { url: string, data: any }): Promise<any> {
         return this.request({ ...config, method: "post" })
     }
 
-    put(config: {url:string,data?:any}):Promise<any> {
+    put(config: { url: string, data?: any }): Promise<any> {
         return this.request({ ...config, method: "put" })
     }
 
-    delete(config: {url:string}):Promise<any> {
+    delete(config: { url: string }): Promise<any> {
         return this.request({ ...config, method: "delete" })
     }
 
-    setToken(token:string):void{
+    setToken(token: string): void {
         this.instance.defaults.headers.common['Authorization'] = token
     }
 }
