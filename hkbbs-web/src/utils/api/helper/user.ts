@@ -6,6 +6,12 @@ export class User {
 
     private static path: string = "/users/"
 
+    static current(): Promise<UserType> {
+        return req.get({
+            url: this.path,
+        })
+    }
+
     static get(args: { stuId: string }): Promise<UserType> {
         return req.get({
             url: this.path + args.stuId,

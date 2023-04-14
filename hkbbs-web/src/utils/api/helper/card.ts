@@ -19,7 +19,7 @@ export class Card {
         })
     }
 
-    static publish(args: { posterId: string, images: string[], aboutMe: string, goal: number, expected: string }): Promise<ResultBoolean> {
+    static publish(args: { images: string[], aboutMe: string, goal: number, expected: string }): Promise<ResultBoolean> {
         return req.post({
             url: this.path,
             data: {
