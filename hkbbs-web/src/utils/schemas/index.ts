@@ -171,3 +171,30 @@ export interface ResultListCardContainsPoster extends BasicResponse {
     "data": CardContainsPoster[],
     // "description": "响应数据"
 }
+
+// 聊天信息单元
+export interface Message {
+    "id": number,
+    "posterId": string,
+    "content": string,
+    "createTime": string,
+    "status": number,
+}
+
+// 聊天信息
+export interface Chat {
+    "id": number,
+    "users": User,
+    "messages": Message[],
+    "page": Page,
+}
+
+// 单个聊天信息响应
+export interface ResultChat extends BasicResponse {
+    "data": Chat,
+}
+
+// 多个聊天信息响应
+export interface ResultListChat extends BasicResponse {
+    "data": Chat[],
+}
