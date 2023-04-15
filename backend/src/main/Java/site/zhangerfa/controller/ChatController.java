@@ -68,13 +68,15 @@ public class ChatController {
 
     @Operation(summary = "当前用户给指定用户发送一条消息")
     @PostMapping("/")
-    public Result<Boolean> sendMessage(InMessage<String> inMessage){
+    public Result<Boolean> sendMessage(InMessage inMessage){
         return new Result<>();
     }
 
     @Operation(summary = "当前用户给指定用户发送一张图片")
     @PostMapping("/image")
-    public Result<Boolean> sendImage(InMessage<MultipartFile> image){
+    public Result<Boolean> sendImage(@Parameter(description = "消息发布者学号") String fromStuId,
+                                     @Parameter(description = "消息接收者学号") String toStuId,
+                                     @Parameter(description = "图片文件") MultipartFile image){
         return new Result<>();
     }
 }
