@@ -27,6 +27,7 @@ import site.zhangerfa.util.HostHolder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 @RestController
 @Tag(name = "用户")
@@ -141,6 +142,12 @@ public class UserController {
     @Operation(summary = "向指定学号的邮箱发送验证码")
     @GetMapping("/sendCode")
     public Result<Boolean> sendCode(String stuId, HttpSession session){
+        // 验证学号是否合法
+        String regex = "[UuMmDd][0-9]{9}";
+        Pattern pattern = Pattern.compile(regex);
+        if (!pattern.matcher(stuId).matches())
+            return new Result<>(Code.GET_ERR, "学号错误");
+        // 发送验证码
         boolean flag = userService.sendCode(stuId, session);
         int code = flag? Code.GET_OK: Code.GET_ERR;
         String msg = flag? "验证码已发送": "请检查您的学号后重试";
@@ -172,9 +179,11 @@ public class UserController {
     @GetMapping("/{stuId}")
     public Result<User> getUser(@PathVariable String stuId){
         if (stuId.equals("0")) {
+            // 返回当前登录用户的信息
             if (hostHolder.getUser() != null) return new Result<>(Code.GET_OK, hostHolder.getUser());
             else return new Result<>(Code.GET_ERR, "用户未登录");
         }
+        // 查询指定用户的信息
         User user = userService.getUserByStuId(stuId);
         String msg = user != null? "查询成功": "用户不存在";
         return new Result<>(user != null? Code.GET_OK: Code.GET_ERR, user, msg);
