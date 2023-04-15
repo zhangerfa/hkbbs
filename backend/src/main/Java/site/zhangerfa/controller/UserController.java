@@ -147,6 +147,9 @@ public class UserController {
         Pattern pattern = Pattern.compile(regex);
         if (!pattern.matcher(stuId).matches())
             return new Result<>(Code.GET_ERR, "学号错误");
+        // 判断用户是否已注册
+        if (isExist(stuId).getData())
+            return new Result<>(Code.GET_ERR, "学号已注册");
         // 发送验证码
         boolean flag = userService.sendCode(stuId, session);
         int code = flag? Code.GET_OK: Code.GET_ERR;
