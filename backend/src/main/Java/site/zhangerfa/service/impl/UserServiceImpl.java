@@ -37,6 +37,15 @@ public class UserServiceImpl implements UserService {
         }
         // 密码正确，查询是否有登录凭证
         LoginTicket loginTicket = loginTicketService.getLoginTicketByStuId(user.getStuId());
+        // 计算登录凭证到期时间
+        long expired;
+        if (rememberMe){
+            // 记住密码有效时间设为两个月
+            expired = System.currentTimeMillis() + 1000L * 60 * 60 * 24 * 60;
+        }else {
+            // 默认状态有效时间设为一天
+            expired = System.currentTimeMillis() + 1000L * 60 * 60 * 24;
+        }
         if (loginTicket == null){
             // 首次登录添加登录验证
             loginTicket = new LoginTicket();
@@ -45,32 +54,15 @@ public class UserServiceImpl implements UserService {
             String ticket = UUID.randomUUID().toString().replace("-", "");
             loginTicket.setTicket(ticket);
             loginTicket.setStatus(1); // 设置登录凭证状态为有效
-            long expired; // 登录凭证到期时间
-            if (rememberMe){
-                // 记住密码有效时间设为两个月
-                expired = System.currentTimeMillis() + 1000L * 60 * 60 * 24 * 60;
-            }else {
-                // 默认状态有效时间设为一天
-                expired = System.currentTimeMillis() + 1000L * 60 * 60 * 24;
-            }
             loginTicket.setExpired(new Date(expired));
             // 保存登录凭证码
             loginTicketService.add(loginTicket);
         }else {
             // 非首次登录，将登录验证状态改为有效，并更新过期时间
             loginTicketService.updateStatus(user.getStuId(), 1);
-            long expired; // 登录凭证到期时间
-            if (rememberMe){
-                // 记住密码有效时间设为两个月
-                expired = System.currentTimeMillis() + 1000L * 60 * 60 * 24 * 60;
-            }else {
-                // 默认状态有效时间设为一天
-                expired = System.currentTimeMillis() + 1000L * 60 * 60 * 24;
-            }
             loginTicket.setExpired(new Date(expired));
             loginTicketService.updateExpired(user.getStuId(), new Date(expired));
         }
-
         res.put("result", true);
         res.put("msg", "登录成功");
         res.put("ticket", loginTicket);

@@ -56,10 +56,8 @@ public class UserController {
     @Operation(summary = "登录", description = "检查用户输入的密码是否正确，如果正确生成登录凭证以cookie返回给用户")
     @Parameters({
             @Parameter(name = "rememberMe", description = "用户是否勾选记住密码"),
-            @Parameter(name = "stuId", description = "学号", required = true,
-                    schema = @Schema(pattern = "[UMD][0-9]{9}")),
-            @Parameter(name = "password", description = "用户输入密码", required = true,
-                    schema = @Schema(pattern = "[a-zA-Z0-9]{6,16}"))})
+            @Parameter(name = "stuId", description = "学号", required = true),
+            @Parameter(name = "password", description = "用户输入密码", required = true)})
     @PostMapping("/login")
     public Result<Boolean> login(@Parameter(hidden = true) User user,
                                  @RequestParam(required = false, defaultValue = "false") boolean rememberMe,

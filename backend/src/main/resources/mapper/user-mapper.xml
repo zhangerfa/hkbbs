@@ -30,7 +30,7 @@
     </delete>
 
     <select id="selectUserByStuId" resultType="User">
-        select stu_id, username, password, create_at as createTime, header_url, gender
+        select stu_id, username, password, create_at as createTime, header_url, gender, salt
         from user
         where stu_id = #{stuId}
     </select>
