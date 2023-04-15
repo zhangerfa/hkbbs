@@ -7,6 +7,15 @@ import java.util.regex.Pattern;
  */
 public class UserUtil {
     /**
+     * 判断当前连接中是否已有用户登录
+     * @param hostHolder
+     * @return
+     */
+    public static boolean isLogin(HostHolder hostHolder){
+        return hostHolder.getUser() != null;
+    }
+
+    /**
      * 检查学号是否合法
      * @param stuId
      * @return
