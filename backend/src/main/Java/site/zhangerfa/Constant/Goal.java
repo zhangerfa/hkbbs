@@ -38,6 +38,6 @@ public enum Goal {
 
     @Override
     public String toString() {
-        return this.name() + "(" + desc + ")";
+        return this.name() ;
     }
 }
