@@ -147,7 +147,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserByStuId(String stuId) {
         User user = userMapper.selectUserByStuId(stuId);
-        user.setPassword("");
         return user;
     }
 
