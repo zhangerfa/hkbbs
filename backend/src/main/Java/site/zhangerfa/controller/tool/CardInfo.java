@@ -4,12 +4,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import site.zhangerfa.pojo.Card;
 import site.zhangerfa.pojo.User;
 
-public class CardContainsPoster extends Card {
+public class CardInfo extends Card {
     @Schema(title = "发布者信息")
     User poster;
 
-    public CardContainsPoster(String aboutMe, String expect) {
-        super(aboutMe, expect);
+    public CardInfo(String aboutMe, String expect, int goal) {
+        super(aboutMe, expect, goal);
     }
 
     public User getPoster() {

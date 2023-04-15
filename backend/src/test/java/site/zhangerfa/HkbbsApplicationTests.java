@@ -4,7 +4,9 @@ import jakarta.annotation.Resource;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.RedisTemplate;
+import site.zhangerfa.dao.CardMapper;
 import site.zhangerfa.dao.PostMapper;
+import site.zhangerfa.pojo.Card;
 import site.zhangerfa.pojo.Post;
 import site.zhangerfa.Constant.Constant;
 
@@ -17,12 +19,12 @@ class HkbbsApplicationTests {
     @Resource
     private PostMapper postMapper;
 
+    @Resource
+    private CardMapper cardMapper;
+
     @Test
     public void test() {
-        Post post = new Post();
-        post.setTitle("111");
-        post.setContent("222");
-        postMapper.add(post, Constant.ENTITY_TYPE_POST);
-        System.out.println(postMapper.getPostType(post.getId()));
+        Card card = new Card("111", "111", 1);
+        cardMapper.add("M202271503", card);
     }
 }

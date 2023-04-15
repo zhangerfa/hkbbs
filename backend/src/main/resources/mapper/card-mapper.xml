@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="site.zhangerfa.dao.CardMapper">
-    <resultMap id="cardContainsPosterResultMap" type="site.zhangerfa.controller.tool.CardContainsPoster">
+    <resultMap id="cardContainsPosterResultMap" type="site.zhangerfa.controller.tool.CardInfo">
         <association property="poster" javaType="site.zhangerfa.pojo.User">
             <id property="stuId" column="poster_id"/>
         </association>
@@ -11,7 +11,7 @@
 
     <insert id="add" keyProperty="card.id">
         insert into card(about_me, goal, poster_id, expect)
-        values(#{aboutMe}, #{goal}, #{posterId}, #{expect})
+        values(#{card.aboutMe}, #{card.goal}, #{posterId}, #{card.expected})
     </insert>
     <update id="updateCard">
         update card set about_me = #{aboutMe}, goal = #{goal}, expect = #{expected}
