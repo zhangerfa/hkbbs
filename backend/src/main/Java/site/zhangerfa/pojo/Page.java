@@ -2,7 +2,6 @@ package site.zhangerfa.pojo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
-import site.zhangerfa.controller.in.InPage;
 
 @Schema(description = "记录分页信息，并封装当前页的数据")
 public class Page {
@@ -21,11 +20,6 @@ public class Page {
         if (pageSize < 1) throw new RuntimeException("每页显示帖子数量至少为1");
         this.currentPage = currentPage;
         this.pageSize = pageSize;
-    }
-
-    public Page(InPage inPage) {
-        this.currentPage = inPage.getCurrentPage();
-        this.pageSize = inPage.getPageSize();
     }
 
     /**

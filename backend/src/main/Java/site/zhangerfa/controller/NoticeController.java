@@ -2,12 +2,12 @@ package site.zhangerfa.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
 import site.zhangerfa.Constant.Constant;
 import site.zhangerfa.controller.tool.Code;
-import site.zhangerfa.controller.in.InPage;
 import site.zhangerfa.controller.tool.NoticeInfo;
 import site.zhangerfa.controller.tool.Result;
 import site.zhangerfa.pojo.Notice;
@@ -39,8 +39,10 @@ public class NoticeController {
     @GetMapping("/")
     @Operation(summary = "获取一页通知", description = "获取当前会话用户的一页通知，当未读通知数量≥一页通知的个数时返回最新的一页未读通知，" +
             "当未读通知不满一页时使用最新的已读通知填充")
-    public Result<List<NoticeInfo>> getNotices(InPage inPage){
-        Page page = new Page(inPage);
+    @Parameters({@Parameter(name = "currentPage", description = "当前页码"),
+            @Parameter(name = "pageSize", description = "每页大小")})
+    public Result<List<NoticeInfo>> getNotices(int currentPage, int pageSize){
+        Page page = new Page(currentPage, pageSize);
         // 查询所有未读的通知
         if (hostHolder.getUser() == null) return new Result<>(Code.GET_ERR, null, "用户未登录");
         String stuId = hostHolder.getUser().getStuId();

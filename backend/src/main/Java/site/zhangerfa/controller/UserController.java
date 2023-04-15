@@ -36,8 +36,6 @@ import java.util.regex.Pattern;
 public class UserController {
     private static Logger logger = LoggerFactory.getLogger(UserController.class);
     @Resource
-    private DefaultKaptcha defaultKaptcha;
-    @Resource
     private UserService userService;
     @Resource
     private LoginTicketService loginTicketService;

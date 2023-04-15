@@ -2,13 +2,13 @@ package site.zhangerfa.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import site.zhangerfa.Constant.Constant;
 import site.zhangerfa.controller.in.InComment;
-import site.zhangerfa.controller.in.InPage;
 import site.zhangerfa.controller.in.InPost;
 import site.zhangerfa.controller.tool.*;
 import site.zhangerfa.event.EventProducer;
@@ -77,9 +77,11 @@ public class PostController {
     @Tag(name = "帖子、树洞共有")
     @Operation(summary = "帖子、树洞详情", description = "返回帖子或树洞中的详细数据，包括帖子或树洞内容，发布者信息，评论信息，评论的分页信息")
     @GetMapping("/details/{postId}")
+    @Parameters({@Parameter(name = "currentPage", description = "当前页码"),
+            @Parameter(name = "pageSize", description = "每页大小")})
     public Result<PostDetails<Post>> getDetails(@PathVariable @Parameter(description = "帖子或树洞id") int postId,
-                                                InPage inPage){
-        Page page = new Page(inPage);
+                                                int currentPage, int pageSize){
+        Page page = new Page(currentPage, pageSize);
         return postUtil.getPostAndPosterDetails(postId, new Page(1,
                 page.getPageSize()), postService.getPostType(postId));
     }
@@ -100,10 +102,13 @@ public class PostController {
 
     @Tag(name = "帖子")
     @Operation(summary = "获取一页帖子", description = "返回一页帖子，包含id,标题，内容和作者id，发帖时间，评论数量，热度")
-    @Parameter(name = "stuId", description = "当要获取指定用户发送的帖子时，传入其学号，当要获取最新发布的一页帖子时，传入'0'")
+    @Parameters({@Parameter(name = "currentPage", description = "当前页码"),
+            @Parameter(name = "pageSize", description = "每页大小"),
+            @Parameter(name = "stuId", description = "当要获取指定用户发送的帖子时，传入其学号，当要获取最新发布的一页帖子时，传入'0'")
+    })
     @GetMapping("/posts/{stuId}")
-    public Result<List<PostInfo>> getOnePagePosts(InPage inPage, @PathVariable String stuId){
-        Page page = new Page(inPage);
+    public Result<List<PostInfo>> getOnePagePosts(int currentPage, int pageSize, @PathVariable String stuId){
+        Page page = new Page(currentPage, pageSize);
         if (stuId == null || (!stuId.equals("0") && !userService.isExist(stuId)))
             return new Result<>(Code.SAVE_ERR, null, "学号错误");
         Result<List<Post>> result = postService.getOnePagePosts(stuId, page, Constant.ENTITY_TYPE_POST);

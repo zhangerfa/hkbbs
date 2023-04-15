@@ -2,13 +2,13 @@ package site.zhangerfa.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import site.zhangerfa.controller.tool.Code;
 import site.zhangerfa.controller.in.InMessage;
-import site.zhangerfa.controller.in.InPage;
 import site.zhangerfa.controller.tool.Result;
 import site.zhangerfa.pojo.Chat;
 import site.zhangerfa.pojo.Page;
@@ -43,12 +43,14 @@ public class ChatController {
 
     @Operation(summary = "获取一页聊天记录", description = "获取当前用户和指定聊天对象的一页聊天记录")
     @GetMapping("/{chatToStuId}")
-    public Result<Chat> getOnePageMessagesForChat(InPage inPage,
+    @Parameters({@Parameter(name = "currentPage", description = "当前页码"),
+            @Parameter(name = "pageSize", description = "每页大小")})
+    public Result<Chat> getOnePageMessagesForChat(int currentPage, int pageSize,
                                                   @PathVariable @Parameter(description = "聊天对象的学号") String chatToStuId){
         String stuId = hostHolder.getUser().getStuId();
         if (!userService.isExist(chatToStuId))
             return new Result<>(Code.GET_ERR, "聊天对象不存在");
-        Chat chat = chatService.selectOnePageMessagesForChat(stuId, chatToStuId, new Page(inPage));
+        Chat chat = chatService.selectOnePageMessagesForChat(stuId, chatToStuId, new Page(currentPage, pageSize));
         return new Result<>(Code.GET_OK, chat);
     }
 
@@ -56,9 +58,11 @@ public class ChatController {
             description = "获取当前用户的一页聊天列表，其中每个聊天数据中只包含该聊天最后一条消息，" +
                     "且聊天对象以最后一条消息的发送时间来降序")
     @GetMapping("/")
-    public Result<List<Chat>> getLatestMessages(InPage inPage){
+    @Parameters({@Parameter(name = "currentPage", description = "当前页码"),
+            @Parameter(name = "pageSize", description = "每页大小")})
+    public Result<List<Chat>> getLatestMessages(int currentPage, int pageSize){
         String stuId = hostHolder.getUser().getStuId();
-        List<Chat> chats = chatService.selectLatestMessages(stuId, new Page(inPage));
+        List<Chat> chats = chatService.selectLatestMessages(stuId, new Page(currentPage, pageSize));
         return new Result<>(Code.GET_OK, chats);
     }
 

@@ -2,13 +2,13 @@ package site.zhangerfa.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import site.zhangerfa.Constant.Constant;
 import site.zhangerfa.controller.in.InComment;
-import site.zhangerfa.controller.in.InPage;
 import site.zhangerfa.controller.in.InPost;
 import site.zhangerfa.controller.tool.*;
 import site.zhangerfa.event.EventProducer;
@@ -83,10 +83,12 @@ public class HoleController{
     }
 
     @Operation(summary = "获取一页树洞", description = "返回一页树洞，包含id,标题，内容和作者id，发帖时间，评论数量，热度")
-    @Parameter(name = "stuId", description = "当要获取指定用户发送的树洞时，传入其学号，当要获取最新发布的一页树洞时，传入'0'")
     @GetMapping("/{stuId}")
-    public Result<List<PostInfo>> getOnePageHoles(InPage inPage, @PathVariable String stuId){
-        Page page = new Page(inPage);
+    @Parameters({@Parameter(name = "currentPage", description = "当前页码"),
+            @Parameter(name = "pageSize", description = "每页大小"),
+            @Parameter(name = "stuId", description = "当要获取指定用户发送的树洞时，传入其学号，当要获取最新发布的一页树洞时，传入'0'")})
+    public Result<List<PostInfo>> getOnePageHoles(int currentPage, int pageSize, @PathVariable String stuId){
+        Page page = new Page(currentPage, pageSize);
         if (stuId == null || (!stuId.equals("0") && !userService.isExist(stuId)))
             return new Result<>(Code.SAVE_ERR, null, "学号错误");
         Result<List<Post>> result = postService.getOnePagePosts(stuId, page, Constant.ENTITY_TYPE_HOLE);

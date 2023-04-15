@@ -2,13 +2,13 @@ package site.zhangerfa.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import site.zhangerfa.Constant.Goal;
-import site.zhangerfa.controller.in.InPage;
 import site.zhangerfa.controller.tool.*;
 import site.zhangerfa.pojo.Card;
 import site.zhangerfa.pojo.Page;
@@ -81,9 +81,11 @@ public class CardController {
 
     @Operation(summary = "获取一页卡片", description = "获取一页卡片")
     @GetMapping(value = "/")
-    @Parameter(name = "posterId", description = "当要获取指定用户发送的卡片时，传入其学号，当要获取最新发布的一页帖子时，传入'0'")
-    public Result<List<CardInfo>> getOnePageCards(@RequestBody InPage inPage, String posterId, Goal goal){
-        Page page = new Page(inPage);
+    @Parameters({@Parameter(name = "currentPage", description = "当前页码"),
+            @Parameter(name = "pageSize", description = "每页大小"),
+            @Parameter(name = "posterId", description = "当要获取指定用户发送的卡片时，传入其学号，当要获取最新发布的一页帖子时，传入'0'")})
+    public Result<List<CardInfo>> getOnePageCards(int currentPage, int pageSize, String posterId, Goal goal){
+        Page page = new Page(currentPage, pageSize);
         return new Result<>(Code.GET_OK, cardService.getOnePageCards(posterId, page, goal.getCode()));
     }
 
