@@ -134,7 +134,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean sendCode(String stuId, HttpSession session) {
-        String subject = "张二发给您发的验证码";
+        String subject = "验证码请查收：";
         String code = UUID.randomUUID().toString().substring(0, 6);
         // 存储用户最后一次获取的验证码
         session.setAttribute("code", code);
