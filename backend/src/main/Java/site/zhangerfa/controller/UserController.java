@@ -24,6 +24,7 @@ import site.zhangerfa.service.LoginTicketService;
 import site.zhangerfa.service.UserService;
 import site.zhangerfa.util.HostHolder;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
 
@@ -167,24 +168,16 @@ public class UserController {
 //        }
 //    }
 
-    @Operation(summary = "获取用户信息", description = "获取指定用户信息，当传入用户学号为空时表示获取当前用户的信息")
+    @Operation(summary = "获取用户信息", description = "获取指定用户信息，当传入用户学号为‘0’时表示获取当前用户的信息")
     @GetMapping("/{stuId}")
     public Result<User> getUser(@PathVariable String stuId){
-        if (stuId.equals("")) {
+        if (stuId.equals("0")) {
             if (hostHolder.getUser() != null) return new Result<>(Code.GET_OK, hostHolder.getUser());
             else return new Result<>(Code.GET_ERR, "用户未登录");
         }
         User user = userService.getUserByStuId(stuId);
         String msg = user != null? "查询成功": "用户不存在";
         return new Result<>(user != null? Code.GET_OK: Code.GET_ERR, user, msg);
-    }
-
-    @Operation(summary =  "获取当前登录的用户信息")
-    @GetMapping("/")
-    public Result<User> getCurrentUser(){
-        User user = hostHolder.getUser();
-        if (user == null) return new Result<>(Code.GET_ERR, "您还未登录");
-        return new Result<>(Code.GET_OK, user);
     }
 
     // ########################################## 以下为管理员权限才可以调用的接口
