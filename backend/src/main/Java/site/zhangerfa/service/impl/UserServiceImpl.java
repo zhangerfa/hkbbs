@@ -138,8 +138,6 @@ public class UserServiceImpl implements UserService {
         String code = UUID.randomUUID().toString().substring(0, 6);
         // 存储用户最后一次获取的验证码
         session.setAttribute("code", code);
-        System.out.println(code);
-        // 设置thymeleaf参数
         // 发送邮件
         return mailClient.send(stuId + "@hust.edu.cn", subject, code);
     }
