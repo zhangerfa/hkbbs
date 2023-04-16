@@ -3,9 +3,14 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="site.zhangerfa.dao.CardMapper">
-    <resultMap id="cardContainsPosterResultMap" type="site.zhangerfa.controller.tool.CardInfo">
+    <resultMap id="cardInfoResultMap" type="site.zhangerfa.controller.tool.CardInfo">
+        <id property="id" column="id"/>
+        <result property="expected" column="expect"/>
+        <result property="goal" column="goal"/>
+        <result property="aboutMe" column="about_me"/>
+        <result property="createTime" column="create_time"/>
         <association property="poster" javaType="site.zhangerfa.pojo.User">
-            <id property="stuId" column="poster_id"/>
+            <result property="stuId" column="poster_id"/>
         </association>
     </resultMap>
 
@@ -19,10 +24,10 @@
     <delete id="deleteById">
         delete from card where id = #{id}
     </delete>
-    <select id="selectById" resultMap="cardContainsPosterResultMap">
+    <select id="selectById" resultMap="cardInfoResultMap">
         select * from card where id = #{id}
     </select>
-    <select id="selectOnePageCards" resultMap="cardContainsPosterResultMap">
+    <select id="selectOnePageCards" resultMap="cardInfoResultMap">
         select * from  card
         <where>
             <if test="goal != -1">
