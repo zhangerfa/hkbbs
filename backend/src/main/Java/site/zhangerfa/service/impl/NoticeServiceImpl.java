@@ -6,6 +6,7 @@ import site.zhangerfa.dao.NoticeMapper;
 import site.zhangerfa.pojo.Notice;
 import site.zhangerfa.pojo.Page;
 import site.zhangerfa.service.*;
+import site.zhangerfa.util.PageUtil;
 
 import java.util.List;
 
@@ -26,27 +27,35 @@ public class NoticeServiceImpl implements NoticeService {
     }
 
     @Override
-    public List<Notice> getReadNoticesForUser(String stuId, Page page) {
-        page.completePage(getNumOfReadNotice(stuId));
-        return noticeMapper.selectReadNoticesForUser(stuId, 0, page.getOffset(), page.getLimit());
+    public List<Notice> getReadNoticesForUser(String stuId, int currentPage, int pageSize) {
+        PageUtil pageUtil = new PageUtil(currentPage, pageSize, getNumOfReadNotice(stuId));
+        Page page = pageUtil.generatePage();
+        int[] fromTo = pageUtil.getFromTo();
+        return noticeMapper.selectReadNoticesForUser(stuId, 0, fromTo[0], fromTo[1]);
     }
 
     @Override
-    public List<Notice> getReadNoticesForUser(String stuId, int actionType, Page page) {
-        page.completePage(getNumOfReadNotice(stuId, actionType));
-        return noticeMapper.selectReadNoticesForUser(stuId, actionType, page.getOffset(), page.getLimit());
+    public List<Notice> getReadNoticesForUser(String stuId, int actionType, int currentPage, int pageSize) {
+        PageUtil pageUtil = new PageUtil(currentPage, pageSize, getNumOfReadNotice(stuId, actionType));
+        Page page = pageUtil.generatePage();
+        int[] fromTo = pageUtil.getFromTo();
+        return noticeMapper.selectReadNoticesForUser(stuId, actionType, fromTo[0], fromTo[1]);
     }
 
     @Override
-    public List<Notice> getUnreadNoticesForUser(String stuId, Page page) {
-        page.completePage(getNumOfReadNotice(stuId));
-        return noticeMapper.selectUnreadNoticesForUser(stuId, 0, page.getOffset(), page.getLimit());
+    public List<Notice> getUnreadNoticesForUser(String stuId, int currentPage, int pageSize) {
+        PageUtil pageUtil = new PageUtil(currentPage, pageSize, getNumOfReadNotice(stuId));
+        Page page = pageUtil.generatePage();
+        int[] fromTo = pageUtil.getFromTo();
+        return noticeMapper.selectUnreadNoticesForUser(stuId, 0, fromTo[0], fromTo[1]);
     }
 
     @Override
-    public List<Notice> getUnreadNoticesForUser(String stuId, int actionType, Page page) {
-        page.completePage(getNumOfReadNotice(stuId, actionType));
-        return noticeMapper.selectUnreadNoticesForUser(stuId, actionType, page.getOffset(), page.getLimit());
+    public List<Notice> getUnreadNoticesForUser(String stuId, int actionType, int currentPage, int pageSize) {
+        PageUtil pageUtil = new PageUtil(currentPage, pageSize, getNumOfReadNotice(stuId, actionType));
+        Page page = pageUtil.generatePage();
+        int[] fromTo = pageUtil.getFromTo();
+        return noticeMapper.selectUnreadNoticesForUser(stuId, actionType, fromTo[0], fromTo[1]);
     }
 
     @Override

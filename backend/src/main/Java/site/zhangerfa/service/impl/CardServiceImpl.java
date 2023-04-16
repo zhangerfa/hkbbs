@@ -6,11 +6,11 @@ import site.zhangerfa.controller.tool.CardInfo;
 import site.zhangerfa.dao.CardMapper;
 import site.zhangerfa.pojo.Card;
 import site.zhangerfa.pojo.Image;
-import site.zhangerfa.pojo.Page;
 import site.zhangerfa.service.CardService;
 import site.zhangerfa.service.ImageService;
 import site.zhangerfa.service.UserService;
 import site.zhangerfa.Constant.Constant;
+import site.zhangerfa.util.PageUtil;
 
 import java.util.List;
 
@@ -61,12 +61,18 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public List<CardInfo> getOnePageCards(String posterId, Page page, int goal) {
-        page.completePage(cardMapper.getTotalNums(goal, posterId));
-        List<CardInfo> cards = cardMapper.selectOnePageCards(goal, posterId, page.getOffset(), page.getLimit());
+    public List<CardInfo> getOnePageCards(String posterId, int goal, int currentPage, int pageSize) {
+        PageUtil pageUtil = new PageUtil(currentPage, pageSize, getNumOfCards(posterId, goal));
+        int[] fromTo = pageUtil.getFromTo();
+        List<CardInfo> cards = cardMapper.selectOnePageCards(goal, posterId, fromTo[0], fromTo[1]);
         for (CardInfo card : cards) {
             card.setPoster(userService.getUserByStuId(card.getPoster().getStuId()));
         }
         return cards;
+    }
+
+    @Override
+    public int getNumOfCards(String posterId, int goal) {
+        return cardMapper.getTotalNums(goal, posterId);
     }
 }

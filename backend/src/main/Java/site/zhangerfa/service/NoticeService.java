@@ -20,7 +20,7 @@ public interface NoticeService {
      * @param stuId
      * @return
      */
-    List<Notice> getReadNoticesForUser(String stuId, Page page);
+    List<Notice> getReadNoticesForUser(String stuId, int currentPage, int pageSize);
 
     /**
      * 获取用户指定类型的已读通知
@@ -28,7 +28,7 @@ public interface NoticeService {
      * @param actionType
      * @return
      */
-    List<Notice> getReadNoticesForUser(String stuId, int actionType, Page page);
+    List<Notice> getReadNoticesForUser(String stuId, int actionType, int currentPage, int pageSize);
 
     /**
      * 获取该用户所有的已读通知数量
@@ -62,19 +62,17 @@ public interface NoticeService {
     /**
      * 获取用户一页未读通知
      * @param stuId
-     * @param page
      * @return
      */
-    List<Notice> getUnreadNoticesForUser(String stuId, Page page);
+    List<Notice> getUnreadNoticesForUser(String stuId, int currentPage, int pageSize);
 
     /**
      * 获取一页用户指定类型的未读通知
      * @param stuId
      * @param actionType
-     * @param page
      * @return
      */
-    List<Notice> getUnreadNoticesForUser(String stuId, int actionType, Page page);
+    List<Notice> getUnreadNoticesForUser(String stuId, int actionType, int currentPage, int pageSize);
 
     /**
      * 将传入id对应的通知标为已读

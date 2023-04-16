@@ -37,10 +37,9 @@ public interface PostService {
      * 获取该实体的指定范围的评论
      * @param entityType
      * @param entityId
-     * @param page
      * @return
      */
-    List<Comment> getComments(int entityType, int entityId, Page page);
+    List<Comment> getComments(int entityType, int entityId, int from, int to);
 
     /**
      * 获取指定 id 的帖子数据
@@ -71,9 +70,8 @@ public interface PostService {
      * 一页帖子是指 从第 offset 张到第 limit 张
      *
      * @param stuId
-     * @param page     封装了 offset和limit
      * @param postType 帖子类型
      * @return
      */
-    Result<List<Post>> getOnePagePosts(String stuId, Page page, int postType);
+    Result<List<Post>> getOnePagePosts(String stuId, int postType, int currentPage, int pageSize);
 }

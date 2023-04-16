@@ -42,17 +42,10 @@ public class NoticeController {
     @Parameters({@Parameter(name = "currentPage", description = "当前页码"),
             @Parameter(name = "pageSize", description = "每页大小")})
     public Result<List<NoticeInfo>> getNotices(int currentPage, int pageSize){
-        Page page = new Page(currentPage, pageSize);
         // 查询所有未读的通知
         if (hostHolder.getUser() == null) return new Result<>(Code.GET_ERR, null, "用户未登录");
         String stuId = hostHolder.getUser().getStuId();
-        List<Notice> notices = noticeService.getUnreadNoticesForUser(stuId, page);
-        if (notices.size() < page.getPageSize()){
-            // 当未读通知不满一页时使用最新的已读通知填充
-            List<Notice> readNotices = noticeService.getReadNoticesForUser(stuId,
-                    new Page(1, page.getPageSize() - notices.size()));
-            notices.addAll(readNotices);
-        }
+        List<Notice> notices = noticeService.getUnreadNoticesForUser(stuId, currentPage, pageSize);
         List<NoticeInfo> noticeInfos = new ArrayList<>();
         for (Notice notice : notices) {
             NoticeInfo noticeInfo = new NoticeInfo(userService.getUserByStuId(notice.getActionUserId()));

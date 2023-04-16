@@ -18,6 +18,7 @@ import site.zhangerfa.service.ImageService;
 import site.zhangerfa.service.PostService;
 import site.zhangerfa.Constant.Constant;
 import site.zhangerfa.util.HostHolder;
+import site.zhangerfa.util.PageUtil;
 
 import java.util.HashMap;
 import java.util.List;
@@ -126,9 +127,8 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<Comment> getComments(int entityType, int entityId, Page page) {
-        page.completePage(commentService.getNumOfCommentsForEntity(entityType, entityId));
-        return commentService.getCommentsForEntity(entityType, entityId, page.getOffset(), page.getLimit());
+    public List<Comment> getComments(int entityType, int entityId, int from, int to) {
+        return commentService.getCommentsForEntity(entityType, entityId, from, to);
     }
 
     @Override
@@ -139,10 +139,15 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Result<List<Post>> getOnePagePosts(String stuId, Page page, int postType) {
-        if (stuId == null) return new Result<>(Code.GET_ERR, null, "未输入学号");
-        page.completePage(getTotalNums(postType, stuId));
-        List<Post> posts = postMapper.selectOnePagePosts(postType, stuId, page.getOffset(), page.getLimit());
+    public Result<List<Post>> getOnePagePosts(String stuId, int postType,
+                                              int currentPage, int pageSize) {
+        if (stuId == null)
+            return new Result<>(Code.GET_ERR, null, "未输入学号");
+        // 分页信息
+        PageUtil pageUtil = new PageUtil(currentPage, pageSize, getTotalNums(postType, stuId));
+        Page page = pageUtil.generatePage();
+        int[] fromTo = pageUtil.getFromTo();
+        List<Post> posts = postMapper.selectOnePagePosts(postType, stuId, fromTo[0], fromTo[1]);
         // 补充帖子中的图片
         for (Post post : posts) {
             post.setImages(imageService.getImagesForEntity(Constant.ENTITY_TYPE_POST, post.getId()));

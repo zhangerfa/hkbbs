@@ -10,6 +10,7 @@ import site.zhangerfa.pojo.Page;
 import site.zhangerfa.pojo.User;
 import site.zhangerfa.service.ChatService;
 import site.zhangerfa.service.UserService;
+import site.zhangerfa.util.PageUtil;
 
 import java.util.*;
 
@@ -29,11 +30,15 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public Chat selectOnePageMessagesForChat(String stuId, String chatToStuId, Page page) {
+    public Chat selectOnePageMessagesForChat(String stuId, String chatToStuId, int currentPage, int pageSize) {
         int chatId = chatMapper.selectId(stuId, chatToStuId);
-        page.completePage(messageMapper.selectMessagesNumForChat(chatId));
+        // 分页信息
+        PageUtil pageUtil = new PageUtil(currentPage, pageSize,
+                messageMapper.selectMessagesNumForChat(chatId));
+        Page page = pageUtil.generatePage();
+        int[] fromTo = pageUtil.getFromTo();
         List<Message> messages = messageMapper.selectOnePageMessagesForChat(stuId, chatId,
-                page.getOffset(), page.getLimit());
+                fromTo[0], fromTo[1]);
         List<String> stuIds = chatMapper.selectStuIdsById(chatId);
         Chat chat = new Chat();
         chat.setMessages(messages);
@@ -47,7 +52,7 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public List<Chat> selectLatestMessages(String stuId, Page page) {
+    public List<Chat> selectLatestMessages(String stuId, int currentPage, int pageSize) {
         // 获取所有聊天（只包含最新消息）
         List<Integer> chatIds = chatMapper.selectChatsForUser(stuId);
         ArrayList<Chat> chats = new ArrayList<>();
@@ -61,8 +66,9 @@ public class ChatServiceImpl implements ChatService {
         // 聊天按最新消息的发布时间排序
         chats.sort(Comparator.comparing((Chat c) -> c.getMessages().get(0).getCreateTime()));
         // 只取指定范围内的聊天
-        page.completePage(chatMapper.selectChatNum(stuId));
-        return chats.subList(Math.min(page.getOffset(), chats.size()),
-                      Math.min(page.getLimit(), chats.size()));
+        PageUtil pageUtil = new PageUtil(currentPage, pageSize, chatMapper.selectChatNum(stuId));
+        int[] fromTo = pageUtil.getFromTo();
+        return chats.subList(Math.min(fromTo[0], chats.size()),
+                      Math.min(fromTo[1], chats.size()));
     }
 }

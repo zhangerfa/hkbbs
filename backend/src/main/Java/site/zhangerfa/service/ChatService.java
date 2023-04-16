@@ -19,15 +19,14 @@ public interface ChatService {
      * 返回一页聊天数据
      * @param stuId 查询的用户学号
      * @param chatToStuId 聊天对象学号
-     * @param page
      * @return
      */
-    Chat selectOnePageMessagesForChat(String stuId, String chatToStuId, Page page);
+    Chat selectOnePageMessagesForChat(String stuId, String chatToStuId, int currentPage, int pageSize);
 
     /**
      * 获取用户所有最新的消息
      * @param stuId
      * @return chat中messages字段中只存储一个message，即最新的消息
      */
-    List<Chat> selectLatestMessages(String stuId, Page page);
+    List<Chat> selectLatestMessages(String stuId, int currentPage, int pageSize);
 }

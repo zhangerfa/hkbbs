@@ -40,9 +40,16 @@ public interface CardService {
     /**
      * 获取一页卡片
      * @param posterId 当传入”0“时获取最新的一页卡片，否则获取该学号用户的一页卡片
-     * @param page 存储当前页的分页信息
      * @param goal 当传入-1时查询所有类型的卡片，否则查询指定类型的卡片
      * @return
      */
-    List<CardInfo> getOnePageCards(String posterId, Page page, int goal);
+    List<CardInfo> getOnePageCards(String posterId, int goal, int currentPage, int pageSize);
+
+    /**
+     * 获取卡片总数
+     * @param posterId 当传入”0“时获取最新的一页卡片，否则获取该学号用户的一页卡片
+     * @param goal 当传入-1时查询所有类型的卡片，否则查询指定类型的卡片
+     * @return
+     */
+    int getNumOfCards(String posterId, int goal);
 }

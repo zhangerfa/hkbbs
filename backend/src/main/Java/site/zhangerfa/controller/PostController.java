@@ -5,20 +5,20 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import site.zhangerfa.Constant.Constant;
 import site.zhangerfa.controller.in.InComment;
-import site.zhangerfa.controller.in.InPost;
 import site.zhangerfa.controller.tool.*;
 import site.zhangerfa.event.EventProducer;
 import site.zhangerfa.event.EventUtil;
 import site.zhangerfa.pojo.*;
+import site.zhangerfa.service.CommentService;
 import site.zhangerfa.service.PostService;
 import site.zhangerfa.service.UserService;
 import site.zhangerfa.util.HostHolder;
 import site.zhangerfa.util.ImgShackUtil;
+import site.zhangerfa.util.PageUtil;
 import site.zhangerfa.util.PostUtil;
 
 import java.util.List;
@@ -40,6 +40,8 @@ public class PostController {
     private HostHolder hostHolder;
     @Resource
     private ImgShackUtil imgShackUtil;
+    @Resource
+    private CommentService commentService;
 
     @Tag(name = "帖子")
     @Operation(summary = "发布帖子", description = "传入标题和内容，图片是可选的，可以传入若干张图片")
@@ -85,9 +87,8 @@ public class PostController {
             @Parameter(name = "pageSize", description = "每页大小")})
     public Result<PostDetails<Post>> getDetails(@PathVariable @Parameter(description = "帖子或树洞id") int postId,
                                                 int currentPage, int pageSize){
-        Page page = new Page(currentPage, pageSize);
-        return postUtil.getPostAndPosterDetails(postId, new Page(1,
-                page.getPageSize()), postService.getPostType(postId));
+        return postUtil.getPostAndPosterDetails(postId, currentPage, pageSize,
+                Constant.ENTITY_TYPE_POST);
     }
 
     @Tag(name = "帖子")
@@ -112,10 +113,9 @@ public class PostController {
     })
     @GetMapping("/posts/{stuId}")
     public Result<List<PostInfo>> getOnePagePosts(int currentPage, int pageSize, @PathVariable String stuId){
-        Page page = new Page(currentPage, pageSize);
         if (stuId == null || (!stuId.equals("0") && !userService.isExist(stuId)))
             return new Result<>(Code.SAVE_ERR, null, "学号错误");
-        Result<List<Post>> result = postService.getOnePagePosts(stuId, page, Constant.ENTITY_TYPE_POST);
+        Result<List<Post>> result = postService.getOnePagePosts(stuId, Constant.ENTITY_TYPE_POST, currentPage, pageSize);
         if (result.getCode() == Code.GET_ERR) return new Result<>(Code.GET_ERR, null, result.getMsg());
         List<PostInfo> postInfos = postUtil.completePostInfo(result);
         return new Result<>(Code.GET_OK, postInfos, "查询成功");

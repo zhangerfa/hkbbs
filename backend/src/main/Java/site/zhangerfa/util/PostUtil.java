@@ -42,11 +42,12 @@ public class PostUtil {
     /**
      * 获取帖子和发帖人详细信息
      * @param postId
-     * @param page
+     * @param currentPage 当前评论页码
+     * @param pageSize 当前页展示评论数量
      * @param postType 帖子类型
      * @return
      */
-    public Result<PostDetails<Post>> getPostAndPosterDetails(int postId, Page page, int postType){
+    public Result<PostDetails<Post>> getPostAndPosterDetails(int postId, int currentPage, int pageSize, int postType){
         PostDetails<Post> postDetails = new PostDetails<>();
         // 帖子信息
         Post card = postService.getPostById(postId);
@@ -56,10 +57,13 @@ public class PostUtil {
         User poster = userService.getUserByStuId(card.getPosterId());
         postDetails.setPoster(poster);
         // 分页信息
-        page.completePage(commentService.getNumOfCommentsForEntity(postType, postId));
+        PageUtil pageUtil = new PageUtil(currentPage, pageSize,
+                commentService.getNumOfCommentsForEntity(Constant.ENTITY_TYPE_POST, postId));
+        Page page = pageUtil.generatePage();
         postDetails.setPage(page);
         // 评论集合
-        List<Comment> comments = postService.getComments(Constant.ENTITY_TYPE_COMMENT, postId, page);
+        int[] fromTo = pageUtil.getFromTo();
+        List<Comment> comments = postService.getComments(Constant.ENTITY_TYPE_COMMENT, postId, fromTo[0], fromTo[1]);
         // 获取每个评论的详细信息
         List<CommentDetails> commentsDetails;
         if (postType == Constant.ENTITY_TYPE_POST){
@@ -124,13 +128,16 @@ public class PostUtil {
             // 评论发布者信息
             commentDetails.setPoster(userService.getUserByStuId(comment.getPosterId()));
             // 分页信息
-            Page page = new Page(1, pageSize);
-            page.completePage(commentService.getNumOfCommentsForEntity(Constant.ENTITY_TYPE_COMMENT, comment.getId()));
+            PageUtil pageUtil = new PageUtil(1, pageSize,
+                    commentService.getNumOfCommentsForEntity(
+                            Constant.ENTITY_TYPE_COMMENT, comment.getId()));
+            Page page = pageUtil.generatePage();
             commentDetails.setPage(page);
             // 子评论详细信息
             // 子评论集合
+            int[] fromTo = pageUtil.getFromTo();
             List<Comment> subComments = commentService.getCommentsForEntity(Constant.ENTITY_TYPE_COMMENT,
-                    comment.getId(), page.getOffset(), page.getLimit());
+                    comment.getId(), fromTo[0], fromTo[1]);
             // 获取子评论的详细信息
             List<CommentDetails> subCommentsDetails = getCommentsDetails(subComments, deep + 1, pageSize);
             commentDetails.setCommentDetails(subCommentsDetails);

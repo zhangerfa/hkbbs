@@ -11,10 +11,11 @@ import org.springframework.web.multipart.MultipartFile;
 import site.zhangerfa.Constant.Goal;
 import site.zhangerfa.controller.tool.*;
 import site.zhangerfa.pojo.Card;
-import site.zhangerfa.pojo.Page;
 import site.zhangerfa.service.CardService;
+import site.zhangerfa.service.UserService;
 import site.zhangerfa.util.HostHolder;
 import site.zhangerfa.util.ImgShackUtil;
+import site.zhangerfa.util.PageUtil;
 import site.zhangerfa.util.UserUtil;
 
 import java.util.List;
@@ -29,6 +30,8 @@ public class CardController {
     private ImgShackUtil imgShackUtil;
     @Resource
     private HostHolder hostHolder;
+    @Resource
+    private UserService userService;
 
     @Operation(summary = "发布卡片", description = "图片至少上传一张")
     @PostMapping(value = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -86,8 +89,13 @@ public class CardController {
             @Parameter(name = "pageSize", description = "每页大小"),
             @Parameter(name = "posterId", description = "当要获取指定用户发送的卡片时，传入其学号，当要获取最新发布的一页帖子时，传入'0'")})
     public Result<List<CardInfo>> getOnePageCards(int currentPage, int pageSize, String posterId, Goal goal){
-        Page page = new Page(currentPage, pageSize);
-        return new Result<>(Code.GET_OK, cardService.getOnePageCards(posterId, page, goal.getCode()));
+        // 判断用户是否存在
+        if (!userService.isExist(posterId))
+            return new Result<>(Code.GET_ERR, "用户不存在");
+        if (currentPage < 0 || pageSize < 0)
+            return new Result<>(Code.GET_ERR, "分页信息不正确");
+        // 获取当前页卡片的起末序号
+        return new Result<>(Code.GET_OK, cardService.getOnePageCards(posterId, goal.getCode(), currentPage, pageSize));
     }
 
 }

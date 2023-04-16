@@ -50,7 +50,7 @@ public class ChatController {
         String stuId = hostHolder.getUser().getStuId();
         if (!userService.isExist(chatToStuId))
             return new Result<>(Code.GET_ERR, "聊天对象不存在");
-        Chat chat = chatService.selectOnePageMessagesForChat(stuId, chatToStuId, new Page(currentPage, pageSize));
+        Chat chat = chatService.selectOnePageMessagesForChat(stuId, chatToStuId, currentPage, pageSize);
         return new Result<>(Code.GET_OK, chat);
     }
 
@@ -62,7 +62,7 @@ public class ChatController {
             @Parameter(name = "pageSize", description = "每页大小")})
     public Result<List<Chat>> getLatestMessages(int currentPage, int pageSize){
         String stuId = hostHolder.getUser().getStuId();
-        List<Chat> chats = chatService.selectLatestMessages(stuId, new Page(currentPage, pageSize));
+        List<Chat> chats = chatService.selectLatestMessages(stuId, currentPage, pageSize);
         return new Result<>(Code.GET_OK, chats);
     }
 
