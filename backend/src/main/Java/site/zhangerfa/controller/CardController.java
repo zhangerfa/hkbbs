@@ -32,7 +32,7 @@ public class CardController {
 
     @Operation(summary = "发布卡片", description = "图片至少上传一张")
     @PostMapping(value = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public Result<Boolean> addCard(String aboutMe, String expected, @Parameter(description = "交友目标：", required = true) Goal goal,
+    public Result<Boolean> addCard(String aboutMe, String expected, @Parameter(description = "交友目标：") @RequestParam Goal goal,
                                    @RequestPart @Parameter(description = "图片文件集合，至少发布一张图片") List<MultipartFile> images){
         // 判断用户是否登录
         if (!UserUtil.isLogin(hostHolder))
@@ -74,9 +74,10 @@ public class CardController {
     @Operation(summary = "获取卡片", description = "获取指定id的卡片信息，包含其发布者的信息")
     @GetMapping("/{cardId}")
     public Result<CardInfo> getCard(@PathVariable int cardId){
-        if (cardService.getById(cardId) == null)
+        CardInfo cardInfo = cardService.getById(cardId);
+        if (cardInfo == null)
             return new Result<>(Code.GET_ERR, null, "您要查看的卡片不存在");
-        return new Result<>(Code.GET_OK, cardService.getById(cardId));
+        return new Result<>(Code.GET_OK, cardInfo);
     }
 
     @Operation(summary = "获取一页卡片", description = "获取一页卡片")

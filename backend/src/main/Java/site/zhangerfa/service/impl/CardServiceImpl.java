@@ -52,6 +52,7 @@ public class CardServiceImpl implements CardService {
     @Override
     public CardInfo getById(int id) {
         CardInfo card = cardMapper.selectById(id);
+        if (card == null) return null;
         card.setPoster(userService.getUserByStuId(card.getPoster().getStuId()));
         return card;
     }
