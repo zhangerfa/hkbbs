@@ -8,10 +8,8 @@ import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import site.zhangerfa.controller.tool.Code;
-import site.zhangerfa.controller.in.InMessage;
 import site.zhangerfa.controller.tool.Result;
 import site.zhangerfa.pojo.Chat;
-import site.zhangerfa.pojo.Page;
 import site.zhangerfa.service.ChatService;
 import site.zhangerfa.service.UserService;
 import site.zhangerfa.util.HostHolder;
@@ -68,7 +66,10 @@ public class ChatController {
 
     @Operation(summary = "当前用户给指定用户发送一条消息")
     @PostMapping("/")
-    public Result<Boolean> sendMessage(InMessage inMessage){
+    @Parameters({@Parameter(name = "fromStuId", description = "发送消息者学号"),
+                @Parameter(name = "toStuId", description = "接收消息者学号"),
+                @Parameter(name = "content", description = "消息内容")})
+    public Result<Boolean> sendMessage(String fromStuId, String toStuId, String content){
         return new Result<>();
     }
 

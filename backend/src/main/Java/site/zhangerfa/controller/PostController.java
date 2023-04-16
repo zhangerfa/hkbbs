@@ -8,7 +8,6 @@ import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import site.zhangerfa.Constant.Constant;
-import site.zhangerfa.controller.in.InComment;
 import site.zhangerfa.controller.tool.Code;
 import site.zhangerfa.controller.tool.PostDetails;
 import site.zhangerfa.controller.tool.PostInfo;
@@ -122,10 +121,13 @@ public class PostController {
 
     @Operation(summary = "发布评论（包括对评论评论）", description = "需要传入被评论实体的类型和id，以及被评论实体所属的帖子id")
     @PostMapping("/posts/comment")
-    public Result<Boolean> addComment(InComment inComment,
-                                      @Parameter(description = "被评论实体所属帖子或树洞的id") int postId){
+    @Parameters({@Parameter(name = "entityType", description = "被评论实体的类型"),
+                @Parameter(name = "entityId", description = "被评论实体的id"),
+                @Parameter(name = "content", description = "评论内容"),
+                @Parameter(name = "postId", description = "被评论实体所属帖子或树洞的id")})
+    public Result<Boolean> addComment(int entityType, int entityId, String content, int postId){
         // 增加评论
-        Comment comment = new Comment(inComment.getEntityType(), inComment.getEntityId(), inComment.getContent());
+        Comment comment = new Comment(entityType, entityId, content);
         postService.addComment(comment, postId);
         // 发布评论通知
         Notice notice = eventUtil.getNotice(comment, postId); // 将评论数据包装为notice对象
