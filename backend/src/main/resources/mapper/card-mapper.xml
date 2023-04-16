@@ -33,11 +33,12 @@
             <if test="goal != -1">
                 goal = #{goal}
             </if>
-            <if test="posterId != '0'">
-                and poster_id = posterId
+            <if test='posterId != "0"'>
+                and
+                poster_id = #{posterId}
             </if>
         </where>
-        order by createTime desc
+        order by create_time desc
         limit #{offset}, #{limit}
     </select>
     <select id="getTotalNums" resultType="java.lang.Integer">
@@ -46,8 +47,9 @@
             <if test="goal != -1">
                 goal = #{goal}
             </if>
-            <if test="posterId != '0'">
-                and poster_id = posterId
+            <if test='posterId != "0"'>
+                and
+                poster_id = #{posterId}
             </if>
         </where>
     </select>
