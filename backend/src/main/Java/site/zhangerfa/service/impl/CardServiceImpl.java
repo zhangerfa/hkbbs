@@ -2,7 +2,6 @@ package site.zhangerfa.service.impl;
 
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
-import site.zhangerfa.Constant.Goal;
 import site.zhangerfa.controller.tool.CardInfo;
 import site.zhangerfa.dao.CardMapper;
 import site.zhangerfa.pojo.Card;
@@ -51,9 +50,13 @@ public class CardServiceImpl implements CardService {
 
     @Override
     public CardInfo getById(int id) {
+        // 查询卡片基本信息
         CardInfo card = cardMapper.selectById(id);
         if (card == null) return null;
+        // 补充发布者信息
         card.setPoster(userService.getUserByStuId(card.getPoster().getStuId()));
+        // 补充卡片中的图片url
+        card.setImageUrls(imageService.getImagesForEntity(Constant.ENTITY_TYPE_CARD, id));
         return card;
     }
 
