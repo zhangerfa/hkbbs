@@ -22,7 +22,7 @@
         delete from hole
         where id = #{id}
     </delete>
-    <select id="selectOnePageHoles" resultType="site.zhangerfa.pojo.Hole">
+    <select id="selectOnePageHoles" resultType="site.zhangerfa.pojo.Post">
         select <include refid="select"/>
         from hole
         <where>
@@ -36,7 +36,7 @@
     <select id="getNumOfHoles" resultType="java.lang.Integer">
         select count(*) from hole
     </select>
-    <select id="selectHoleById" resultType="site.zhangerfa.pojo.Hole">
+    <select id="selectHoleById" resultType="site.zhangerfa.pojo.Post">
         select <include refid="select"></include>
         from hole
         where id = #{id}

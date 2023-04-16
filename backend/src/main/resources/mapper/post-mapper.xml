@@ -42,8 +42,8 @@
             <if test="postType != -1">
                 type = #{postType}
             </if>
-            <if test="posterId != '0'">
-                and poster_id = posterId
+            <if test='posterId != "0"'>
+                and poster_id = #{posterId}
             </if>
         </where>
     </select>

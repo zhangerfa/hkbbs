@@ -23,7 +23,7 @@ public class PostUtil {
     private PostService postService;
 
     /**
-     * 补充帖子、树洞详细信息中发帖人的信息
+     * 补充帖子信息中发帖人的信息(用于帖子列表，而非详情页面)
      * @param result
      * @return
      */
@@ -37,6 +37,25 @@ public class PostUtil {
             postInfos.add(postInfo);
         }
         return postInfos;
+    }
+
+    /**
+     * 将树洞贴补充发布者信息并匿名化-昵称和头像换为匿名
+     * @param result
+     * @return
+     */
+    public List<HoleInfo> completeHoleInfo(Result<List<Post>> result){
+        ArrayList<HoleInfo> holeInfos = new ArrayList<>();
+        for (Post post : result.getData()) {
+            HoleInfo holeInfo = new HoleInfo(post);
+            // 匿名化
+            holeInfo.setPosterNickname(holeNicknameService.getHoleNickname(
+                    post.getId(), post.getPosterId()));
+            holeInfo.setPosterHeaderUrl("https://zhangerfa-1316526930.cos.ap-guangzhou.myqcloud.com/hkbbs/default.jpg");
+
+            holeInfos.add(holeInfo);
+        }
+        return holeInfos;
     }
 
     /**

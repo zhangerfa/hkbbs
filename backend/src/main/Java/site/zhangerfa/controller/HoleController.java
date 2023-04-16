@@ -90,12 +90,12 @@ public class HoleController{
     @Parameters({@Parameter(name = "currentPage", description = "当前页码"),
             @Parameter(name = "pageSize", description = "每页大小"),
             @Parameter(name = "stuId", description = "当要获取指定用户发送的树洞时，传入其学号，当要获取最新发布的一页树洞时，传入'0'")})
-    public Result<List<PostInfo>> getOnePageHoles(int currentPage, int pageSize, @PathVariable String stuId){
+    public Result<List<HoleInfo>> getOnePageHoles(int currentPage, int pageSize, @PathVariable String stuId){
         if (stuId == null || (!stuId.equals("0") && !userService.isExist(stuId)))
             return new Result<>(Code.SAVE_ERR, null, "学号错误");
         Result<List<Post>> result = postService.getOnePagePosts(stuId ,Constant.ENTITY_TYPE_HOLE, currentPage ,pageSize);
         if (result.getCode() == Code.GET_ERR) return new Result<>(Code.GET_ERR, null, result.getMsg());
-        List<PostInfo> postInfos = postUtil.completePostInfo(result);
+        List<HoleInfo> postInfos = postUtil.completeHoleInfo(result);
         return new Result<>(Code.GET_OK, postInfos, "查询成功");
     }
 }

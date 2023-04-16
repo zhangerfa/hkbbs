@@ -91,10 +91,10 @@ public class PostServiceImpl implements PostService {
         for (Comment comment : comments) {
             deleteComment(comment.getId());
         }
-        // 删除帖子
-        postMapper.deletePostById(id);
         // 删除帖子中的所有图片
         imageService.deleteImageById(id);
+        // 删除帖子
+        postMapper.deletePostById(id);
 
         Map<String, Object> map = new HashMap<>();
         map.put("result", true);
