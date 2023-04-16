@@ -32,7 +32,9 @@ public class PostUtil {
         for (Post post : result.getData()) {
             PostInfo postInfo = new PostInfo(post);
             // 补充发帖人信息
-            postInfo.setPoster(userService.getUserByStuId(post.getPosterId()));
+            User user = userService.getUserByStuId(post.getPosterId());
+            postInfo.setPosterName(user.getUsername());
+            postInfo.setPosterHeaderUrl(user.getHeaderUrl());
 
             postInfos.add(postInfo);
         }
@@ -44,12 +46,12 @@ public class PostUtil {
      * @param result
      * @return
      */
-    public List<HoleInfo> completeHoleInfo(Result<List<Post>> result){
-        ArrayList<HoleInfo> holeInfos = new ArrayList<>();
+    public List<PostInfo> completeHoleInfo(Result<List<Post>> result){
+        ArrayList<PostInfo> holeInfos = new ArrayList<>();
         for (Post post : result.getData()) {
-            HoleInfo holeInfo = new HoleInfo(post);
+            PostInfo holeInfo = new PostInfo(post);
             // 匿名化
-            holeInfo.setPosterNickname(holeNicknameService.getHoleNickname(
+            holeInfo.setPosterName(holeNicknameService.getHoleNickname(
                     post.getId(), post.getPosterId()));
             holeInfo.setPosterHeaderUrl("https://zhangerfa-1316526930.cos.ap-guangzhou.myqcloud.com/hkbbs/default.jpg");
 
@@ -164,5 +166,16 @@ public class PostUtil {
             res.add(commentDetails);
         }
         return res;
+    }
+
+    /**
+     * 判断帖子类型是否合法
+     * @param type
+     * @return
+     */
+    public boolean isPostTypeValid(int type){
+        if (type == Constant.ENTITY_TYPE_POST || type == Constant.ENTITY_TYPE_HOLE)
+            return true;
+        return false;
     }
 }

@@ -14,6 +14,7 @@ import site.zhangerfa.pojo.Image;
 import site.zhangerfa.pojo.Page;
 import site.zhangerfa.pojo.Post;
 import site.zhangerfa.service.CommentService;
+import site.zhangerfa.service.HoleNicknameService;
 import site.zhangerfa.service.ImageService;
 import site.zhangerfa.service.PostService;
 import site.zhangerfa.Constant.Constant;
@@ -38,6 +39,8 @@ public class PostServiceImpl implements PostService {
     private PostMapper postMapper;
     @Resource
     private ImageService imageService;
+    @Resource
+    private HoleNicknameService holeNicknameService;
     /**
      * 判空及HTML转义处理
      * @param post
@@ -93,6 +96,9 @@ public class PostServiceImpl implements PostService {
         }
         // 删除帖子中的所有图片
         imageService.deleteImagesForEntity(Constant.ENTITY_TYPE_POST, post.getId());
+        // 如果删除的帖子为树洞，删除该树洞中所有随机昵称
+        if (postMapper.getPostType(id) == Constant.ENTITY_TYPE_HOLE)
+            holeNicknameService.deleteNicknamesForHole(id);
         // 删除帖子
         postMapper.deletePostById(id);
 
