@@ -45,6 +45,7 @@ public class HoleNicknameImpl implements HoleNicknameService {
 
     /**
      * 获取用户在传入树洞的昵称
+     *    发布、评论树洞时不生成随机昵称，第一次查询时生成
      * @param holeId 树洞id
      * @param posterId 用户学号
      * @return 返回昵称
@@ -53,16 +54,16 @@ public class HoleNicknameImpl implements HoleNicknameService {
     public String getHoleNickname(int holeId, String posterId) {
         // 获取树洞昵称索引
         String nicknameIndex = holeNicknameMapper.selectHoleNickname(holeId, posterId);
-        if (nicknameIndex == null) {
-            throw new RuntimeException("学号不正确或用户未在此树洞发言");
+        if (nicknameIndex == null){
+            // 当查询次用户在树洞的随机昵称时发现未生成随机昵称，则生成
+            addHoleNickname(holeId, posterId);
+            nicknameIndex = holeNicknameMapper.selectHoleNickname(holeId, posterId);
         }
         String[] indexArray = nicknameIndex.split(";");
         // 从字符集中获取字符
-        String nickname = "";
-        nickname += Constant.FIRST_NAME[Integer.parseInt(indexArray[0])];
-        nickname += Constant.SECOND_NAME[Integer.parseInt(indexArray[1])];
 
-        return nickname;
+        return "" + Constant.FIRST_NAME[Integer.parseInt(indexArray[0])] +
+                Constant.SECOND_NAME[Integer.parseInt(indexArray[1])];
     }
 
     @Override
