@@ -31,51 +31,12 @@ import java.util.Map;
 public class HoleController{
     @Resource(type = HoleServiceImpl.class)
     private PostService holeService;
-    @Resource
-    private HostHolder hostHolder;
-    @Resource
-    private EventProducer eventProducer;
-    @Resource
-    private EventUtil eventUtil;
-    @Resource
-    private ImgShackUtil imgShackUtil;
     @Resource(name = "postServiceImpl")
     private PostService postService;
     @Resource
     private PostUtil postUtil;
     @Resource
     private UserService userService;
-
-    @PostMapping(value = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @Operation(summary = "发布树洞", description = "传入标题和内容，图片是可选的，可以传入若干张图片")
-    @Parameters({@Parameter(name = "title", description = "标题", required = true),
-                @Parameter(name = "content", description = "内容", required = true)})
-    public Result<Boolean> addHole(String title, String content,
-                                   @RequestPart(required = false)@Parameter(description = "图片集合，可选") List<MultipartFile> images){
-        if (hostHolder.getUser() == null) return new Result<>(Code.SAVE_ERR, false, "用户未登录");
-        // 将传入图片上传到图床，并将url集合添加到card中
-        List<String> imageUrls = imgShackUtil.getImageUrls(images);
-        Post post = new Post(title, content);
-        post.setImages(imageUrls);
-        // 发布卡片
-        String stuId = hostHolder.getUser().getStuId();
-        post.setPosterId(stuId);
-        holeService.add(post, Constant.ENTITY_TYPE_HOLE);
-        return new Result<>(Code.SAVE_OK, true, "发布成功");
-    }
-
-    @Operation(summary = "发布评论（包括对评论评论）", description = "需要传入被评论实体的类型和id，以及被评论实体所属的帖子id")
-    @PostMapping("/comment")
-    public Result<Boolean> addComment(@RequestBody InComment inComment,
-                                      @Parameter(description = "被评论实体所属树洞的id") int holeId){
-        // 增加评论
-        Comment comment = new Comment(inComment.getEntityType(), inComment.getEntityId(), inComment.getContent());
-        holeService.addComment(comment, holeId);
-        // 发布评论通知
-        Notice notice = eventUtil.getNotice(comment, holeId); // 将评论数据包装为notice对象
-        eventProducer.addNotice(Constant.TOPIC_COMMENT, notice); // 传入消息队列
-        return new Result<>(Code.SAVE_OK, true, "发布成功");
-    }
 
     @DeleteMapping("/delete/post/{holeId}")
     @Operation(summary = "删除树洞", description = "删除卡片及卡片中所有评论")

@@ -2,6 +2,7 @@ package site.zhangerfa.pojo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -21,7 +22,7 @@ public class Post {
     @Schema(description = "热度")
     private int hot = 0;
     @Schema(description = "帖子中图片URL集合")
-    private List<String> images;
+    private List<String> images = new ArrayList<>();
 
     public Post(){}
 

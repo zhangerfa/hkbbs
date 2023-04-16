@@ -21,15 +21,6 @@ public class HoleServiceImpl extends PostServiceImpl{
 
     @Override
     @Transactional(isolation= Isolation.READ_COMMITTED, propagation = Propagation.NESTED)
-    public boolean add(Post hole, int postType) {
-        boolean insert = super.add(hole, postType);
-        // 为洞主生成随机昵称
-        boolean flag = holeNicknameService.addHoleNickname(hole.getId(), hole.getPosterId());
-        return insert && flag;
-    }
-
-    @Override
-    @Transactional(isolation= Isolation.READ_COMMITTED, propagation = Propagation.NESTED)
     public Map<String, Object> deleteById(int id) {
         // 删除所有该树洞的随机昵称
         holeNicknameService.deleteNicknamesForHole(id);
