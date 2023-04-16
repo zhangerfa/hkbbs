@@ -49,7 +49,7 @@ public class PostController {
     @Parameters({@Parameter(name = "title", description = "标题", required = true),
             @Parameter(name = "content", description = "内容", required = true)})
     public Result<Boolean> addPost(String title, String content,
-                                   @RequestPart@Parameter(description = "图片集合，可选") List<MultipartFile> images){
+                                   @RequestPart(required = false)@Parameter(description = "图片集合，可选") List<MultipartFile> images){
         if (hostHolder.getUser() == null) return new Result<>(Code.SAVE_ERR, false, "用户未登录");
         // 将传入图片上传到图床，并将url集合添加到post中
         Post post = new Post(title, content);
