@@ -92,7 +92,7 @@ public class PostServiceImpl implements PostService {
             deleteComment(comment.getId());
         }
         // 删除帖子中的所有图片
-        imageService.deleteImageById(id);
+        imageService.deleteImagesForEntity(Constant.ENTITY_TYPE_POST, post.getId());
         // 删除帖子
         postMapper.deletePostById(id);
 

@@ -31,9 +31,9 @@ public class HoleServiceImpl extends PostServiceImpl{
     @Override
     @Transactional(isolation= Isolation.READ_COMMITTED, propagation = Propagation.NESTED)
     public Map<String, Object> deleteById(int id) {
-        super.deleteById(id);
         // 删除所有该树洞的随机昵称
         holeNicknameService.deleteNicknamesForHole(id);
+        // 删除树洞贴和评论
         return super.deleteById(id);
     }
 

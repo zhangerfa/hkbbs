@@ -70,7 +70,7 @@ public class PostController {
         return new Result<>(result? Code.DELETE_OK: Code.DELETE_ERR, result, (String) map.get("msg"));
     }
 
-    @Tag(name = "帖子、树洞共有")
+    @Tag(name = "帖子、树洞共有(详情、删除评论)")
     @DeleteMapping("/delete/comment/{commentId}")
     @Operation(summary = "删除评论", description = "删除评论及评论中的子评论")
     @ResponseBody
@@ -80,7 +80,7 @@ public class PostController {
         return new Result<>(code, (Boolean) map.get("result"), (String)map.get("msg"));
     }
 
-    @Tag(name = "帖子、树洞共有")
+    @Tag(name = "帖子、树洞共有(详情、删除评论)")
     @Operation(summary = "帖子、树洞详情", description = "返回帖子或树洞中的详细数据，包括帖子或树洞内容，发布者信息，评论信息，评论的分页信息")
     @GetMapping("/details/{postId}")
     @Parameters({@Parameter(name = "currentPage", description = "当前页码"),
