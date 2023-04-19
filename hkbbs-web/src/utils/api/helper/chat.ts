@@ -23,14 +23,14 @@ export class Chat {
         })
     }
 
-    static sendMessage(args: { toStuId: string, content: string }): Promise<ResultBoolean> {
+    static sendMessage(args: { fromStuId: string, toStuId: string, content: string }): Promise<ResultBoolean> {
         return req.post({
             url: this.path,
             data: args
         })
     }
 
-    static sendImage(args: { toStuId: string, content: any }): Promise<ResultBoolean> {
+    static sendImage(args: { fromStuId: string, toStuId: string, content: any }): Promise<ResultBoolean> {
         return req.post({
             url: this.path + "image",
             data: args

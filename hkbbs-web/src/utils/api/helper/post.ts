@@ -1,12 +1,12 @@
 import { req } from "./req"
-import { ResultListPostInfo, ResultBoolean } from "../../schemas"
+import { ResultListPostInfo, ResultBoolean, ResultPostDetailsPost } from "../../schemas"
 
 //post 帖子
 export class Post {
 
     private static path: string = "/posts/"
 
-    static get(args: { stuId: string, currentPage: string, pageSize: string }): Promise<ResultListPostInfo> {
+    static getList(args: { stuId: string, currentPage: number, pageSize: number, type: number }): Promise<ResultListPostInfo> {
         return req.get({
             url: this.path + args.stuId,
             params: {
@@ -16,7 +16,17 @@ export class Post {
         })
     }
 
-    static publish(args: { title: string, content: string, images: string[] }): Promise<ResultBoolean> {
+    static getById(args: { postId: number, currentPage: number, pageSize: number }): Promise<ResultPostDetailsPost> {
+        return req.get({
+            url: `/details/${args.postId}`,
+            params: {
+                currentPage: args.currentPage,
+                pageSize: args.pageSize
+            }
+        })
+    }
+
+    static publish(args: { title: string, content: string, type: number, images: string[] }): Promise<ResultBoolean> {
         return req.post({
             url: this.path,
             data: {
@@ -25,14 +35,20 @@ export class Post {
         })
     }
 
-    static comment(args: { cardId: number, entityType: string, entityId: string, content: string }): Promise<ResultBoolean> {
+    static comment(args: { entityType: number, entityId: number, content: string, postId: number }): Promise<ResultBoolean> {
         return req.post({
             url: this.path + "comment",
             data: args
         })
     }
 
-    static delete(args: { postId: number }): Promise<ResultBoolean> {
+    static deleteComment(args: { commentId: number }): Promise<ResultBoolean> {
+        return req.delete({
+            url: `/delete/comment/${args.commentId}`
+        })
+    }
+
+    static deletePost(args: { postId: number }): Promise<ResultBoolean> {
         return req.delete({
             url: this.path + "delete/" + args.postId.toString()
         })
