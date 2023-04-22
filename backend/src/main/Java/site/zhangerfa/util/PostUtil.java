@@ -82,9 +82,9 @@ public class PostUtil {
                 commentService.getNumOfCommentsForEntity(Constant.ENTITY_TYPE_POST, postId));
         Page page = pageUtil.generatePage();
         postDetails.setPage(page);
-        // 评论集合
+        // 获取评论集合
         int[] fromTo = pageUtil.getFromTo();
-        List<Comment> comments = postService.getComments(Constant.ENTITY_TYPE_COMMENT, postId, fromTo[0], fromTo[1]);
+        List<Comment> comments = postService.getComments(Constant.ENTITY_TYPE_POST, postId, fromTo[0], fromTo[1]);
         // 获取每个评论的详细信息
         List<CommentDetails> commentsDetails;
         if (postType == Constant.ENTITY_TYPE_POST){

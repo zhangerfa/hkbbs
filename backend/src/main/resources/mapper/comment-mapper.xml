@@ -18,7 +18,7 @@
     <select id="selectCommentsByEntity" resultType="site.zhangerfa.pojo.Comment">
         select <include refid="select"></include>
         from comment
-        where entity_type = #{entityType} and entity_id = #{entityId}
+        where entity_id = #{entityId}
         order by create_time desc
         limit #{offset}, #{limit}
     </select>

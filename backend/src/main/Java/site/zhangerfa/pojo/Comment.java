@@ -24,6 +24,8 @@ public class Comment {
     @Schema(description = "评论时间")
     private Date createTime = new Date();
 
+    public Comment(){}
+
     public Comment(int entityType, int entityId, String content) {
         this.entityType = entityType;
         this.entityId = entityId;
