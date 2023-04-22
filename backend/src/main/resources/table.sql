@@ -112,8 +112,6 @@ create table if not exists image
     entity_id   int          not null comment '图片所属的实体id',
     url         varchar(120) not null comment '图片url',
     entity_type int          null comment '图片所属实体的类型',
-    constraint image_post_null_fk
-        foreign key (entity_id) references post (id)
 )
     comment '存储帖子中的图片';
 
