@@ -1,6 +1,8 @@
 package site.zhangerfa.dao;
 
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Update;
 import site.zhangerfa.pojo.Message;
 
 import java.util.List;
@@ -9,7 +11,7 @@ import java.util.List;
 public interface MessageMapper {
     /**
      * 查询用户的聊天未读消息数量，
-     * @param stuId 要查询用户的学号
+     * @param stuId 聊天对象的学号
      * @param chatId 聊天id，如果传入0则查询所有聊天总的未读消息数量
      * @return
      */
@@ -38,4 +40,22 @@ public interface MessageMapper {
      * @return
      */
     int selectMessagesNumForChat(int chatId);
+
+    /**
+     * 发布消息
+     * @param fromId
+     * @param chatId
+     * @param type
+     * @param content
+     * @return
+     */
+    int insertMessage(String fromId, int chatId, int type, String content);
+
+    /**
+     * 将消息状态改为已读
+     * @param id
+     * @return
+     */
+    @Update("update message set status = 1 where id = #{id}")
+    int readMessage(int id);
 }

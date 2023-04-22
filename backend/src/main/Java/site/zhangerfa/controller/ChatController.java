@@ -1,5 +1,6 @@
 package site.zhangerfa.controller;
 
+import io.swagger.models.auth.In;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -13,6 +14,7 @@ import site.zhangerfa.pojo.Chat;
 import site.zhangerfa.service.ChatService;
 import site.zhangerfa.service.UserService;
 import site.zhangerfa.util.HostHolder;
+import site.zhangerfa.util.ImgShackUtil;
 
 import java.util.List;
 
@@ -27,19 +29,21 @@ public class ChatController {
     private UserService userService;
     @Resource
     private HostHolder hostHolder;
+    @Resource
+    private ImgShackUtil imgShackUtil;
 
     @Operation(summary = "获取当前用户的未读消息数量",
             description = "当聊天对象学号传为 ‘0’ 时查询该用户所有聊天的总未读消息数量")
     @GetMapping("/unreadNum")
     public Result<Integer> getUnreadMessagesNum(@Parameter(description = "聊天对象的学号") String chatToStuId){
-        if (!userService.isExist(chatToStuId) && chatToStuId.equals("0"))
+        if (!chatToStuId.equals("0") && userService.isExist(chatToStuId))
             return new Result<>(Code.GET_ERR, "聊天对象不存在");
         String stuId = hostHolder.getUser().getStuId();
         int unreadMessagesNum = chatService.getUnreadMessagesNum(stuId, chatToStuId);
         return new Result<>(Code.GET_OK, unreadMessagesNum);
     }
 
-    @Operation(summary = "获取一页聊天记录", description = "获取当前用户和指定聊天对象的一页聊天记录")
+    @Operation(summary = "获取当前用户的一页聊天记录", description = "获取当前用户和指定聊天对象的一页聊天记录")
     @GetMapping("/{chatToStuId}")
     @Parameters({@Parameter(name = "currentPage", description = "当前页码"),
             @Parameter(name = "pageSize", description = "每页大小")})
@@ -64,20 +68,37 @@ public class ChatController {
         return new Result<>(Code.GET_OK, chats);
     }
 
-    @Operation(summary = "当前用户给指定用户发送一条消息")
+    @Operation(summary = "发布一条文字消息")
     @PostMapping("/")
-    @Parameters({@Parameter(name = "fromStuId", description = "发送消息者学号"),
-                @Parameter(name = "toStuId", description = "接收消息者学号"),
-                @Parameter(name = "content", description = "消息内容")})
+    @Parameters({@Parameter(name = "fromStuId", description = "消息发布者学号"),
+            @Parameter(name = "toStuId", description = "消息接收者学号", required = true),
+            @Parameter(name = "content", description = "消息内容", required = true)})
     public Result<Boolean> sendMessage(String fromStuId, String toStuId, String content){
-        return new Result<>();
+        // 发布消息
+        boolean flag = chatService.addMessage(fromStuId, toStuId, 0, content);
+        int code = flag? Code.SAVE_OK: Code.SAVE_ERR;
+        return new Result<>(code, flag);
     }
 
-    @Operation(summary = "当前用户给指定用户发送一张图片")
+    @Operation(summary = "发布一条图片消息")
     @PostMapping("/image")
-    public Result<Boolean> sendImage(@Parameter(description = "消息发布者学号") String fromStuId,
-                                     @Parameter(description = "消息接收者学号") String toStuId,
-                                     @Parameter(description = "图片文件") MultipartFile image){
-        return new Result<>();
+    @Parameters({@Parameter(name = "fromStuId", description = "消息发布者学号"),
+        @Parameter(name = "toStuId", description = "消息接收者学号", required = true),
+        @Parameter(name = "image", description = "图片文件", required = true)})
+    public Result<Boolean> sendImage(String fromStuId, String toStuId,
+                                     MultipartFile image){
+        // 发布消息
+        String imageUrl = imgShackUtil.add(image);
+        boolean flag = chatService.addMessage(fromStuId, toStuId, 1, imageUrl);
+        int code = flag? Code.SAVE_OK: Code.SAVE_ERR;
+        return new Result<>(code, flag);
+    }
+
+    @Operation(summary = "消息已读")
+    @PutMapping("/read")
+    public Result<Boolean> readMessages(@Parameter(description = "已读消息的id列表")
+                                            @RequestBody List<Integer> readMessageIds){
+        chatService.readMessages(readMessageIds);
+        return new Result<>(Code.UPDATE_OK);
     }
 }
