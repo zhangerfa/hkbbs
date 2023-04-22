@@ -111,7 +111,7 @@ create table if not exists image
         primary key,
     entity_id   int          not null comment '图片所属的实体id',
     url         varchar(120) not null comment '图片url',
-    entity_type int          null comment '图片所属实体的类型',
+    entity_type int          null comment '图片所属实体的类型'
 )
     comment '存储帖子中的图片';
 
@@ -126,7 +126,7 @@ create table if not exists card
     expect      text                                not null comment '征友期望',
     create_time timestamp default CURRENT_TIMESTAMP null comment '发布时间',
     constraint card_user_null_fk
-        foreign key (post_id) references user (stu_id)
+        foreign key (poster_id) references user (stu_id)
 )
     comment '卡片墙卡片' charset = utf8mb3;
 
@@ -145,21 +145,24 @@ create table chat
 
 
 
-create table if not exists message
+create table message
 (
     poster_id   varchar(10)                         not null comment '消息发布者学号',
     id          int auto_increment
         primary key,
-    content     text charset utf8mb4                null comment '消息内容',
+    content     text charset utf8mb4                null comment '消息内容：当消息为文字时存储文字，当消息为图片时存储图片url',
     create_time timestamp default CURRENT_TIMESTAMP not null comment '信息发布时间',
     status      int       default 0                 not null comment '信息状态：1-已读，0-未读',
     chat_id     int                                 not null comment '消息所属的聊天id',
+    type        int                                 null comment '消息类型：0-文字，1-图片',
     constraint message_chat_null_fk
         foreign key (chat_id) references chat (id),
     constraint message_user_null_fk
         foreign key (poster_id) references user (stu_id)
 )
     comment '站内私信表' charset = utf8mb3;
+
+
 
 
 
