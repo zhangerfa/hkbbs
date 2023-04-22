@@ -7,7 +7,7 @@
         id, poster_id, title, content, create_at as createTime, comment_num, hot
     </sql>
 
-    <insert id="add" keyProperty="post.id">
+    <insert id="add" keyProperty="entity.id">
         insert into post (poster_id, title, content, type)
         values(#{post.posterId}, #{post.title}, #{post.content}, #{postType})
     </insert>

@@ -8,7 +8,6 @@ import site.zhangerfa.pojo.*;
 import site.zhangerfa.service.*;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 @Component
@@ -65,18 +64,23 @@ public class PostUtil {
      * @param postId
      * @param currentPage 当前评论页码
      * @param pageSize 当前页展示评论数量
-     * @param postType 帖子类型
      * @return
      */
-    public Result<PostDetails<Post>> getPostAndPosterDetails(int postId, int currentPage, int pageSize, int postType){
-        PostDetails<Post> postDetails = new PostDetails<>();
+    public Result<PostDetails> getPostAndPosterDetails(int postId, int currentPage, int pageSize){
+        // 获取帖子类型
+        int postType = postService.getPostType(postId);
         // 帖子信息
         Post card = postService.getPostById(postId);
         if (card == null) return new Result<>(Code.GET_ERR, null, "您访问的帖子已被删除");
-        postDetails.setPost(card);
-        // 作者信息
+        PostDetails postDetails = new PostDetails(card);
+        // 作者信息: 如果为树洞则替换为匿名信息
         User poster = userService.getUserByStuId(card.getPosterId());
-        postDetails.setPoster(poster);
+        String posterName = postType == Constant.ENTITY_TYPE_POST? poster.getUsername():
+                holeNicknameService.getHoleNickname(postId, poster.getStuId());
+        postDetails.setPosterName(posterName);
+        String posterHeaderUrl = postType == Constant.ENTITY_TYPE_POST? poster.getHeaderUrl():
+                "https://zhangerfa-1316526930.cos.ap-guangzhou.myqcloud.com/hkbbs/default.jpg";
+        postDetails.setPosterHeaderUrl(posterHeaderUrl);
         // 分页信息
         PageUtil pageUtil = new PageUtil(currentPage, pageSize,
                 commentService.getNumOfCommentsForEntity(Constant.ENTITY_TYPE_POST, postId));
@@ -87,11 +91,7 @@ public class PostUtil {
         List<Comment> comments = postService.getComments(Constant.ENTITY_TYPE_POST, postId, fromTo[0], fromTo[1]);
         // 获取每个评论的详细信息
         List<CommentDetails> commentsDetails;
-        if (postType == Constant.ENTITY_TYPE_POST){
-             commentsDetails = getCommentsDetails(comments, page.getPageSize());
-        }else {
-            commentsDetails = getCommentDetailsForHole(postId, comments, page.getPageSize());
-        }
+        commentsDetails = getCommentsDetails(comments, page.getPageSize(), postId);
         postDetails.setCommentDetails(commentsDetails);
         return new Result<>(Code.GET_OK, postDetails, "查询成功");
     }
@@ -103,51 +103,25 @@ public class PostUtil {
      * @param pageSize
      * @return
      */
-    private List<CommentDetails> getCommentsDetails(List<Comment> comments, int pageSize){
-        return getCommentsDetails(comments, 0, pageSize);
+    private List<CommentDetails> getCommentsDetails(List<Comment> comments, int pageSize, int postId){
+        return getCommentsDetails(comments, 0, pageSize, postId);
     }
 
-    /**
-     * 获取传入所有树洞评论的详细信息
-     *
-     * @param holeId
-     * @param comments
-     * @param pageSize
-     * @return
-     */
-    private List<CommentDetails> getCommentDetailsForHole(int holeId, List<Comment> comments, int pageSize){
-        // 获取评论详情
-        List<CommentDetails> commentsDetails = getCommentsDetails(comments, 0, pageSize);
-        // 将评论详情中 发帖人的 username 用随机昵称覆盖
-        LinkedList<CommentDetails> stack = new LinkedList<>();
-        for (int i = 0; i < commentsDetails.size(); i++){
-            stack.add(commentsDetails.get(i));
-            while (stack.size() != 0){
-                CommentDetails details = stack.pop();
-                // 将当前节点所有子节点入栈
-                List<CommentDetails> subCommentDetails = details.getCommentDetails();
-                if (subCommentDetails.size() > 0) stack.addAll(subCommentDetails);
-                // 当前节点修改 username 为 随即昵称
-                User poster = details.getPoster();
-                poster.setUsername(holeNicknameService.getHoleNickname(holeId, poster.getStuId()));
-            }
-        }
-        return commentsDetails;
-    }
-
-    private List<CommentDetails> getCommentsDetails(List<Comment> comments, int deep, int pageSize){
+    private List<CommentDetails> getCommentsDetails(List<Comment> comments, int deep, int pageSize, int postId){
         if (comments == null || comments.size() == 0){
             return new ArrayList<>();
         }
         List<CommentDetails> res = new ArrayList<>();
         for (Comment comment : comments) {
-            CommentDetails commentDetails = new CommentDetails();
+            // 评论信息
+            CommentDetails commentDetails = new CommentDetails(comment);
             // 记录当前评论深度
             commentDetails.setDeep(deep);
-            // 评论信息
-            commentDetails.setPost(comment);
             // 评论发布者信息
-            commentDetails.setPoster(userService.getUserByStuId(comment.getPosterId()));
+            User poster = userService.getUserByStuId(comment.getPosterId());
+            String[] usernameAndHeaderUrl = getUsernameAndHeaderUrl(poster, postId);
+            commentDetails.setPosterName(usernameAndHeaderUrl[0]);
+            commentDetails.setPosterHeaderUrl(usernameAndHeaderUrl[1]);
             // 分页信息
             PageUtil pageUtil = new PageUtil(1, pageSize,
                     commentService.getNumOfCommentsForEntity(
@@ -177,5 +151,21 @@ public class PostUtil {
         if (type == Constant.ENTITY_TYPE_POST || type == Constant.ENTITY_TYPE_HOLE)
             return true;
         return false;
+    }
+
+    /**
+     * 获取发布者的用户名和头像信息，如果为匿名则返回匿名信息
+     * @param poster
+     * @param postId 发布实体所在的帖子id
+     * @return
+     */
+    public String[] getUsernameAndHeaderUrl(User poster, int postId){
+        int postType = postService.getPostType(postId);
+        String[] res = new String[2];
+        res[0] = postType == Constant.ENTITY_TYPE_POST? poster.getUsername():
+                holeNicknameService.getHoleNickname(postId, poster.getStuId());
+        res[1] = postType == Constant.ENTITY_TYPE_POST? poster.getHeaderUrl():
+                "https://zhangerfa-1316526930.cos.ap-guangzhou.myqcloud.com/hkbbs/default.jpg";
+        return res;
     }
 }

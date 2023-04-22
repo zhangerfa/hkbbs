@@ -14,7 +14,7 @@ create table user
 )
     charset = utf8mb3;
 
-create table if not exists post
+create table if not exists entity
 (
     id          int auto_increment
         primary key,
@@ -31,7 +31,7 @@ create table if not exists post
     comment '帖子表' charset = utf8mb3;
 
 create index stu_id
-    on post (poster_id);
+    on entity (poster_id);
 
 create table if not exists comment
 (
@@ -58,7 +58,7 @@ create table if not exists hole_nickname
     constraint hole_nickname_ibfk_1
         foreign key (poster_id) references user (stu_id),
     constraint hole_nickname_post_null_fk
-        foreign key (hole_id) references post (id)
+        foreign key (hole_id) references entity (id)
 )
     comment '存储随机昵称，每个树洞帖子中的一个用户将拥有一个唯一的随机昵称' charset = utf8mb3;
 

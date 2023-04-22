@@ -113,10 +113,9 @@ public class PostController {
     @GetMapping("/details/{postId}")
     @Parameters({@Parameter(name = "currentPage", description = "当前页码"),
             @Parameter(name = "pageSize", description = "每页大小")})
-    public Result<PostDetails<Post>> getDetails(@PathVariable @Parameter(description = "帖子或树洞id") int postId,
-                                                int currentPage, int pageSize){
-        return postUtil.getPostAndPosterDetails(postId, currentPage, pageSize,
-                Constant.ENTITY_TYPE_POST);
+    public Result<PostDetails> getDetails(@PathVariable @Parameter(description = "帖子或树洞id") int postId,
+                                          int currentPage, int pageSize){
+        return postUtil.getPostAndPosterDetails(postId, currentPage, pageSize);
     }
 
     @Operation(summary = "发布评论（包括对评论评论）", description = "需要传入被评论实体的类型和id，以及被评论实体所属的帖子id")
