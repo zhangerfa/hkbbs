@@ -90,7 +90,7 @@ public class CardController {
             @Parameter(name = "posterId", description = "当要获取指定用户发送的卡片时，传入其学号，当要获取最新发布的一页帖子时，传入'0'")})
     public Result<List<CardInfo>> getOnePageCards(int currentPage, int pageSize, String posterId, Goal goal){
         // 判断用户是否存在
-        if (!userService.isExist(posterId))
+        if (!posterId.equals("0") || !userService.isExist(posterId))
             return new Result<>(Code.GET_ERR, "用户不存在");
         if (currentPage < 0 || pageSize < 0)
             return new Result<>(Code.GET_ERR, "分页信息不正确");
