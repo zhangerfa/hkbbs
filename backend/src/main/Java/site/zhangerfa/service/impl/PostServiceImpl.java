@@ -67,6 +67,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public Post getPostById(int id) {
         Post post = postMapper.selectPostById(id);
+        if (post == null) return null;
         // 获取帖子中图片
         post.setImages(imageService.getImagesForEntity(Constant.ENTITY_TYPE_POST, id));
         return post;
