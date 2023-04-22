@@ -29,4 +29,21 @@ public interface ChatService {
      * @return chat中messages字段中只存储一个message，即最新的消息
      */
     List<Chat> selectLatestMessages(String stuId, int currentPage, int pageSize);
+
+    /**
+     * 发布消息
+     * @param fromId
+     * @param toId
+     * @param type
+     * @param content
+     * @return
+     */
+    boolean addMessage(String fromId, String toId, int type, String content);
+
+    /**
+     * 已读消息的id
+     * @param messageIds
+     * @return
+     */
+    boolean readMessages(List<Integer> messageIds);
 }
