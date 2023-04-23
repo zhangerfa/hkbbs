@@ -6,7 +6,7 @@ export class Card {
 
     private static path: string = "/cards/"
 
-    static get(args: { posterId: string, goal: number, currentPage: number, pageSize: number }): Promise<ResultListCardContainsPoster> {
+    static get(args: { currentPage: number, pageSize: number, posterId: string, goal: string }): Promise<ResultListCardContainsPoster> {
         return req.get({
             url: this.path,
             params: args
@@ -19,7 +19,7 @@ export class Card {
         })
     }
 
-    static publish(args: { posterId: string, images: string[], aboutMe: string, goal: number, expected: string }): Promise<ResultBoolean> {
+    static publish(args: { aboutMe: string, expected: string, goal: string, images: string[] }): Promise<ResultBoolean> {
         return req.post({
             url: this.path,
             data: {

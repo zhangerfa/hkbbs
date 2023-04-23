@@ -26,6 +26,21 @@ export const user_ls: MockMethod[] = [
         }
     },
     {
+        url: '/users/',
+        method: 'get',
+        response: () => {
+            return {
+                data: {
+                    "stuId": getStuId(),
+                    "username": getName(),
+                    "headerUrl": getHeaderUrl(),
+                    "gender": getGender()
+                },
+                ...getMsg
+            }
+        }
+    },
+    {
         url: '/users/isExist',
         method: 'get',
         response: () => {

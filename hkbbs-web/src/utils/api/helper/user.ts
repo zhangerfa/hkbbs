@@ -6,7 +6,13 @@ export class User {
 
     private static path: string = "/users/"
 
-    static get(args: { stuId: string }): Promise<UserType> {
+    static current(): Promise<UserType> {
+        return req.get({
+            url: this.path,
+        })
+    }
+
+    static getInfo(args: { stuId: string }): Promise<UserType> {
         return req.get({
             url: this.path + args.stuId,
         })
@@ -32,7 +38,7 @@ export class User {
         })
     }
 
-    static change(args: { newPassword: string, username: string }): Promise<ResultBoolean> {
+    static change(args: { newPassword: string, username: string, headerImage: any }): Promise<ResultBoolean> {
         return req.put({
             url: this.path,
             data: args
