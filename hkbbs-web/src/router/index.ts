@@ -15,26 +15,41 @@ const routes: Array<RouteRecordRaw> = [
     path: "/post",
     name: "Post",
     component: Post,
+    meta: {
+      hasTabbar: true,
+    },
   },
   {
     path: "/treehole",
     name: "TreeHole",
     component: TreeHole,
+    meta: {
+      hasTabbar: true,
+    },
   },
   {
     path: "/notice",
     name: "Notice",
     component: Notice,
+    meta: {
+      hasTabbar: true,
+    },
   },
   {
     path: "/profile",
     name: "Profile",
     component: Profile,
+    meta: {
+      hasTabbar: true,
+    },
   },
   {
     path: "/login",
     name: "Login",
     component: Login,
+    meta: {
+      hasTab: false,
+    },
   },
 ];
 const router = createRouter({

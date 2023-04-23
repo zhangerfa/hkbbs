@@ -15,8 +15,23 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { ref } from "vue";
+import { ref, reactive, onMounted } from "vue";
 import TreeHoleItem from "./TreeHoleItem.vue";
+import { Hole } from "@/utils/api/helper/hole";
+import { getStuId } from "@/utils/mock/helper/custom";
+
+const pageParams = reactive({
+  currentPage: 1,
+  pageSize: 10,
+});
+
+const getCardList = () => {
+  const data = {};
+};
+
+onMounted(() => {
+  getCardList();
+});
 const keyword = ref("");
 </script>
 <style lang="scss" scoped>

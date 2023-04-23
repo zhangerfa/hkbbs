@@ -1,10 +1,16 @@
 <script setup lang="ts">
-import Tabbar from "./components/Tabbar/Tabbar.vue";
+import TabBar from "./components/Tabbar/Tabbar.vue";
+import {useRoute} from "vue-router";
+import {onMounted} from "vue";
+
+const route = useRoute()
+console.log(route.path)
+
 </script>
 
 <template>
   <router-view />
-  <Tabbar />
+  <tab-bar v-show="route.meta.hasTabbar"/>
 </template>
 
 <style scoped>

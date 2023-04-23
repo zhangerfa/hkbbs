@@ -1,15 +1,10 @@
-import { createApp } from 'vue'
+import { createApp } from "vue";
 // import './style.css'
-import ElementPlus from 'element-plus'
-import 'element-plus/dist/index.css'
-import App from './App.vue'
-
+import App from "./App.vue";
+import "vant/es/toast/style";
 import router from "./router";
-import pinia from './stores'
+import pinia from "./stores";
 
-const app = createApp(App)
+const app = createApp(App);
 
-app.use(router)
-    .use(pinia)
-    .use(ElementPlus)
-    .mount('#app')
+app.use(router).use(pinia).mount("#app");
