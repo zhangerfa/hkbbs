@@ -1,6 +1,6 @@
 <template>
   <div class="treehole-container">
-    <van-search v-model="keyword" placeholder="请输入搜索关键词" />
+    <!-- <van-search v-model="keyword" placeholder="请输入搜索关键词" /> -->
     <van-list class="treehole-list">
       <template v-for="item in 5">
         <TreeHoleItem />

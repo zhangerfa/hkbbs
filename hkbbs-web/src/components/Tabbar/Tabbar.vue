@@ -1,8 +1,10 @@
 <template>
   <van-tabbar v-model="active" route>
-    <van-tabbar-item replace to="/post" icon="comment-o">帖子</van-tabbar-item>
+    <van-tabbar-item replace to="/cardwall" icon="comment-o"
+      >卡片墙</van-tabbar-item
+    >
     <van-tabbar-item replace to="/treehole" icon="cluster-o"
-      >树洞</van-tabbar-item
+      >路口</van-tabbar-item
     >
     <van-tabbar-item replace to="/notice" icon="award-o" badge="5"
       >通知</van-tabbar-item

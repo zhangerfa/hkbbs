@@ -19,9 +19,12 @@
           :rules="[{ required: true, message: '请填写密码' }]"
         />
       </van-cell-group>
-      <van-checkbox v-model="rememberMe" shape="square" class="remember-text"
-        >记住我</van-checkbox
-      >
+      <div>
+        <van-checkbox v-model="rememberMe" shape="square" class="remember-text"
+          >记住我</van-checkbox
+        >
+      </div>
+
       <div style="margin: 16px">
         <van-button round block type="primary" native-type="submit">
           提交

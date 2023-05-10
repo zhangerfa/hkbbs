@@ -22,8 +22,8 @@
   height: 155px;
   padding: 10px;
   margin-bottom: 10px;
-  border-radius: 20px;
-  background-color: #fff;
+  border-radius: 10px;
+  background-color: #deecea;
   line-height: 1.5;
   .title {
     font-weight: bold;
