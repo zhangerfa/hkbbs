@@ -1,6 +1,6 @@
 <template>
   <div class="notice-container">
-    <van-nav-bar title="消息" />
+    <van-nav-bar title="通知" />
     <template v-for="(item, index) in itemList" :key="index">
       <NoticeItem :notice="item" @click="onClickNotice(item)" />
     </template>

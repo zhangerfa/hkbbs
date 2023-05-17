@@ -2,8 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8a41999c-5b40-47a6-9906-601dd3546af3" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/hkbbs-web/src/router/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/hkbbs-web/src/router/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hkbbs-web/src/stores/modules/card.js" beforeDir="false" afterPath="$PROJECT_DIR$/hkbbs-web/src/stores/modules/card.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/hkbbs-web/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/hkbbs-web/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hkbbs-web/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/hkbbs-web/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hkbbs-web/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/hkbbs-web/yarn.lock" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -71,6 +74,8 @@
       <workItem from="1681225258747" duration="568000" />
       <workItem from="1681225836725" duration="1345000" />
       <workItem from="1681285031767" duration="702000" />
+      <workItem from="1681522767412" duration="3000" />
+      <workItem from="1681895495759" duration="1103000" />
     </task>
     <servers />
   </component>

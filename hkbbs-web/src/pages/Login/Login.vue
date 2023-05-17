@@ -54,7 +54,7 @@ const onSubmit = () => {
   userStore.login(data).then((res) => {
     if (res.code === 0) {
       showSuccessToast("登录成功");
-      router.push("/post");
+      router.push("/");
     } else {
       showFailToast("失败文案");
     }

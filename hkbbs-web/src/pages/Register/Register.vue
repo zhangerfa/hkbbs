@@ -100,23 +100,23 @@ const handleRegister = () => {
   });
 };
 const handleSendCode = () => {
-  console.log("发送验证码,倒计时60s");
-  User.sendCode({
-    stuId: registerInfo.stuId,
-  });
-  if (!timer.value) {
-    sendCountDown.value = TIME_COUNT;
-    sendBtnType.value = "default";
-    timer.value = setInterval(() => {
-      if (sendCountDown.value > 0 && sendCountDown.value <= TIME_COUNT) {
-        sendCountDown.value--;
-      } else {
-        sendBtnType.value = "primary";
-        clearInterval(timer.value);
-        timer.value = null;
-      }
-    }, 1000);
-  }
+  // console.log("发送验证码,倒计时60s");
+  // User.sendCode({
+  //   stuId: registerInfo.stuId,
+  // });
+  // if (!timer.value) {
+  //   sendCountDown.value = TIME_COUNT;
+  //   sendBtnType.value = "default";
+  //   timer.value = setInterval(() => {
+  //     if (sendCountDown.value > 0 && sendCountDown.value <= TIME_COUNT) {
+  //       sendCountDown.value--;
+  //     } else {
+  //       sendBtnType.value = "primary";
+  //       clearInterval(timer.value);
+  //       timer.value = null;
+  //     }
+  //   }, 1000);
+  // }
 };
 </script>
 
