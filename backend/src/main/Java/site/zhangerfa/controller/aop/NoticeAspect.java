@@ -25,7 +25,7 @@ public class NoticeAspect {
     // 定义通知
     @AfterReturning("notice() && args(model, ..)")
     public void addUnreadNoticeNum(Model model){
-        int numOfUnreadNotice = noticeService.getNumOfUnreadNotice(hostHolder.getUser().getStuId());
+        int numOfUnreadNotice = noticeService.getNumOfUnreadNotice(hostHolder.getUser().getStuId(), 0);
         model.addAttribute("unreadNoticeNum", numOfUnreadNotice);
     }
 }

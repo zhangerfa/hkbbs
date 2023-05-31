@@ -1,11 +1,13 @@
 package site.zhangerfa.controller.tool;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
 import site.zhangerfa.pojo.Post;
 
 import java.util.Date;
 import java.util.List;
 
+@Data
 @Schema(description = "封装帖子的信息，包含id，发帖人昵称、头像，帖子的标题、内容、发帖时间、评论数量、热度")
 public class PostInfo {
     private int id;
@@ -36,77 +38,5 @@ public class PostInfo {
         this.images = post.getImages();
         this.createTime = post.getCreateTime();
         this.title = post.getTitle();
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getPosterName() {
-        return posterName;
-    }
-
-    public void setPosterName(String posterName) {
-        this.posterName = posterName;
-    }
-
-    public String getPosterHeaderUrl() {
-        return posterHeaderUrl;
-    }
-
-    public void setPosterHeaderUrl(String posterHeaderUrl) {
-        this.posterHeaderUrl = posterHeaderUrl;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public int getCommentNum() {
-        return commentNum;
-    }
-
-    public void setCommentNum(int commentNum) {
-        this.commentNum = commentNum;
-    }
-
-    public int getHot() {
-        return hot;
-    }
-
-    public void setHot(int hot) {
-        this.hot = hot;
-    }
-
-    public List<String> getImages() {
-        return images;
-    }
-
-    public void setImages(List<String> images) {
-        this.images = images;
     }
 }

@@ -1,5 +1,7 @@
 package site.zhangerfa.pojo;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
@@ -10,6 +12,7 @@ import java.util.Date;
 
 @Schema(description = "用户信息")
 public class User {
+    @TableId
     @Schema(description = "学号") @NotNull
     @Pattern(regexp = "[UMD][0-9]{9}", message = "学号第一位为学历缩写，后九位为数字")
     private String stuId;
@@ -24,6 +27,7 @@ public class User {
     @Schema(description = "用户性别")
     private int gender;
     @JsonIgnore
+    @TableField("create_at")
     private Date createTime; // 创建时间
     @JsonIgnore
     private String salt;

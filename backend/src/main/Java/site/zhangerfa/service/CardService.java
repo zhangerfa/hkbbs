@@ -2,19 +2,16 @@ package site.zhangerfa.service;
 
 import site.zhangerfa.controller.tool.CardInfo;
 import site.zhangerfa.pojo.Card;
-import site.zhangerfa.pojo.Page;
 
 import java.util.List;
 
 public interface CardService {
     /**
      * 发布卡片
-     *
-     * @param posterId
      * @param card
      * @return
      */
-    boolean add(String posterId, Card card);
+    boolean add(Card card);
 
     /**
      * 删除卡片
@@ -47,9 +44,10 @@ public interface CardService {
 
     /**
      * 获取卡片总数
+     *
      * @param posterId 当传入”0“时获取最新的一页卡片，否则获取该学号用户的一页卡片
-     * @param goal 当传入-1时查询所有类型的卡片，否则查询指定类型的卡片
+     * @param goal     当传入-1时查询所有类型的卡片，否则查询指定类型的卡片
      * @return
      */
-    int getNumOfCards(String posterId, int goal);
+    long getNumOfCards(String posterId, int goal);
 }

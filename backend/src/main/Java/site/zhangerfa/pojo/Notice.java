@@ -1,5 +1,6 @@
 package site.zhangerfa.pojo;
 
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -8,6 +9,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
  *  通知内容为哪个用户对一个实体做了什么动作：要将信息-A对实体B做了动作C-通知给用户D"
  */
 public class Notice {
+    @TableId
     private int id;
     @Schema(description = "被通知用户的学号（D）")
     @JsonIgnore

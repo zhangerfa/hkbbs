@@ -1,5 +1,7 @@
 package site.zhangerfa.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -11,7 +13,6 @@ import site.zhangerfa.controller.tool.Result;
 import site.zhangerfa.dao.PostMapper;
 import site.zhangerfa.pojo.Comment;
 import site.zhangerfa.pojo.Image;
-import site.zhangerfa.pojo.Page;
 import site.zhangerfa.pojo.Post;
 import site.zhangerfa.service.CommentService;
 import site.zhangerfa.service.HoleNicknameService;
@@ -19,7 +20,6 @@ import site.zhangerfa.service.ImageService;
 import site.zhangerfa.service.PostService;
 import site.zhangerfa.Constant.Constant;
 import site.zhangerfa.util.HostHolder;
-import site.zhangerfa.util.PageUtil;
 
 import java.util.HashMap;
 import java.util.List;
@@ -55,8 +55,9 @@ public class PostServiceImpl implements PostService {
         // 转义HTML标记，防止HTML注入
         post.setTitle(HtmlUtils.htmlEscape(post.getTitle()));
         post.setContent(HtmlUtils.htmlEscape(post.getContent()));
+        post.setPostType(postType);
         // post表中添加post
-        int addNum = postMapper.add(post, postType);
+        int addNum = postMapper.insert(post);
         // 将帖子中的图片url插入image表
         for (String image : post.getImages()) {
             imageService.add(new Image(Constant.ENTITY_TYPE_POST, post.getId(), image));
@@ -66,7 +67,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Post getPostById(int id) {
-        Post post = postMapper.selectPostById(id);
+        Post post = postMapper.selectById(id);
         if (post == null) return null;
         // 获取帖子中图片
         post.setImages(imageService.getImagesForEntity(Constant.ENTITY_TYPE_POST, id));
@@ -82,14 +83,9 @@ public class PostServiceImpl implements PostService {
     @Transactional(isolation= Isolation.READ_COMMITTED, propagation = Propagation.NESTED)
     public Map<String, Object> deleteById(int id) {
         // 权限验证 只有发帖者可以删除自己发的帖子
-        Post post = postMapper.selectPostById(id);
-        String stuId = hostHolder.getUser().getStuId();
-        if (!stuId.equals(post.getPosterId())){
-            Map<String, Object> map = new HashMap<>();
-            map.put("result", false);
-            map.put("msg", "您没有权限删除");
-            return map;
-        }
+        Post post = postMapper.selectById(id);
+        Map<String, Object> checkLoginMap = CommentServiceImpl.checkLogin(hostHolder, post.getPosterId());
+        if (checkLoginMap != null) return checkLoginMap;
         // 删除帖子的评论
         List<Comment> comments = commentService.getCommentsForEntity(Constant.ENTITY_TYPE_POST, id, 0, Integer.MAX_VALUE);
         for (Comment comment : comments) {
@@ -101,7 +97,7 @@ public class PostServiceImpl implements PostService {
         if (postMapper.getPostType(id) == Constant.ENTITY_TYPE_HOLE)
             holeNicknameService.deleteNicknamesForHole(id);
         // 删除帖子
-        postMapper.deletePostById(id);
+        postMapper.deleteById(id);
 
         Map<String, Object> map = new HashMap<>();
         map.put("result", true);
@@ -111,7 +107,9 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public int getTotalNums(int postType, String posterId) {
-        return postMapper.getNumOfPosts(postType, posterId);
+        return postMapper.selectCount(new LambdaQueryWrapper<Post>()
+                .eq(postType != -1, Post::getPostType, postType)
+                .eq(!posterId.equals("0"), Post::getPosterId, posterId)).intValue();
     }
 
     @Override
@@ -150,15 +148,16 @@ public class PostServiceImpl implements PostService {
                                               int currentPage, int pageSize) {
         if (stuId == null)
             return new Result<>(Code.GET_ERR, null, "未输入学号");
-        // 分页信息
-        PageUtil pageUtil = new PageUtil(currentPage, pageSize, getTotalNums(postType, stuId));
-        Page page = pageUtil.generatePage();
-        int[] fromTo = pageUtil.getFromTo();
-        List<Post> posts = postMapper.selectOnePagePosts(postType, stuId, fromTo[0], fromTo[1]);
+        // 获取帖子
+        Page<Post> postPage = postMapper.selectPage(new Page<>(currentPage, pageSize),
+                new LambdaQueryWrapper<Post>().
+                        eq(Post::getPostType, postType)
+                        .eq(!stuId.equals("0"), Post::getPosterId, stuId)
+                        .orderByDesc(Post::getCreateTime));
         // 补充帖子中的图片
-        for (Post post : posts) {
+        for (Post post : postPage.getRecords()) {
             post.setImages(imageService.getImagesForEntity(Constant.ENTITY_TYPE_POST, post.getId()));
         }
-        return new Result<>(Code.GET_OK, posts, "获取成功");
+        return new Result<>(Code.GET_OK, postPage.getRecords(), "获取成功");
     }
 }

@@ -1,7 +1,7 @@
 package site.zhangerfa.service;
 
+import site.zhangerfa.controller.tool.ChatInfo;
 import site.zhangerfa.pojo.Chat;
-import site.zhangerfa.pojo.Page;
 
 import java.util.List;
 
@@ -21,14 +21,14 @@ public interface ChatService {
      * @param chatToStuId 聊天对象学号
      * @return
      */
-    Chat selectOnePageMessagesForChat(String stuId, String chatToStuId, int currentPage, int pageSize);
+    ChatInfo selectOnePageMessagesForChat(String stuId, String chatToStuId, int currentPage, int pageSize);
 
     /**
      * 获取用户所有最新的消息
      * @param stuId
      * @return chat中messages字段中只存储一个message，即最新的消息
      */
-    List<Chat> selectLatestMessages(String stuId, int currentPage, int pageSize);
+    List<ChatInfo> selectLatestMessages(String stuId, int currentPage, int pageSize);
 
     /**
      * 发布消息
@@ -46,4 +46,16 @@ public interface ChatService {
      * @return
      */
     boolean readMessages(List<Integer> messageIds);
+
+    /**
+     * 获取传入用户的所有聊天
+     */
+    List<Chat> getChatsForUser(String stuId);
+
+    /**
+     * 获取传入用户的聊天数量
+     * @param stuId
+     * @return
+     */
+    public long getChatNumForUser(String stuId);
 }

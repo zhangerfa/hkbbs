@@ -7,9 +7,9 @@ public interface HoleNicknameService {
      * @param stuId 用户学号
      *    生成的构成昵称的字符索引：nicknameIndex 构成昵称的字符在字符集中的索引，昵称由多个字符组成，
      *                      每个字符有其索引，索引之间使用 ； 分割
-     * @return 是否添加成功
+     * @return 字符索引
      */
-    boolean addHoleNickname(int holeId, String stuId);
+    String addHoleNickname(int holeId, String stuId);
 
     /**
      * 获取传入树洞中的用户的昵称

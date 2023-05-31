@@ -65,7 +65,7 @@ create table if not exists hole_nickname
 create index stu_id
     on hole_nickname (poster_id);
 
-create table if not exists loggin_ticket
+create table if not exists login_ticket
 (
     stu_id  varchar(10) not null comment '学号'
         primary key,
@@ -130,7 +130,7 @@ create table if not exists card
 )
     comment '卡片墙卡片' charset = utf8mb3;
 
-create table chat
+create table chatInfo
 (
     id    int auto_increment
         primary key,
@@ -156,7 +156,7 @@ create table message
     chat_id     int                                 not null comment '消息所属的聊天id',
     type        int                                 null comment '消息类型：0-文字，1-图片',
     constraint message_chat_null_fk
-        foreign key (chat_id) references chat (id),
+        foreign key (chat_id) references chatInfo (id),
     constraint message_user_null_fk
         foreign key (poster_id) references user (stu_id)
 )

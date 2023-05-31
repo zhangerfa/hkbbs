@@ -42,14 +42,18 @@ public class CardController {
             return new Result<>(Code.SAVE_ERR, "用户未登录");
         // 获取用户学号
         String posterId = hostHolder.getUser().getStuId();
+        Card card = new Card();
+        card.setPosterId(posterId);
         // 检查是否上传照片
         if (images.size() == 0)
             return new Result<>(Code.SAVE_ERR, false, "请至少上床一张图片");
         // 将图片上传到图床
-        Card card = new Card(aboutMe, expected, goal.getCode());
+        card.setGoal(goal.getCode());
+        card.setAboutMe(aboutMe);
+        card.setExpected(expected);
         card.setImageUrls(imgShackUtil.getImageUrls(images));
         // 发布卡片
-        cardService.add(posterId, card);
+        cardService.add(card);
         return new Result<>(Code.SAVE_OK, true);
     }
 
@@ -68,7 +72,9 @@ public class CardController {
                                       @RequestParam(required = false) String expected){
         if (cardService.getById(cardId) == null)
             return new Result<>(Code.UPDATE_ERR, false, "您要修改的卡片不存在");
-        Card card = new Card(aboutMe, expected);
+        Card card = new Card();
+        card.setAboutMe(aboutMe);
+        card.setExpected(expected);
         card.setId(cardId);
         cardService.update(card);
         return new Result<>(Code.UPDATE_OK, true);
@@ -89,13 +95,12 @@ public class CardController {
             @Parameter(name = "pageSize", description = "每页大小"),
             @Parameter(name = "posterId", description = "当要获取指定用户发送的卡片时，传入其学号，当要获取最新发布的一页帖子时，传入'0'")})
     public Result<List<CardInfo>> getOnePageCards(int currentPage, int pageSize, String posterId, Goal goal){
-        // 判断用户是否存在
-        if (!posterId.equals("0") || !userService.isExist(posterId))
+        // 判断用户是否存在, 学号为0时，表示获取最新发布的一页卡片
+        if (!posterId.equals("0") && !userService.isExist(posterId))
             return new Result<>(Code.GET_ERR, "用户不存在");
         if (currentPage < 0 || pageSize < 0)
             return new Result<>(Code.GET_ERR, "分页信息不正确");
         // 获取当前页卡片的起末序号
         return new Result<>(Code.GET_OK, cardService.getOnePageCards(posterId, goal.getCode(), currentPage, pageSize));
     }
-
 }

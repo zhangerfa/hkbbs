@@ -45,7 +45,7 @@ public class NoticeController {
         // 查询所有未读的通知
         if (hostHolder.getUser() == null) return new Result<>(Code.GET_ERR, null, "用户未登录");
         String stuId = hostHolder.getUser().getStuId();
-        List<Notice> notices = noticeService.getUnreadNoticesForUser(stuId, currentPage, pageSize);
+        List<Notice> notices = noticeService.getUnreadNoticesForUser(stuId, -1, currentPage, pageSize);
         List<NoticeInfo> noticeInfos = new ArrayList<>();
         for (Notice notice : notices) {
             NoticeInfo noticeInfo = new NoticeInfo(userService.getUserByStuId(notice.getActionUserId()));
@@ -87,7 +87,7 @@ public class NoticeController {
         int numOfUnreadNotice;
         String stuId = hostHolder.getUser().getStuId();
         if (actionType == null){
-             numOfUnreadNotice = noticeService.getNumOfUnreadNotice(stuId);
+             numOfUnreadNotice = noticeService.getNumOfUnreadNotice(stuId, -1);
         }else {
             numOfUnreadNotice = noticeService.getNumOfUnreadNotice(stuId, actionType);
         }

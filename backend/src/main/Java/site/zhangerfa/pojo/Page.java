@@ -1,8 +1,11 @@
 package site.zhangerfa.pojo;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
 
-@Schema(description = "记录分页信息，并封装当前页的数据")
+@Schema(description = "记录分页信息")
+@Data
 public class Page {
     @Schema(description = "当前页码")
     private int currentPage = 1;
@@ -20,35 +23,10 @@ public class Page {
         this.numOfPostsOnCurrentPage = numOfPostsOnCurrentPage;
     }
 
-    public int getCurrentPage() {
-        return currentPage;
-    }
-
-    public void setCurrentPage(int currentPage) {
-        this.currentPage = currentPage;
-    }
-
-    public int getPageSize() {
-        return pageSize;
-    }
-
-    public void setPageSize(int pageSize) {
-        this.pageSize = pageSize;
-    }
-
-    public int getNumOfPostsOnCurrentPage() {
-        return numOfPostsOnCurrentPage;
-    }
-
-    public void setNumOfPostsOnCurrentPage(int numOfPostsOnCurrentPage) {
-        this.numOfPostsOnCurrentPage = numOfPostsOnCurrentPage;
-    }
-
-    public int getNumOfPages() {
-        return numOfPages;
-    }
-
-    public void setNumOfPages(int numOfPages) {
-        this.numOfPages = numOfPages;
+    public Page(IPage<?> page){
+        this.currentPage = (int) page.getCurrent();
+        this.pageSize = (int) page.getSize();
+        this.numOfPages = (int) page.getPages();
+        this.numOfPostsOnCurrentPage = (int) page.getTotal();
     }
 }

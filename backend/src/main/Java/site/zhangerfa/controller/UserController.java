@@ -23,6 +23,7 @@ import site.zhangerfa.pojo.User;
 import site.zhangerfa.service.LoginTicketService;
 import site.zhangerfa.service.UserService;
 import site.zhangerfa.util.HostHolder;
+import site.zhangerfa.util.ImgShackUtil;
 import site.zhangerfa.util.UserUtil;
 
 import java.util.ArrayList;
@@ -41,6 +42,8 @@ public class UserController {
     private LoginTicketService loginTicketService;
     @Resource
     private HostHolder hostHolder;
+    @Resource
+    private ImgShackUtil imgShackUtil;
 
 
     @Operation(summary = "判断用户是否注册")
@@ -130,21 +133,15 @@ public class UserController {
         User user = hostHolder.getUser();
         if (user == null) return new Result<>(Code.UPDATE_ERR, false, "用户未登录");
         String stuId = user.getStuId();
-        String msg = "";
-        if (newPassword != null){
-            if (userService.updatePassword(stuId, newPassword)) msg += "密码修改成功!\n";
-            else msg += "密码修改失败，请重试！\n";
-        }
-        if (username != null){
-            if (userService.updateUsername(stuId, username)) msg += "用户名修改成功！\n";
-            else msg += "用户名修改失败，请重试！\n";
-        }
+        user.setUsername(username);
+        user.setPassword(newPassword);
         if (headerImage != null){
-            if (userService.updateHeader(user.getStuId(), headerImage)) msg += "头像修改成功！";
-            else msg += "头像修改失败，请重试！\n";
+            // 头像文件上传到图床中
+            // 文件命名为 学号_header
+            String imageName = stuId + "_header";
+            user.setHeaderUrl(imgShackUtil.add(headerImage, imageName));
         }
-        if (msg.length() == 0) msg = "您未作任何修改\n";
-        return new Result<>(Code.UPDATE_OK, true, msg.strip());
+        return new Result<>(Code.UPDATE_OK, true);
     }
 
     @Operation(summary = "向指定学号的邮箱发送验证码")

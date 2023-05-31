@@ -1,53 +1,23 @@
 package site.zhangerfa.dao;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import site.zhangerfa.pojo.Post;
-
-import java.util.List;
 
 /**
  * 帖子的数据层接口
  */
 @Mapper
-public interface PostMapper {
-
-    /**
-     * 查询一页帖子，当传入学号不为0时，学号为合法学号，查询该学号用户所发的一页卡片
-     * 当传入学号为0时，查询一页卡片
-     * 一页为10张卡片
-     *
-     * @param postType 帖子类型
-     * @param posterId 0 或 合法学号
-     * @param offset   要查询页的起始行
-     * @param limit    要查询页的末位行
-     * @return 一页卡片对象的 list
-     */
-    List<Post> selectOnePagePosts(int postType, String posterId, int offset, int limit);
-
-    /**
-     * 获取卡片总数
-     * @param postType 当传入 -1 时获取所有卡片总数，否则获取指定类型卡片总数
-     * @param posterId 当传入 "0" 时获取所有用户卡片总数，否则获取指定用户卡片总数
-     * @return
-     */
-    int getNumOfPosts(int postType, String posterId);
-
-    /**
-     * 新增帖子
-     *
-     * @param post     @return
-     * @param postType
-     */
-    int add(Post post, int postType);
-
-    Post selectPostById(int id);
-
-    int deletePostById(int id);
-
+public interface PostMapper extends BaseMapper<Post> {
+    @Update("update post set comment_num = comment_num + 1 where id = #{id}")
     int commentNumPlusOne(int id);
 
+    @Update("update post set comment_num = comment_num - 1 where id = #{id}")
     int commentNumMinusOne(int id);
 
+    @Select("select type from post where id = #{id}")
     Integer getPostType(int id);
 }
 

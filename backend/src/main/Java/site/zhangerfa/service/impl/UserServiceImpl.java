@@ -23,8 +23,6 @@ public class UserServiceImpl implements UserService {
     private MailClient mailClient;
     @Resource
     private LoginTicketService loginTicketService;
-    @Resource
-    private ImgShackUtil imgShackUtil;
 
 
     @Override
@@ -71,13 +69,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean isExist(String stuId) {
-        User user = userMapper.selectUserByStuId(stuId);
+        User user = userMapper.selectById(stuId);
         return user != null;
     }
 
     @Override
     public boolean checkPassword(String stuId, String password) {
-        User user = userMapper.selectUserByStuId(stuId);
+        User user = userMapper.selectById(stuId);
         if (user == null) return false;
         String md5Password = DigestUtils.md5DigestAsHex((password + user.getSalt()).getBytes());
         return md5Password.equals(user.getPassword());
@@ -91,30 +89,26 @@ public class UserServiceImpl implements UserService {
         // 用户密码 + salt经过md5加密作为存储密码
         String password = DigestUtils.md5DigestAsHex((user.getPassword() + salt).getBytes());
         user.setPassword(password);
-        int addNum = userMapper.add(user);
-        return addNum == 1;
+        return userMapper.insert(user) == 1;
     }
 
     @Override
     public boolean deleteByStuId(String stuId) {
-        int deleteNum = userMapper.delete(stuId); // 删除的行数
+        int deleteNum = userMapper.deleteById(stuId); // 删除的行数
         return deleteNum != 0;
     }
 
     @Override
-    public boolean updateUsername(String stuId, String username) {
-        int updateNum = userMapper.updateUsername(stuId, username); // 更新的行数
-        return updateNum != 0;
-    }
-
-    @Override
-    public boolean updatePassword(String stuId, String password) {
-        // 获取 salt
-        User user = userMapper.selectUserByStuId(stuId);
-        // 用户密码 + salt经过md5加密作为存储密码
-        String Md5Password = DigestUtils.md5DigestAsHex((password + user.getSalt()).getBytes());
-        int updateNum = userMapper.updatePassword(stuId, Md5Password);
-        return updateNum != 0;
+    public boolean updateUser(User user) {
+        if (user == null) return false;
+        // 用户密码不为空时，更新密码
+        if (user.getPassword() != null){
+            // 用户密码 + salt经过md5加密作为存储密码
+            String Md5Password = DigestUtils.md5DigestAsHex((user.getPassword() +
+                    userMapper.selectById(user.getStuId())).getBytes());
+            user.setPassword(Md5Password);
+        }
+        return userMapper.updateById(user) > 0;
     }
 
     @Override
@@ -136,16 +130,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserByStuId(String stuId) {
-        return userMapper.selectUserByStuId(stuId);
-    }
-
-    @Override
-    public boolean updateHeader(String stuId, MultipartFile headerImage) {
-        // 头像文件上传到图床中
-        // 文件命名为 学号_header
-        String imageName = stuId + "_header";
-        String headerUrl = imgShackUtil.add(headerImage, imageName);
-        int flag = userMapper.updateHeaderUrl(stuId, headerUrl);
-        return flag > 0;
+        return userMapper.selectById(stuId);
     }
 }

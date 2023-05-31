@@ -1,8 +1,10 @@
 package site.zhangerfa.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import site.zhangerfa.dao.HoleNicknameMapper;
+import site.zhangerfa.pojo.HoleNickName;
 import site.zhangerfa.service.HoleNicknameService;
 import site.zhangerfa.Constant.Constant;
 
@@ -22,15 +24,14 @@ public class HoleNicknameImpl implements HoleNicknameService {
      * @return
      */
     @Override
-    public boolean addHoleNickname(int holeId, String posterId) {
-        // 先判断该用户是否已经在该树洞发过帖
-        String nickname = holeNicknameMapper.selectHoleNickname(holeId, posterId);
-        if (nickname != null){
-            return true;
-        }
+    public String addHoleNickname(int holeId, String posterId) {
         // 获取该树洞的所有随机昵称
-        String[] nicknames = holeNicknameMapper.selectAllHoleNickname4Hole(holeId);
-        Set<String> nicknamesSet = Set.of(nicknames);
+        List<HoleNickName> holeNickNames = holeNicknameMapper.selectList(
+                new LambdaQueryWrapper<HoleNickName>().
+                        eq(HoleNickName::getHoleId, holeId));
+        Set<String> nicknamesSet = new HashSet<>();
+        for (HoleNickName holeNickName : holeNickNames)
+            nicknamesSet.add(holeNickName.getNickname());
         // 生成一个未被当前树洞使用的随机昵称
         String nicknameIndex = "";
         do {
@@ -39,8 +40,9 @@ public class HoleNicknameImpl implements HoleNicknameService {
             nicknameIndex += random.nextInt(Constant.FIRST_NAME.length);
             nicknameIndex += (";" + random.nextInt(Constant.SECOND_NAME.length));
         } while (nicknamesSet.contains(nicknameIndex));
-        int insertNum = holeNicknameMapper.insertHoleNickname(holeId, posterId, nicknameIndex);
-        return insertNum > 0;
+        // 将昵称存入数据库
+        holeNicknameMapper.insert(new HoleNickName(holeId, posterId, nicknameIndex));
+        return nicknameIndex;
     }
 
     /**
@@ -52,23 +54,22 @@ public class HoleNicknameImpl implements HoleNicknameService {
      */
     @Override
     public String getHoleNickname(int holeId, String posterId) {
-        // 获取树洞昵称索引
-        String nicknameIndex = holeNicknameMapper.selectHoleNickname(holeId, posterId);
-        if (nicknameIndex == null){
-            // 当查询次用户在树洞的随机昵称时发现未生成随机昵称，则生成
-            addHoleNickname(holeId, posterId);
-            nicknameIndex = holeNicknameMapper.selectHoleNickname(holeId, posterId);
-        }
+        // 查询用户在该树洞中的随机昵称
+        LambdaQueryWrapper<HoleNickName> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(HoleNickName::getHoleId, holeId)
+                .eq(HoleNickName::getPosterId, posterId);
+        String nicknameIndex = holeNicknameMapper.selectOne(wrapper).getNickname();
+        // 当查询次用户在树洞的随机昵称时发现未生成随机昵称，则生成一个随机昵称
+        if (nicknameIndex == null) nicknameIndex = addHoleNickname(holeId, posterId);
         String[] indexArray = nicknameIndex.split(";");
         // 从字符集中获取字符
-
         return "" + Constant.FIRST_NAME[Integer.parseInt(indexArray[0])] +
                 Constant.SECOND_NAME[Integer.parseInt(indexArray[1])];
     }
 
     @Override
     public boolean deleteNicknamesForHole(int holeId) {
-        int deleteNum = holeNicknameMapper.deleteNicknamesByHoleId(holeId);
+        int deleteNum = holeNicknameMapper.deleteById(holeId);
         return deleteNum > 0;
     }
 }

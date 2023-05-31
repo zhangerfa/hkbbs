@@ -1,12 +1,15 @@
 package site.zhangerfa.pojo;
 
+import com.baomidou.mybatisplus.annotation.TableId;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
 
 import java.util.Date;
 
 @Schema(description = "登录凭证")
+@Data
 public class LoginTicket {
-    private int id;
+    @TableId
     private String stuId;
     @Schema(description = "登录凭证码")
     private String ticket;
@@ -15,43 +18,16 @@ public class LoginTicket {
     @Schema(description = "登录凭证过期时间")
     private Date expired;
 
-    public int getId() {
-        return id;
+    public LoginTicket() {
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getStuId() {
-        return stuId;
-    }
-
-    public void setStuId(String stuId) {
+    public LoginTicket(String stuId, int status) {
         this.stuId = stuId;
-    }
-
-    public String getTicket() {
-        return ticket;
-    }
-
-    public void setTicket(String ticket) {
-        this.ticket = ticket;
-    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
         this.status = status;
     }
 
-    public Date getExpired() {
-        return expired;
-    }
-
-    public void setExpired(Date expired) {
+    public LoginTicket(String stuId, Date expired) {
+        this.stuId = stuId;
         this.expired = expired;
     }
 }

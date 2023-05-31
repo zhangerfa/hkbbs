@@ -16,40 +16,20 @@ public interface NoticeService {
     Notice getNoticeById(int id);
 
     /**
-     * 获取用户的指定范围的已读通知
-     * @param stuId
-     * @return
-     */
-    List<Notice> getReadNoticesForUser(String stuId, int currentPage, int pageSize);
-
-    /**
      * 获取用户指定类型的已读通知
      * @param stuId
-     * @param actionType
+     * @param actionType 通知类型，-1表示所有类型
      * @return
      */
     List<Notice> getReadNoticesForUser(String stuId, int actionType, int currentPage, int pageSize);
 
     /**
-     * 获取该用户所有的已读通知数量
-     * @param stuId
-     * @return
-     */
-    int getNumOfReadNotice(String stuId);
-
-    /**
      * 获取该用户特定类型的通知数量
      * @param stuId
+     * @param actionType 通知类型, -1表示所有类型
      * @return
      */
     int getNumOfReadNotice(String stuId, int actionType);
-
-    /**
-     * 获取该用户所有未读通知的数量
-     * @param stuId
-     * @return
-     */
-    int getNumOfUnreadNotice(String stuId);
 
     /**
      * 获取该用户特定类型的未读通知数量
@@ -58,13 +38,6 @@ public interface NoticeService {
      * @return
      */
     int getNumOfUnreadNotice(String stuId, int actionType);
-
-    /**
-     * 获取用户一页未读通知
-     * @param stuId
-     * @return
-     */
-    List<Notice> getUnreadNoticesForUser(String stuId, int currentPage, int pageSize);
 
     /**
      * 获取一页用户指定类型的未读通知

@@ -1,6 +1,5 @@
 package site.zhangerfa.controller;
 
-import io.swagger.models.auth.In;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -10,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import site.zhangerfa.controller.tool.Code;
 import site.zhangerfa.controller.tool.Result;
-import site.zhangerfa.pojo.Chat;
+import site.zhangerfa.controller.tool.ChatInfo;
 import site.zhangerfa.service.ChatService;
 import site.zhangerfa.service.UserService;
 import site.zhangerfa.util.HostHolder;
@@ -47,13 +46,13 @@ public class ChatController {
     @GetMapping("/{chatToStuId}")
     @Parameters({@Parameter(name = "currentPage", description = "当前页码"),
             @Parameter(name = "pageSize", description = "每页大小")})
-    public Result<Chat> getOnePageMessagesForChat(int currentPage, int pageSize,
-                                                  @PathVariable @Parameter(description = "聊天对象的学号") String chatToStuId){
+    public Result<ChatInfo> getOnePageMessagesForChat(int currentPage, int pageSize,
+                                                      @PathVariable @Parameter(description = "聊天对象的学号") String chatToStuId){
         String stuId = hostHolder.getUser().getStuId();
         if (!userService.isExist(chatToStuId))
             return new Result<>(Code.GET_ERR, "聊天对象不存在");
-        Chat chat = chatService.selectOnePageMessagesForChat(stuId, chatToStuId, currentPage, pageSize);
-        return new Result<>(Code.GET_OK, chat);
+        ChatInfo chatInfo = chatService.selectOnePageMessagesForChat(stuId, chatToStuId, currentPage, pageSize);
+        return new Result<>(Code.GET_OK, chatInfo);
     }
 
     @Operation(summary = "获取当前用户的一页聊天列表",
@@ -62,10 +61,10 @@ public class ChatController {
     @GetMapping("/")
     @Parameters({@Parameter(name = "currentPage", description = "当前页码"),
             @Parameter(name = "pageSize", description = "每页大小")})
-    public Result<List<Chat>> getLatestMessages(int currentPage, int pageSize){
+    public Result<List<ChatInfo>> getLatestMessages(int currentPage, int pageSize){
         String stuId = hostHolder.getUser().getStuId();
-        List<Chat> chats = chatService.selectLatestMessages(stuId, currentPage, pageSize);
-        return new Result<>(Code.GET_OK, chats);
+        List<ChatInfo> chatInfos = chatService.selectLatestMessages(stuId, currentPage, pageSize);
+        return new Result<>(Code.GET_OK, chatInfos);
     }
 
     @Operation(summary = "发布一条文字消息")

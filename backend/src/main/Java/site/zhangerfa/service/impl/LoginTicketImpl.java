@@ -1,5 +1,6 @@
 package site.zhangerfa.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import site.zhangerfa.dao.LoginTicketMapper;
@@ -15,26 +16,25 @@ public class LoginTicketImpl implements LoginTicketService {
 
     @Override
     public boolean add(LoginTicket loginTicket) {
-        int insertNum = loginTicketMapper.insertLoginTicket(loginTicket);
-        return insertNum > 0;
+        return loginTicketMapper.insert(loginTicket) != 0;
     }
 
     @Override
     public LoginTicket getLoginTicketByTicket(String ticket) {
         if (ticket == null) return null;
-        LoginTicket loginTicket = loginTicketMapper.selectByTicket(ticket);
-        return loginTicket;
+        return loginTicketMapper.selectOne(
+                new LambdaQueryWrapper<LoginTicket>().
+                        eq(LoginTicket::getTicket, ticket));
     }
 
     @Override
     public boolean updateStatus(String stuId, int status) {
-        int numOfUpdate = loginTicketMapper.updateStatus(stuId, status);
-        return numOfUpdate != 0;
+        return loginTicketMapper.updateById(new LoginTicket(stuId, status)) != 0;
     }
 
     @Override
     public boolean updateExpired(String stuId, Date expired) {
-        loginTicketMapper.updateExpired(stuId, expired);
+        loginTicketMapper.update(new LoginTicket(stuId, expired), null);
         return false;
     }
 
@@ -57,6 +57,8 @@ public class LoginTicketImpl implements LoginTicketService {
 
     @Override
     public LoginTicket getLoginTicketByStuId(String stuId){
-        return loginTicketMapper.selectByStuId(stuId);
+        return loginTicketMapper.selectOne(
+                new LambdaQueryWrapper<LoginTicket>()
+                        .eq(LoginTicket::getStuId, stuId));
     }
 }

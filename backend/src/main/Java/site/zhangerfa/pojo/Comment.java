@@ -1,5 +1,6 @@
 package site.zhangerfa.pojo;
 
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
@@ -8,6 +9,7 @@ import java.util.Date;
 
 @Schema(description = "评论")
 public class Comment {
+    @TableId
     @JsonIgnore
     private int id;
     @Schema(description = "被评论实体的类型")

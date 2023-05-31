@@ -43,22 +43,11 @@ public interface UserService {
     boolean deleteByStuId(String stuId);
 
     /**
-     * 修改指定学号的用户信息
-     *
-     * @param stuId
-     * @param username 修改后信息封装在user对象中
-     * @return 如果传入学号不存在则返回 “用户不存在”，否则返回 “true”
+     * 修改指定学号的用户信息，只修改字段不为null的值
+     * @param user
+     * @return
      */
-    boolean updateUsername(String stuId, String username);
-
-    /**
-     * 修改指定学号用户的密码
-     *
-     * @param stuId
-     * @param password
-     * @return 如果传入学号不存在则返回 “用户不存在”，否则返回 “true”
-     */
-    boolean updatePassword(String stuId, String password);
+    boolean updateUser(User user);
 
     /**
      * 给传入学号的教育邮箱发送验证码
@@ -84,12 +73,4 @@ public interface UserService {
      * @return
      */
     boolean checkCode(String code, HttpSession session);
-
-    /**
-     * 修改用户头像
-     * @param stuId
-     * @param headerImage 传入的头像文件
-     * @return
-     */
-    boolean updateHeader(String stuId, MultipartFile headerImage);
 }

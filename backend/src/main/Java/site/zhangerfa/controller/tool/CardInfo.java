@@ -1,6 +1,8 @@
 package site.zhangerfa.controller.tool;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import site.zhangerfa.pojo.Card;
 import site.zhangerfa.pojo.User;
 
@@ -12,8 +14,14 @@ public class CardInfo extends Card {
     @Schema(description = "年级")
     String age;
 
-    public CardInfo(String aboutMe, String expect, int goal) {
-        super(aboutMe, expect, goal);
+    public CardInfo(Card card, User poster) {
+        this.setId(card.getId());
+        this.setPosterId(card.getPosterId());
+        this.setAboutMe(card.getAboutMe());
+        this.setGoal(card.getGoal());
+        this.setExpected(card.getExpected());
+        this.setCreateTime(card.getCreateTime());
+        this.poster = poster;
     }
 
     /**
