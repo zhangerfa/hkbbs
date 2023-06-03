@@ -45,9 +45,9 @@ public interface CardService {
     /**
      * 获取卡片总数
      *
-     * @param posterId 当传入”0“时获取最新的一页卡片，否则获取该学号用户的一页卡片
-     * @param goal     当传入-1时查询所有类型的卡片，否则查询指定类型的卡片
+     * @param posterId 当传入”0“时获取所有卡片数量，否则获取该学号用户的卡片数量
+     * @param goal     当传入-1时查询所有类型的卡片的数量，否则查询指定类型的卡片的数量
      * @return
      */
-    long getNumOfCards(String posterId, int goal);
+    int getNumOfCards(String posterId, int goal);
 }

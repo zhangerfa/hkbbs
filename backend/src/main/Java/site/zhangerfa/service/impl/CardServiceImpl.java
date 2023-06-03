@@ -81,9 +81,9 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public long getNumOfCards(String posterId, int goal) {
+    public int getNumOfCards(String posterId, int goal) {
         return cardMapper.selectCount(new LambdaQueryWrapper<Card>().
                 eq(goal != -1, Card::getGoal, goal).
-                eq(!Objects.equals(posterId, "0"), Card::getPosterId, posterId));
+                eq(!Objects.equals(posterId, "0"), Card::getPosterId, posterId)).intValue();
     }
 }

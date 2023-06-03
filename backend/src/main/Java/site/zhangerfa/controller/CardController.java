@@ -15,10 +15,11 @@ import site.zhangerfa.service.CardService;
 import site.zhangerfa.service.UserService;
 import site.zhangerfa.util.HostHolder;
 import site.zhangerfa.util.ImgShackUtil;
-import site.zhangerfa.util.PageUtil;
 import site.zhangerfa.util.UserUtil;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @Tag(name = "卡片")
@@ -102,5 +103,34 @@ public class CardController {
             return new Result<>(Code.GET_ERR, "分页信息不正确");
         // 获取当前页卡片的起末序号
         return new Result<>(Code.GET_OK, cardService.getOnePageCards(posterId, goal.getCode(), currentPage, pageSize));
+    }
+
+    @Operation(summary = "获取用户的卡片数量", description = "获取用户的卡片数量，包括不同类型的卡片数量和总卡片数量")
+    @GetMapping("/count")
+    public Result<Map<String, Integer>> getCardCount(String posterId){
+        // 判断用户是否存在
+        if (!userService.isExist(posterId))
+            return new Result<>(Code.GET_ERR, "用户不存在");
+        HashMap<String, Integer> map = new HashMap<>();
+        // 获取不同类型的卡片数量
+        for (Goal goal : Goal.values())
+            map.put(goal.getDesc(), cardService.getNumOfCards(posterId, goal.getCode()));
+        // 获取总卡片数量
+        map.put("total", cardService.getNumOfCards(posterId, 0));
+        return new Result<>(Code.GET_OK, map);
+    }
+
+    // -------------------------- 以下接口需要管理员权限
+    @Tag(name = "管理员")
+    @Operation(summary = "获取所有卡片数量", description = "获取所有卡片数量，包括不同类型的卡片数量和总卡片数量")
+    @GetMapping("/count/all")
+    public Result<Map<String, Integer>> getAllCardCount(){
+        HashMap<String, Integer> map = new HashMap<>();
+        // 获取不同类型的卡片数量
+        for (Goal goal : Goal.values())
+            map.put(goal.getDesc(), cardService.getNumOfCards("0", goal.getCode()));
+        // 获取总卡片数量
+        map.put("total", cardService.getNumOfCards("0", 0));
+        return new Result<>(Code.GET_OK, map);
     }
 }
