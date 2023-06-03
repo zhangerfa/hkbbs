@@ -79,7 +79,8 @@ public class NoticeServiceImpl implements NoticeService {
         LambdaQueryWrapper<Notice> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(Notice::getReceivingUserId, stuId)
                 .eq(actionType != -1, Notice::getActionType, actionType)
-                .eq(status != -1, Notice::getStatus, 1);
+                .eq(status != -1, Notice::getStatus, status);
+        System.out.println(wrapper.getSqlSegment());
         return noticeMapper.selectPage(new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(currentPage, pageSize), wrapper).getRecords();
     }
 }

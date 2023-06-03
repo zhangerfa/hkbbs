@@ -9,8 +9,7 @@ import java.util.Date;
 
 @Schema(description = "评论")
 public class Comment {
-    @TableId
-    @JsonIgnore
+    @TableId(type = com.baomidou.mybatisplus.annotation.IdType.AUTO)
     private int id;
     @Schema(description = "被评论实体的类型")
     @NotBlank

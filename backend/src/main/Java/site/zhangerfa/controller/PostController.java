@@ -12,8 +12,8 @@ import site.zhangerfa.controller.tool.Code;
 import site.zhangerfa.controller.tool.PostDetails;
 import site.zhangerfa.controller.tool.PostInfo;
 import site.zhangerfa.controller.tool.Result;
-import site.zhangerfa.event.EventProducer;
-import site.zhangerfa.event.EventUtil;
+import site.zhangerfa.event.NoticeProducer;
+import site.zhangerfa.util.NoticeUtil;
 import site.zhangerfa.pojo.Comment;
 import site.zhangerfa.pojo.Notice;
 import site.zhangerfa.pojo.Post;
@@ -35,9 +35,9 @@ public class PostController {
     @Resource
     private PostUtil postUtil;
     @Resource
-    private EventProducer eventProducer;
+    private NoticeProducer noticeProducer;
     @Resource
-    private EventUtil eventUtil;
+    private NoticeUtil noticeUtil;
     @Resource
     private UserService userService;
     @Resource
@@ -119,7 +119,7 @@ public class PostController {
         return postUtil.getPostAndPosterDetails(postId, currentPage, pageSize);
     }
 
-    @Operation(summary = "发布评论（包括对评论评论）", description = "需要传入被评论实体的类型和id，以及被评论实体所属的帖子id")
+    @Operation(summary = "发布评论（包括对评论评论）", description = "当前登录用户为指定帖子发布一条评论。需要传入被评论实体的类型和id，以及被评论实体所属的帖子id")
     @PostMapping("/posts/comment")
     @Parameters({@Parameter(name = "entityType", description = "被评论实体的类型"),
                 @Parameter(name = "entityId", description = "被评论实体的id"),
@@ -130,8 +130,8 @@ public class PostController {
         Comment comment = new Comment(entityType, entityId, content);
         postService.addComment(comment, postId);
         // 发布评论通知
-        Notice notice = eventUtil.getNotice(comment, postId); // 将评论数据包装为notice对象
-        eventProducer.addNotice(Constant.TOPIC_COMMENT, notice); // 传入消息队列
+        Notice notice = noticeUtil.getNotice(comment, postId); // 将评论数据包装为notice对象
+        noticeProducer.addNotice(Constant.TOPIC_COMMENT, notice); // 传入消息队列
         return new Result<>(Code.SAVE_OK, true, "发布成功");
     }
 

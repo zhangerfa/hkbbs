@@ -2,7 +2,6 @@ package site.zhangerfa.service;
 
 import site.zhangerfa.controller.tool.Result;
 import site.zhangerfa.pojo.Comment;
-import site.zhangerfa.pojo.Page;
 import site.zhangerfa.pojo.Post;
 
 import java.util.List;
@@ -48,7 +47,7 @@ public interface PostService {
 
 
     /**
-     * 为帖子增加一条评论
+     * 当前登录用户为指定帖子增加一条评论
      *
      * @param comment
      * @param postId

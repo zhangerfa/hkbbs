@@ -11,30 +11,34 @@ import site.zhangerfa.pojo.Notice;
 import site.zhangerfa.service.NoticeService;
 import site.zhangerfa.Constant.Constant;
 
+/**
+ * 事件消费者，用于消费用户点赞，评论，关注等事件，将事件信息转换为站内通知
+ */
 @Component
-public class EventConsumer {
-    private static final Logger logger = LoggerFactory.getLogger(EventConsumer.class);
+public class NoticeConsumer {
+    private static final Logger logger = LoggerFactory.getLogger(NoticeConsumer.class);
     @Resource
     private NoticeService noticeService;
 
     /**
-     * 发布系统通知，当用户点赞，评论，关注其他人时触发
+     * 发布系统通知，当用户点赞，评论，关注其他人时，将事件信息转换为站内通知
      * @param record 事件相关信息
      */
     @KafkaListener(topics = {Constant.TOPIC_COMMENT,
                              Constant.TOPIC_FOLLOW, Constant.TOPIC_LIKE})
-    public void releaseNote(ConsumerRecord record){
+    public void releaseNote(ConsumerRecord<String, String> record){
+        // 判断消息是否为空
         if (record == null || record.value() == null){
             logger.error("消息为空");
             return;
         }
-        // 生产者将事件信息以JSON对象发送，转换为notice对象
-        Notice notice = JSON.parseObject(record.value().toString(), Notice.class);
+        // 将传入的json字符串转换为Notice对象
+        Notice notice = JSON.parseObject(record.value(), Notice.class);
         if (notice == null){
             logger.error("消息格式错误");
             return;
         }
-        // 调用业务层对象，依据事件信息将站内通知发送给特定用户
-        noticeService.add(notice); // 记录通知信息
+        // 发布消息
+        noticeService.add(notice);
     }
 }

@@ -6,18 +6,14 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 import site.zhangerfa.pojo.Notice;
 
+/**
+ * 事件生产者，用于发布系统通知
+ */
 @Component
-public class EventProducer {
+public class NoticeProducer {
+    // SpringBoot封装的信息发布对象
     @Resource
-    private KafkaTemplate kafkaTemplate; // SpringBoot封装的信息发布对象
-
-    /**
-     * 启动事件：将事件发布到消息队列中
-     * @param event 事件相关信息，将转换为JSON字符串
-     */
-    public void fireEvent(Event event){
-        kafkaTemplate.send(event.getTopic(), JSON.toJSON(event).toString());
-    }
+    private KafkaTemplate<String, String> kafkaTemplate;
 
     /**
      * 增加一条主题的通知

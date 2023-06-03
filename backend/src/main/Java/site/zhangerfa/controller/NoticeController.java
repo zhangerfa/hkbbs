@@ -17,9 +17,11 @@ import site.zhangerfa.service.NoticeService;
 import site.zhangerfa.service.PostService;
 import site.zhangerfa.service.UserService;
 import site.zhangerfa.util.HostHolder;
+import site.zhangerfa.util.NoticeUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @Tag(name = "通知")
@@ -30,42 +32,21 @@ public class NoticeController {
     @Resource
     private NoticeService noticeService;
     @Resource
-    private UserService userService;
-    @Resource(name = "postServiceImpl")
-    private PostService postService;
-    @Resource
-    private CommentService commentService;
+    private NoticeUtil noticeUtil;
 
     @GetMapping("/")
-    @Operation(summary = "获取一页通知", description = "获取当前会话用户的一页通知，当未读通知数量≥一页通知的个数时返回最新的一页未读通知，" +
+    @Operation(summary = "获取一页通知", description = "获取当前登录用户的一页通知，当未读通知数量≥一页通知的个数时返回最新的一页未读通知，" +
             "当未读通知不满一页时使用最新的已读通知填充")
     @Parameters({@Parameter(name = "currentPage", description = "当前页码"),
             @Parameter(name = "pageSize", description = "每页大小")})
     public Result<List<NoticeInfo>> getNotices(int currentPage, int pageSize){
-        // 查询所有未读的通知
+        // 判断是否登录
         if (hostHolder.getUser() == null) return new Result<>(Code.GET_ERR, null, "用户未登录");
         String stuId = hostHolder.getUser().getStuId();
+        // 获取未读通知数量
         List<Notice> notices = noticeService.getUnreadNoticesForUser(stuId, -1, currentPage, pageSize);
-        List<NoticeInfo> noticeInfos = new ArrayList<>();
-        for (Notice notice : notices) {
-            NoticeInfo noticeInfo = new NoticeInfo(userService.getUserByStuId(notice.getActionUserId()));
-            noticeInfo.setEntityType(Constant.getEntityTye(notice.getEntityType()));
-            // 被动作指向实体的内容，如果是帖子为标题，评论则为内容
-            if (notice.getEntityType() == Constant.ENTITY_TYPE_COMMENT){
-                noticeInfo.setEntityContent(commentService.getCommentById(notice.getEntityId()).getContent());
-            }else {
-                noticeInfo.setEntityContent(postService.getPostById(notice.getEntityId()).getTitle());
-            }
-            // 动作内容，如果为评论则为评论内容，动作无具体内容则为空字符串
-            if (notice.getActionType() == Constant.ACTION_COMMENT){
-                noticeInfo.setActionContent(commentService.getCommentById(notice.getCommentId()).getContent());
-            }else {
-                noticeInfo.setActionContent("");
-            }
-            noticeInfo.setPostId(notice.getEntityOwnerId());
-
-            noticeInfos.add(noticeInfo);
-        }
+        // 补充通知信息
+        List<NoticeInfo> noticeInfos = noticeUtil.getNoticeInfos(notices);
         return new Result<>(Code.GET_OK, noticeInfos, "查询成功");
     }
 
@@ -86,11 +67,7 @@ public class NoticeController {
         if (hostHolder.getUser() == null) return new Result<>(Code.GET_ERR, null, "用户未登录");
         int numOfUnreadNotice;
         String stuId = hostHolder.getUser().getStuId();
-        if (actionType == null){
-             numOfUnreadNotice = noticeService.getNumOfUnreadNotice(stuId, -1);
-        }else {
-            numOfUnreadNotice = noticeService.getNumOfUnreadNotice(stuId, actionType);
-        }
+        numOfUnreadNotice = noticeService.getNumOfUnreadNotice(stuId, Objects.requireNonNullElse(actionType, -1));
         return new Result<>(Code.GET_OK, numOfUnreadNotice);
     }
 }
