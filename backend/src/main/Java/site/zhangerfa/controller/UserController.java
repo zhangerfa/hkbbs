@@ -28,6 +28,7 @@ import site.zhangerfa.util.UserUtil;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -44,7 +45,6 @@ public class UserController {
     private HostHolder hostHolder;
     @Resource
     private ImgShackUtil imgShackUtil;
-
 
     @Operation(summary = "判断用户是否注册")
     @GetMapping ("/isExist")
@@ -160,6 +160,20 @@ public class UserController {
         return new Result<>(code, flag, msg);
     }
 
+    @Operation(summary = "获取用户信息", description = "获取指定用户信息，当传入用户学号为‘0’时表示获取当前用户的信息")
+    @GetMapping("/{stuId}")
+    public Result<User> getUser(@PathVariable String stuId){
+        if (stuId.equals("0")) {
+            // 返回当前登录用户的信息
+            if (hostHolder.getUser() != null) return new Result<>(Code.GET_OK, hostHolder.getUser());
+            else return new Result<>(Code.GET_ERR, "用户未登录");
+        }
+        // 查询指定用户的信息
+        User user = userService.getUserByStuId(stuId);
+        String msg = user != null? "查询成功": "用户不存在";
+        return new Result<>(user != null? Code.GET_OK: Code.GET_ERR, user, msg);
+    }
+
 //    @Operation(summary = "发送图片验证码")
 //    @GetMapping("/sendImageCode")
 //    public void getKaptcha(HttpSession session, HttpServletResponse response){
@@ -181,33 +195,41 @@ public class UserController {
 //        }
 //    }
 
-    @Operation(summary = "获取用户信息", description = "获取指定用户信息，当传入用户学号为‘0’时表示获取当前用户的信息")
-    @GetMapping("/{stuId}")
-    public Result<User> getUser(@PathVariable String stuId){
-        if (stuId.equals("0")) {
-            // 返回当前登录用户的信息
-            if (hostHolder.getUser() != null) return new Result<>(Code.GET_OK, hostHolder.getUser());
-            else return new Result<>(Code.GET_ERR, "用户未登录");
-        }
-        // 查询指定用户的信息
-        User user = userService.getUserByStuId(stuId);
-        String msg = user != null? "查询成功": "用户不存在";
-        return new Result<>(user != null? Code.GET_OK: Code.GET_ERR, user, msg);
-    }
-
-    // ########################################## 以下为管理员权限才可以调用的接口
+    // ########################################## 以下为管理员权限才可以调用全部功能的接口
 
     /**
      * 先删除账号所有发帖，登录凭证等以学号为外键的内容
      * @param stuId
      * @return
      */
-    @Hidden
+    @Tag(name = "管理员")
     @Operation(summary = "删除指定学号的用户")
     @DeleteMapping("/{stuId}")
     public Result<Boolean> delete(@PathVariable String stuId){
         if (!isExist(stuId).getData()) return new Result<>(Code.DELETE_ERR, false, "用户不存在");
         boolean flag = userService.deleteByStuId(stuId);
         return new Result<>(flag? Code.DELETE_OK: Code.SAVE_ERR, flag);
+    }
+
+    @Tag(name = "管理员")
+    @Operation(summary = "获取用户数量")
+    @GetMapping("/count")
+    public Result<Integer> getUserCount(){
+        return new Result<Integer>(Code.GET_OK, userService.getUserCount());
+    }
+
+    @Tag(name = "管理员")
+    @Operation(summary = "获取用户列表", description = "获取用户列表")
+    @GetMapping("/list")
+    public Result<List<User>> getUserList(@Parameter(description = "页码") int currentPage,
+                                          @Parameter(description = "每页显示数量") int pageSize){
+        return userService.getUserList(currentPage, pageSize);
+    }
+
+    @Tag(name = "管理员")
+    @Operation(summary = "获取男女比例", description = "获取男女比例，返回值为字符串，格式为：男女比例：7:3")
+    @GetMapping("/genderRatio")
+    public Result<String> getGenderRatio(){
+        return new Result<>(Code.GET_OK, userService.getGenderRatio(), "查询成功");
     }
 }

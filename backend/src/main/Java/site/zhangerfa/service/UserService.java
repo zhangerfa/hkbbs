@@ -2,8 +2,10 @@ package site.zhangerfa.service;
 
 import jakarta.servlet.http.HttpSession;
 import org.springframework.web.multipart.MultipartFile;
+import site.zhangerfa.controller.tool.Result;
 import site.zhangerfa.pojo.User;
 
+import java.util.List;
 import java.util.Map;
 
 public interface UserService {
@@ -73,4 +75,10 @@ public interface UserService {
      * @return
      */
     boolean checkCode(String code, HttpSession session);
+
+    Integer getUserCount();
+
+    Result<List<User>> getUserList(int currentPage, int pageSize);
+
+    String getGenderRatio();
 }

@@ -23,6 +23,7 @@ import site.zhangerfa.util.HostHolder;
 import site.zhangerfa.util.ImgShackUtil;
 import site.zhangerfa.util.PostUtil;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -132,5 +133,29 @@ public class PostController {
         Notice notice = eventUtil.getNotice(comment, postId); // 将评论数据包装为notice对象
         eventProducer.addNotice(Constant.TOPIC_COMMENT, notice); // 传入消息队列
         return new Result<>(Code.SAVE_OK, true, "发布成功");
+    }
+
+    @Operation(summary = "获取指定用户的帖子或树洞数量", description = "返回指定用户的帖子或树洞数量，以map形式返回，key为postCount或holeCount")
+    @GetMapping("/posts/count/{stuId}")
+    public Result<Map<String, Integer>> getPostCount(@PathVariable String stuId){
+        // 验证学号是否正确
+        if (stuId == null || (!stuId.equals("0") && !userService.isExist(stuId)))
+            return new Result<>(Code.GET_ERR, null, "学号错误");
+        // 查询帖子基本信息
+        HashMap<String, Integer> map = new HashMap<>();
+        map.put("postCount", postService.getTotalNums(Constant.ENTITY_TYPE_POST, stuId));
+        map.put("holeCount", postService.getTotalNums(Constant.ENTITY_TYPE_HOLE, stuId));
+        return new Result<>(Code.GET_OK, map);
+    }
+
+    // ---------------------------- 以下接口需要管理员权限才可以调用
+    @Tag(name = "管理员")
+    @Operation(summary = "获取帖子、树洞总数量", description = "返回帖子、树洞的总数量，以map形式返回，key为postCount或holeCount")
+    @GetMapping("/posts/count")
+    public Result<Map<String, Integer>> getPostCount(){
+        HashMap<String, Integer> map = new HashMap<>();
+        map.put("postCount", postService.getTotalNums(Constant.ENTITY_TYPE_POST, "0"));
+        map.put("holeCount", postService.getTotalNums(Constant.ENTITY_TYPE_HOLE, "0"));
+        return new Result<>(Code.GET_OK, map);
     }
 }

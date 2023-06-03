@@ -2,7 +2,7 @@ package site.zhangerfa.Constant;
 
 public class Constant {
     /**
-     * 回帖对象的类型
+     * 对象的类型
      */
     public static final int ENTITY_TYPE_POST = 1; // 帖子
     public static final int ENTITY_TYPE_HOLE = 2; // 树洞

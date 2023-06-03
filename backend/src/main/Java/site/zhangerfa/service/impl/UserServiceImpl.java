@@ -1,13 +1,21 @@
 package site.zhangerfa.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpSession;
+import org.apache.tomcat.util.bcel.Const;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.multipart.MultipartFile;
+import site.zhangerfa.Constant.Constant;
+import site.zhangerfa.controller.tool.Code;
+import site.zhangerfa.controller.tool.Result;
 import site.zhangerfa.dao.UserMapper;
+import site.zhangerfa.pojo.Image;
 import site.zhangerfa.pojo.LoginTicket;
 import site.zhangerfa.pojo.User;
+import site.zhangerfa.service.ImageService;
 import site.zhangerfa.service.LoginTicketService;
 import site.zhangerfa.service.UserService;
 import site.zhangerfa.util.ImgShackUtil;
@@ -23,6 +31,8 @@ public class UserServiceImpl implements UserService {
     private MailClient mailClient;
     @Resource
     private LoginTicketService loginTicketService;
+    @Resource
+    private ImageService imageService;
 
 
     @Override
@@ -116,6 +126,26 @@ public class UserServiceImpl implements UserService {
         String sendCode = (String) session.getAttribute("code");
         if (sendCode != null) return sendCode.equals(code);
         return false;
+    }
+
+    @Override
+    public Integer getUserCount() {
+        return userMapper.selectCount(null).intValue();
+    }
+
+    @Override
+    public Result<List<User>> getUserList(int currentPage, int pageSize) {
+        // 分页查询
+        Page<User> userPage = userMapper.selectPage(new Page<>(currentPage, pageSize), null);
+        return new Result<>(Code.GET_OK, userPage.getRecords(), "查询成功");
+    }
+
+    @Override
+    public String getGenderRatio() {
+        Long femaleNum = userMapper.selectCount(new LambdaQueryWrapper<User>().eq(User::getGender, 1));
+        Long maleNum = userMapper.selectCount(new LambdaQueryWrapper<User>().eq(User::getGender, 0));
+        double maleRadio = (double) maleNum / (femaleNum + maleNum);
+        return "男女比例：" + (int)maleRadio * 10 + ":" + (10 - (int)maleRadio * 10);
     }
 
     @Override
