@@ -1,7 +1,5 @@
 package site.zhangerfa.controller;
 
-import com.google.code.kaptcha.impl.DefaultKaptcha;
-import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -26,11 +24,9 @@ import site.zhangerfa.util.HostHolder;
 import site.zhangerfa.util.ImgShackUtil;
 import site.zhangerfa.util.UserUtil;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 @RestController
 @Tag(name = "用户")
@@ -105,16 +101,17 @@ public class UserController {
     @PostMapping("/register")
     public Result<Boolean> register(@Parameter(hidden = true) User user, String code, HttpSession session){
         // 判断学号是否合法
-        if (!UserUtil.isStuIdValid(user.getStuId()))
+        String stuId = user.getStuId();
+        if (!UserUtil.isStuIdValid(stuId))
             return new Result<>(Code.SAVE_ERR, "学号错误");
         // 判断用户是否已注册
-        if (isExist(user.getStuId()).getData())
+        if (isExist(stuId).getData())
             return new Result<>(Code.SAVE_ERR, "该学号已注册");
         // 判断密码是否符合格式
         if (!UserUtil.isMatchRegex("[a-zA-Z0-9]{6,16}", user.getPassword()))
             return new Result<>(Code.SAVE_ERR, "密码长度为6~16位，只能包含字母和数字");
         // 判断验证码是否正确
-        if (!userService.checkCode(code, session)){
+        if (!userService.checkCode(code, stuId)){
             return new Result<>(Code.SAVE_ERR, false, "验证码错误");
         }
         // 添加用户
@@ -154,7 +151,7 @@ public class UserController {
         if (isExist(stuId).getData())
             return new Result<>(Code.GET_ERR, "学号已注册");
         // 发送验证码
-        boolean flag = userService.sendCode(stuId, session);
+        boolean flag = userService.sendCode(stuId);
         int code = flag? Code.GET_OK: Code.GET_ERR;
         String msg = flag? "验证码已发送": "请检查您的学号后重试";
         return new Result<>(code, flag, msg);

@@ -1,7 +1,5 @@
 package site.zhangerfa.service;
 
-import jakarta.servlet.http.HttpSession;
-import org.springframework.web.multipart.MultipartFile;
 import site.zhangerfa.controller.tool.Result;
 import site.zhangerfa.pojo.User;
 
@@ -53,10 +51,10 @@ public interface UserService {
 
     /**
      * 给传入学号的教育邮箱发送验证码
+     *
      * @param stuId
-     * @param session
      */
-    boolean sendCode(String stuId, HttpSession session);
+    boolean sendCode(String stuId);
 
     /**
      * 检查指定学号的用户的输入密码、图像验证码是否正确
@@ -71,10 +69,12 @@ public interface UserService {
 
     /**
      * 检查用户注册时传入的验证码是否正确
+     *
      * @param code
+     * @param stuId
      * @return
      */
-    boolean checkCode(String code, HttpSession session);
+    boolean checkCode(String code, String stuId);
 
     Integer getUserCount();
 

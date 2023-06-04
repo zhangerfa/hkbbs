@@ -3,25 +3,22 @@ package site.zhangerfa.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.annotation.Resource;
-import jakarta.servlet.http.HttpSession;
-import org.apache.tomcat.util.bcel.Const;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
-import org.springframework.web.multipart.MultipartFile;
-import site.zhangerfa.Constant.Constant;
+import site.zhangerfa.Constant.RedisConstant;
 import site.zhangerfa.controller.tool.Code;
 import site.zhangerfa.controller.tool.Result;
 import site.zhangerfa.dao.UserMapper;
-import site.zhangerfa.pojo.Image;
 import site.zhangerfa.pojo.LoginTicket;
 import site.zhangerfa.pojo.User;
-import site.zhangerfa.service.ImageService;
 import site.zhangerfa.service.LoginTicketService;
 import site.zhangerfa.service.UserService;
-import site.zhangerfa.util.ImgShackUtil;
 import site.zhangerfa.util.MailClient;
+import site.zhangerfa.util.RedisKeyUtil;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -32,7 +29,7 @@ public class UserServiceImpl implements UserService {
     @Resource
     private LoginTicketService loginTicketService;
     @Resource
-    private ImageService imageService;
+    private StringRedisTemplate stringRedisTemplate;
 
 
     @Override
@@ -122,8 +119,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean checkCode(String code, HttpSession session){
-        String sendCode = (String) session.getAttribute("code");
+    public boolean checkCode(String code, String stuId){
+        // 从Redis中获取验证码
+        String sendCode = stringRedisTemplate.opsForValue().get(
+                RedisKeyUtil.getRegisterCodeKey(stuId));
         if (sendCode != null) return sendCode.equals(code);
         return false;
     }
@@ -149,11 +148,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean sendCode(String stuId, HttpSession session) {
+    public boolean sendCode(String stuId) {
         String subject = "验证码请查收：";
         String code = UUID.randomUUID().toString().substring(0, 6);
-        // 存储用户最后一次获取的验证码
-        session.setAttribute("code", code);
+        // 将验证码存入Redis中
+        stringRedisTemplate.opsForValue().set(
+                RedisKeyUtil.getRegisterCodeKey(stuId), code,
+                RedisConstant.LOGIN_CODE_EXPIRE_MINUTE, TimeUnit.MINUTES);
         // 发送邮件
         return mailClient.send(stuId + "@hust.edu.cn", subject, code);
     }
