@@ -16,8 +16,6 @@ public class NoticeInfo {
     private String actionUsername;
     @Schema(description = "动作发起者头像")
     private String actionUserHeadUrl;
-    @Schema(description = "帖子Id")
-    private int postId;
     @Schema(description = "被动作指向实体的类型，如树洞，评论等")
     private String entityType;
     @Schema(description = "被动作指向实体的内容，如树洞、评论的内容")

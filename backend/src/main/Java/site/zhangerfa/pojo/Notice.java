@@ -1,7 +1,6 @@
 package site.zhangerfa.pojo;
 
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -21,11 +20,18 @@ public class Notice {
     private int entityType;
     @Schema(description = "动作指向实体的id（B的ID）")
     private int entityId;
-    private int entityOwnerId;
     @Schema(description = "动作类型（C的类型）")
     private int actionType;
-    @Schema(description = "当动作类型为评论时，该字段存储评论内容id")
-    private int commentId;
     @Schema(description = "通知状态：0-未读，1-已读，2-删除")
     private int status = 0;
+
+    public Notice() {
+    }
+
+    public Notice(String actionUserId, int entityType, int entityId, int actionType) {
+        this.actionUserId = actionUserId;
+        this.entityType = entityType;
+        this.entityId = entityId;
+        this.actionType = actionType;
+    }
 }
