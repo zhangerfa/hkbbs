@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import site.zhangerfa.dao.NoticeMapper;
+import site.zhangerfa.event.NoticeProducer;
 import site.zhangerfa.service.NoticeService;
 import site.zhangerfa.pojo.Notice;
 
@@ -13,11 +14,12 @@ import java.util.List;
 public class NoticeServiceImpl implements NoticeService {
     @Resource
     private NoticeMapper noticeMapper;
+    @Resource
+    private NoticeProducer noticeProducer;
 
     @Override
-    public boolean add(Notice notice) {
-        int insertNotice = noticeMapper.insert(notice);
-        return insertNotice > 0;
+    public void add(String noticeType, Notice notice) {
+        noticeProducer.addNotice(noticeType, notice);
     }
 
     @Override

@@ -7,8 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
+import site.zhangerfa.dao.NoticeMapper;
 import site.zhangerfa.pojo.Notice;
-import site.zhangerfa.service.NoticeService;
 import site.zhangerfa.Constant.Constant;
 
 /**
@@ -18,14 +18,14 @@ import site.zhangerfa.Constant.Constant;
 public class NoticeConsumer {
     private static final Logger logger = LoggerFactory.getLogger(NoticeConsumer.class);
     @Resource
-    private NoticeService noticeService;
+    private NoticeMapper noticeMapper;
 
     /**
      * 发布系统通知，当用户点赞，评论，关注其他人时，将事件信息转换为站内通知
      * @param record 事件相关信息
      */
-    @KafkaListener(topics = {Constant.TOPIC_COMMENT,
-                             Constant.TOPIC_FOLLOW, Constant.TOPIC_LIKE})
+    @KafkaListener(topics = {Constant.NOTICE_TYPE_COMMENT,
+                             Constant.NOTICE_TYPE_FOLLOW, Constant.NOTICE_TYPE_LIKE})
     public void releaseNote(ConsumerRecord<String, String> record){
         // 判断消息是否为空
         if (record == null || record.value() == null){
@@ -39,6 +39,6 @@ public class NoticeConsumer {
             return;
         }
         // 发布消息
-        noticeService.add(notice);
+        noticeMapper.insert(notice);
     }
 }

@@ -1,17 +1,17 @@
 package site.zhangerfa.service;
 
 import site.zhangerfa.pojo.Notice;
-import site.zhangerfa.pojo.Page;
 
 import java.util.List;
 
 public interface NoticeService {
     /**
      * 添加通知
-     * @param notice
+     * @param noticeType 通知类型
+     * @param notice 通知内容
      * @return
      */
-    boolean add(Notice notice);
+    void add(String noticeType, Notice notice);
 
     Notice getNoticeById(int id);
 

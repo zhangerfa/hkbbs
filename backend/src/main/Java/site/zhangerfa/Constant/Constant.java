@@ -42,11 +42,11 @@ public class Constant {
     public static final int ACTION_FOLLOW = 2; // 关注
 
     /**
-     * 事件主题
+     * 通知类型
      */
-    public static final String TOPIC_COMMENT = "comment"; // 评论
-    public static final String TOPIC_LIKE = "like"; // 点赞
-    public static final String TOPIC_FOLLOW = "follow"; // 关注
+    public static final String NOTICE_TYPE_COMMENT = "comment"; // 评论
+    public static final String NOTICE_TYPE_LIKE = "like"; // 点赞
+    public static final String NOTICE_TYPE_FOLLOW = "follow"; // 关注
 
     /**
      * 树洞随机昵称生成用的字符集
