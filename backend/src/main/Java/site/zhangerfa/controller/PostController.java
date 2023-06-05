@@ -131,7 +131,7 @@ public class PostController {
         Comment comment = new Comment(entityType, entityId, content);
         postService.addComment(comment, postId);
         // 发布评论通知
-        Notice notice = noticeUtil.getNotice(comment, postId); // 将评论数据包装为notice对象
+        Notice notice = noticeUtil.getNotice(comment); // 将评论数据包装为notice对象
         noticeService.add(Constant.NOTICE_TYPE_COMMENT, notice);
         return new Result<>(Code.SAVE_OK, true, "发布成功");
     }
