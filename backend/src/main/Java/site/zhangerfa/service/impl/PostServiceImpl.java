@@ -125,6 +125,8 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional(isolation= Isolation.READ_COMMITTED, propagation = Propagation.NESTED)
     public boolean addComment(Comment comment, int postId) {
+        // 补充评论所属实体的类型
+        comment.setOwnerType(getPostType(postId));
         // 发布评论
         boolean flag = commentService.addComment(comment);
         // 卡片表中评论数量加一

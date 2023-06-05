@@ -23,6 +23,8 @@ public class PostInfo {
     private Date createTime;
     @Schema(description = "评论数量")
     private int commentNum;
+    @Schema(description = "点赞数量")
+    private int likeNum;
     @Schema(description = "热度")
     private int hot;
     @Schema(description = "帖子中图片URL集合")

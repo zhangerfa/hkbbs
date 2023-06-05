@@ -4,11 +4,10 @@ import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
 import site.zhangerfa.Constant.Constant;
 import site.zhangerfa.controller.tool.*;
-import site.zhangerfa.service.CommentService;
-import site.zhangerfa.service.HoleNicknameService;
-import site.zhangerfa.service.PostService;
-import site.zhangerfa.service.UserService;
-import site.zhangerfa.pojo.*;
+import site.zhangerfa.pojo.Comment;
+import site.zhangerfa.pojo.Page;
+import site.zhangerfa.pojo.Post;
+import site.zhangerfa.service.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,13 +15,13 @@ import java.util.List;
 @Component
 public class PostUtil {
     @Resource
-    private UserService userService;
-    @Resource
     private CommentService commentService;
     @Resource
-    private HoleNicknameService holeNicknameService;
-    @Resource(name = "postServiceImpl")
     private PostService postService;
+    @Resource
+    private EntityUtil entityUtil;
+    @Resource
+    private LikeService likeService;
 
     /**
      * 补充帖子信息中发帖人的信息(用于帖子列表，而非详情页面)
@@ -34,32 +33,15 @@ public class PostUtil {
         for (Post post : result.getData()) {
             PostInfo postInfo = new PostInfo(post);
             // 补充发帖人信息
-            User user = userService.getUserByStuId(post.getPosterId());
-            postInfo.setPosterName(user.getUsername());
-            postInfo.setPosterHeaderUrl(user.getHeaderUrl());
+            UserDTO userDTO = entityUtil.getUserDTO(post.getPostType(), post.getPosterId());
+            postInfo.setPosterName(userDTO.getUsername());
+            postInfo.setPosterHeaderUrl(userDTO.getHeaderUrl());
+            // 补充点赞数量
+            postInfo.setLikeNum(likeService.getLikedCount(post.getPostType(), post.getId()));
 
             postInfos.add(postInfo);
         }
         return postInfos;
-    }
-
-    /**
-     * 将树洞贴补充发布者信息并匿名化-昵称和头像换为匿名
-     * @param result
-     * @return
-     */
-    public List<PostInfo> completeHoleInfo(Result<List<Post>> result){
-        ArrayList<PostInfo> holeInfos = new ArrayList<>();
-        for (Post post : result.getData()) {
-            PostInfo holeInfo = new PostInfo(post);
-            // 匿名化
-            holeInfo.setPosterName(holeNicknameService.getHoleNickname(
-                    post.getId(), post.getPosterId()));
-            holeInfo.setPosterHeaderUrl("https://zhangerfa-1316526930.cos.ap-guangzhou.myqcloud.com/hkbbs/default.jpg");
-
-            holeInfos.add(holeInfo);
-        }
-        return holeInfos;
     }
 
     /**
@@ -70,20 +52,16 @@ public class PostUtil {
      * @return
      */
     public Result<PostDetails> getPostAndPosterDetails(int postId, int currentPage, int pageSize){
-        // 获取帖子类型
-        int postType = postService.getPostType(postId);
         // 帖子信息
-        Post card = postService.getPostById(postId);
-        if (card == null) return new Result<>(Code.GET_ERR, null, "您访问的帖子已被删除");
-        PostDetails postDetails = new PostDetails(card);
-        // 作者信息: 如果为树洞则替换为匿名信息
-        User poster = userService.getUserByStuId(card.getPosterId());
-        String posterName = postType == Constant.ENTITY_TYPE_POST? poster.getUsername():
-                holeNicknameService.getHoleNickname(postId, poster.getStuId());
-        postDetails.setPosterName(posterName);
-        String posterHeaderUrl = postType == Constant.ENTITY_TYPE_POST? poster.getHeaderUrl():
-                "https://zhangerfa-1316526930.cos.ap-guangzhou.myqcloud.com/hkbbs/default.jpg";
-        postDetails.setPosterHeaderUrl(posterHeaderUrl);
+        Post post = postService.getPostById(postId);
+        if (post == null) return new Result<>(Code.GET_ERR, null, "您访问的帖子已被删除");
+        PostDetails postDetails = new PostDetails(post);
+        // 帖子点赞数量
+        postDetails.setLikeNum(likeService.getLikedCount(post.getPostType(), postId));
+        // 作者信息
+        UserDTO userDTO = entityUtil.getUserDTO(post.getPostType(), post.getPosterId());
+        postDetails.setPosterName(userDTO.getUsername());
+        postDetails.setPosterHeaderUrl(userDTO.getHeaderUrl());
         // 分页信息
         PageUtil pageUtil = new PageUtil(currentPage, pageSize,
                 commentService.getNumOfCommentsForEntity(Constant.ENTITY_TYPE_POST, postId));
@@ -121,16 +99,17 @@ public class PostUtil {
             // 记录当前评论深度
             commentDetails.setDeep(deep);
             // 评论发布者信息
-            User poster = userService.getUserByStuId(comment.getPosterId());
-            String[] usernameAndHeaderUrl = getUsernameAndHeaderUrl(poster, postId);
-            commentDetails.setPosterName(usernameAndHeaderUrl[0]);
-            commentDetails.setPosterHeaderUrl(usernameAndHeaderUrl[1]);
+            UserDTO userDTO = entityUtil.getUserDTO(comment.getOwnerType(), comment.getPosterId());
+            commentDetails.setPosterName(userDTO.getUsername());
+            commentDetails.setPosterHeaderUrl(userDTO.getHeaderUrl());
             // 分页信息
             PageUtil pageUtil = new PageUtil(1, pageSize,
                     commentService.getNumOfCommentsForEntity(
                             Constant.ENTITY_TYPE_COMMENT, comment.getId()));
             Page page = pageUtil.generatePage();
             commentDetails.setPage(page);
+            // 评论点赞数量
+            commentDetails.setLikeNum(likeService.getLikedCount(Constant.ENTITY_TYPE_COMMENT, comment.getId()));
             // 子评论详细信息
             // 子评论集合
             int[] fromTo = pageUtil.getFromTo();
@@ -154,21 +133,5 @@ public class PostUtil {
         if (type == Constant.ENTITY_TYPE_POST || type == Constant.ENTITY_TYPE_HOLE)
             return true;
         return false;
-    }
-
-    /**
-     * 获取发布者的用户名和头像信息，如果为匿名则返回匿名信息
-     * @param poster
-     * @param postId 发布实体所在的帖子id
-     * @return
-     */
-    public String[] getUsernameAndHeaderUrl(User poster, int postId){
-        int postType = postService.getPostType(postId);
-        String[] res = new String[2];
-        res[0] = postType == Constant.ENTITY_TYPE_POST? poster.getUsername():
-                holeNicknameService.getHoleNickname(postId, poster.getStuId());
-        res[1] = postType == Constant.ENTITY_TYPE_POST? poster.getHeaderUrl():
-                "https://zhangerfa-1316526930.cos.ap-guangzhou.myqcloud.com/hkbbs/default.jpg";
-        return res;
     }
 }

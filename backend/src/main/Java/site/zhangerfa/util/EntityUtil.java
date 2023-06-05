@@ -4,6 +4,7 @@ import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
 import site.zhangerfa.Constant.Constant;
 import site.zhangerfa.controller.tool.UserDTO;
+import site.zhangerfa.pojo.User;
 import site.zhangerfa.service.*;
 
 @Component
@@ -49,8 +50,8 @@ public class EntityUtil {
         String headerUrl;
         if (entityType == Constant.ENTITY_TYPE_HOLE ||
                 (entityType == Constant.ENTITY_TYPE_COMMENT
-                        && commentService.getCommentById(entityId).
-                        getEntityType() == Constant.ENTITY_TYPE_HOLE)) {
+                        && commentService.getCommentById(entityId).getOwnerType()
+                        == Constant.ENTITY_TYPE_HOLE)) {
             holeNicknameService.getHoleNickname(entityId, ownerStuId);
             username = holeNicknameService.getHoleNickname(entityId, ownerStuId);
             headerUrl = "https://zhangerfa-1316526930.cos.ap-guangzhou.myqcloud.com/hkbbs/default.jpg";
@@ -58,6 +59,26 @@ public class EntityUtil {
             username = userService.getUserByStuId(ownerStuId).getUsername();
             headerUrl = userService.getUserByStuId(ownerStuId).getHeaderUrl();
         }
+        return new UserDTO(username, headerUrl);
+    }
+
+    /**
+     * 获取用户在不同类型帖子中的基本信息，包括昵称、头像URL
+     * @param postType 帖子类型
+     * @param stuId 用户学号
+     * @return
+     */
+    public UserDTO getUserDTO(int postType, String stuId) {
+        String username;
+        String headerUrl;
+        User user = userService.getUserByStuId(stuId);
+        if (postType == Constant.ENTITY_TYPE_POST){
+            username = user.getUsername();
+            headerUrl = user.getHeaderUrl();
+        }else if (postType == Constant.ENTITY_TYPE_HOLE) {
+            username = holeNicknameService.getHoleNickname(0, stuId);
+            headerUrl = "https://zhangerfa-1316526930.cos.ap-guangzhou.myqcloud.com/hkbbs/default.jpg";
+        }else return null;
         return new UserDTO(username, headerUrl);
     }
 }

@@ -23,10 +23,12 @@ public class CommentDetails {
     private String posterHeaderUrl;
     @Schema(description = "评论详细信息集合")
     private List<CommentDetails> commentDetails;
-    @Schema(description = "评论中评论的分页信息")
-    private Page page;
     @Schema(description = "评论深度")
     private int deep;
+    @Schema(description = "点赞数量")
+    private int likeNum;
+    @Schema(description = "评论中评论的分页信息")
+    private Page page;
 
     public CommentDetails(){}
 

@@ -73,9 +73,7 @@ public class PostController {
         Result<List<Post>> result = postService.getOnePagePosts(stuId, type, currentPage, pageSize);
         if (result.getCode() == Code.GET_ERR) return new Result<>(Code.GET_ERR, null, result.getMsg());
         // 补全发帖人信息
-        List<PostInfo> postInfos = type == Constant.ENTITY_TYPE_POST? postUtil.completePostInfo(result):
-                    postUtil.completeHoleInfo(result);
-        // TODO 返回帖子点赞数量
+        List<PostInfo> postInfos = postUtil.completePostInfo(result);
         return new Result<>(Code.GET_OK, postInfos, "查询成功");
     }
 
@@ -118,7 +116,6 @@ public class PostController {
             @Parameter(name = "pageSize", description = "每页大小")})
     public Result<PostDetails> getDetails(@PathVariable @Parameter(description = "帖子或树洞id") int postId,
                                           int currentPage, int pageSize){
-        // TODO 返回帖子点赞数量
         return postUtil.getPostAndPosterDetails(postId, currentPage, pageSize);
     }
 

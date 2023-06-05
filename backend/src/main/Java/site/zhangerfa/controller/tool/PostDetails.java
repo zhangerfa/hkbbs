@@ -19,6 +19,8 @@ public class PostDetails {
     private Date createTime;
     @Schema(description = "评论数量")
     private int commentNum;
+    @Schema(description = "点赞数量")
+    private int likeNum;
     @Schema(description = "图片集合")
     private List<String> images;
     @Schema(description = "发布者用户名")
