@@ -6,20 +6,14 @@ import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
-import site.zhangerfa.Constant.Constant;
 import site.zhangerfa.controller.tool.Code;
 import site.zhangerfa.controller.tool.NoticeInfo;
 import site.zhangerfa.controller.tool.Result;
 import site.zhangerfa.pojo.Notice;
-import site.zhangerfa.pojo.Page;
-import site.zhangerfa.service.CommentService;
 import site.zhangerfa.service.NoticeService;
-import site.zhangerfa.service.PostService;
-import site.zhangerfa.service.UserService;
 import site.zhangerfa.util.HostHolder;
 import site.zhangerfa.util.NoticeUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 

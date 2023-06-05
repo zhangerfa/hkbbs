@@ -14,7 +14,7 @@ public class Constant {
      * @param type
      * @return
      */
-    public static String getEntityTye(int type){
+    public static String getEntityTyeName(int type){
         if (type == ENTITY_TYPE_POST){
             return "卡片";
         }

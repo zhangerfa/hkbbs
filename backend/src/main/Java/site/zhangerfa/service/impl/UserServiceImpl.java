@@ -10,10 +10,10 @@ import site.zhangerfa.Constant.RedisConstant;
 import site.zhangerfa.controller.tool.Code;
 import site.zhangerfa.controller.tool.Result;
 import site.zhangerfa.dao.UserMapper;
-import site.zhangerfa.pojo.LoginTicket;
-import site.zhangerfa.pojo.User;
 import site.zhangerfa.service.LoginTicketService;
 import site.zhangerfa.service.UserService;
+import site.zhangerfa.pojo.LoginTicket;
+import site.zhangerfa.pojo.User;
 import site.zhangerfa.util.MailClient;
 import site.zhangerfa.util.RedisKeyUtil;
 

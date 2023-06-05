@@ -80,7 +80,7 @@ public class NoticeUtil {
                 noticeInfo.setActionUserHeadUrl(user.getHeaderUrl());
             }
             // 被动作指向实体的类型
-            noticeInfo.setEntityType(Constant.getEntityTye(notice.getEntityType()));
+            noticeInfo.setEntityType(Constant.getEntityTyeName(notice.getEntityType()));
             // 被动作指向实体的内容，如果是帖子为标题，评论则为内容
             if (notice.getEntityType() == Constant.ENTITY_TYPE_COMMENT){
                 noticeInfo.setEntityContent(commentService.getCommentById(notice.getEntityId()).getContent());

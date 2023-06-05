@@ -7,11 +7,11 @@ import site.zhangerfa.controller.tool.Result;
 import site.zhangerfa.dao.ManagerMapper;
 import site.zhangerfa.dao.PostMapper;
 import site.zhangerfa.dao.UserMapper;
+import site.zhangerfa.service.ManagerService;
 import site.zhangerfa.pojo.Card;
 import site.zhangerfa.pojo.Manager;
 import site.zhangerfa.pojo.Post;
 import site.zhangerfa.pojo.User;
-import site.zhangerfa.service.ManagerService;
 import site.zhangerfa.util.UserUtil;
 
 import java.util.List;

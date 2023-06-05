@@ -162,6 +162,12 @@ create table message
 )
     comment '站内私信表' charset = utf8mb3;
 
+CREATE TABLE `manager` (
+                           `stu_id` varchar(10) NOT NULL COMMENT '学号',
+                           `level` int NOT NULL DEFAULT '0' COMMENT '管理员权限',
+                           PRIMARY KEY (`stu_id`),
+                           CONSTRAINT `manager_user_null_fk` FOREIGN KEY (`stu_id`) REFERENCES `user` (`stu_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='管理员表'
 
 
 

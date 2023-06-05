@@ -4,10 +4,8 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import site.zhangerfa.dao.NoticeMapper;
+import site.zhangerfa.service.NoticeService;
 import site.zhangerfa.pojo.Notice;
-import site.zhangerfa.pojo.Page;
-import site.zhangerfa.service.*;
-import site.zhangerfa.util.PageUtil;
 
 import java.util.List;
 

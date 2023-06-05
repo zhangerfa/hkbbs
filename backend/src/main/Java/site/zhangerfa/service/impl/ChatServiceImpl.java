@@ -7,11 +7,11 @@ import org.springframework.stereotype.Service;
 import site.zhangerfa.controller.tool.ChatInfo;
 import site.zhangerfa.dao.ChatMapper;
 import site.zhangerfa.dao.MessageMapper;
+import site.zhangerfa.service.ChatService;
+import site.zhangerfa.service.UserService;
 import site.zhangerfa.pojo.Chat;
 import site.zhangerfa.pojo.Message;
 import site.zhangerfa.pojo.User;
-import site.zhangerfa.service.ChatService;
-import site.zhangerfa.service.UserService;
 import site.zhangerfa.util.PageUtil;
 
 import java.util.*;
