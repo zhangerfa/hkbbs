@@ -75,6 +75,7 @@ public class PostController {
         // 补全发帖人信息
         List<PostInfo> postInfos = type == Constant.ENTITY_TYPE_POST? postUtil.completePostInfo(result):
                     postUtil.completeHoleInfo(result);
+        // TODO 返回帖子点赞数量
         return new Result<>(Code.GET_OK, postInfos, "查询成功");
     }
 
@@ -117,6 +118,7 @@ public class PostController {
             @Parameter(name = "pageSize", description = "每页大小")})
     public Result<PostDetails> getDetails(@PathVariable @Parameter(description = "帖子或树洞id") int postId,
                                           int currentPage, int pageSize){
+        // TODO 返回帖子点赞数量
         return postUtil.getPostAndPosterDetails(postId, currentPage, pageSize);
     }
 

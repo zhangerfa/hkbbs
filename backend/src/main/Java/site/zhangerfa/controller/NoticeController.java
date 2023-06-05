@@ -30,7 +30,10 @@ public class NoticeController {
 
     @GetMapping("/")
     @Operation(summary = "获取一页通知", description = "获取当前登录用户的一页通知，当未读通知数量≥一页通知的个数时返回最新的一页未读通知，" +
-            "当未读通知不满一页时使用最新的已读通知填充")
+            "当未读通知不满一页时使用最新的已读通知填充。通知内容包括：做出动作用户对一个实体做了特定动作：要将信息：A对实体B做了动作C通知给用户D；" +
+            "actionUsername + actionType + \"了您的\" + entityType + \"(\" +\n" +
+            "        entityContent + \"):\" + actionContent" +
+            "举例：东九小韭菜评论了您的帖子（今晚三国杀）:约呀")
     @Parameters({@Parameter(name = "currentPage", description = "当前页码"),
             @Parameter(name = "pageSize", description = "每页大小")})
     public Result<List<NoticeInfo>> getNotices(int currentPage, int pageSize){

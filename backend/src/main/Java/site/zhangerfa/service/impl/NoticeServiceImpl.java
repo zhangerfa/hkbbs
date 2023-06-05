@@ -1,6 +1,7 @@
 package site.zhangerfa.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import site.zhangerfa.dao.NoticeMapper;
@@ -81,6 +82,7 @@ public class NoticeServiceImpl implements NoticeService {
                 .eq(actionType != -1, Notice::getActionType, actionType)
                 .eq(status != -1, Notice::getStatus, status);
         System.out.println(wrapper.getSqlSegment());
-        return noticeMapper.selectPage(new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(currentPage, pageSize), wrapper).getRecords();
+        return noticeMapper.selectPage(new Page<>(currentPage, pageSize), wrapper)
+                .getRecords();
     }
 }

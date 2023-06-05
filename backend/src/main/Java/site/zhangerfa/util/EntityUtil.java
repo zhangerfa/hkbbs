@@ -3,10 +3,8 @@ package site.zhangerfa.util;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
 import site.zhangerfa.Constant.Constant;
+import site.zhangerfa.controller.tool.UserDTO;
 import site.zhangerfa.service.*;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Component
 public class EntityUtil {
@@ -39,26 +37,27 @@ public class EntityUtil {
 
     /**
      * 获取实体的所有者信息，包括昵称、头像URL，如果实体为树洞或在树洞中的评论，则信息改为匿名信息
-     * @param entityType
-     * @param entityId
+     * @param entityType 实体类型
+     * @param entityId 实体id
      * @return
      */
-    public Map<String, String> getOwnerInfo(int entityType, int entityId) {
-        HashMap<String, String> map = new HashMap<>();
+    public UserDTO getOwnerInfo(int entityType, int entityId) {
         // 获取实体所有者学号
         String ownerStuId = getOwnerStuId(entityType, entityId);
         // 如果实体为树洞，或如果实体为评论且评论属于树洞，评论者信息改为匿名
+        String username;
+        String headerUrl;
         if (entityType == Constant.ENTITY_TYPE_HOLE ||
                 (entityType == Constant.ENTITY_TYPE_COMMENT
                         && commentService.getCommentById(entityId).
                         getEntityType() == Constant.ENTITY_TYPE_HOLE)) {
             holeNicknameService.getHoleNickname(entityId, ownerStuId);
-            map.put("username", holeNicknameService.getHoleNickname(entityId, ownerStuId));
-            map.put("headerUrl", "https://zhangerfa-1316526930.cos.ap-guangzhou.myqcloud.com/hkbbs/default.jpg");
+            username = holeNicknameService.getHoleNickname(entityId, ownerStuId);
+            headerUrl = "https://zhangerfa-1316526930.cos.ap-guangzhou.myqcloud.com/hkbbs/default.jpg";
         } else {
-            map.put("username", userService.getUserByStuId(ownerStuId).getUsername());
-            map.put("headerUrl", userService.getUserByStuId(ownerStuId).getHeaderUrl());
+            username = userService.getUserByStuId(ownerStuId).getUsername();
+            headerUrl = userService.getUserByStuId(ownerStuId).getHeaderUrl();
         }
-        return map;
+        return new UserDTO(username, headerUrl);
     }
 }

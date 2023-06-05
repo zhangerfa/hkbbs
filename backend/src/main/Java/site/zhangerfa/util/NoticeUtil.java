@@ -4,6 +4,7 @@ import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
 import site.zhangerfa.Constant.Constant;
 import site.zhangerfa.controller.tool.NoticeInfo;
+import site.zhangerfa.controller.tool.UserDTO;
 import site.zhangerfa.pojo.Comment;
 import site.zhangerfa.pojo.Notice;
 import site.zhangerfa.service.CommentService;
@@ -11,7 +12,6 @@ import site.zhangerfa.service.PostService;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Component
 public class NoticeUtil {
@@ -28,10 +28,12 @@ public class NoticeUtil {
      * @return
      */
     public Notice getNotice(Comment comment) {
-        Notice notice = new Notice(comment.getPosterId(), Constant.ACTION_COMMENT, comment.getEntityType(), comment.getEntityId());
+        Notice notice = new Notice(comment.getPosterId(), comment.getEntityType(), comment.getEntityId(), Constant.ACTION_COMMENT);
         // 被评论人的学号
         String receivingUserId = entityUtil.getOwnerStuId(comment.getEntityType(), comment.getEntityId());
         notice.setReceivingUserId(receivingUserId);
+        // 评论的id
+        notice.setActionId(comment.getId());
         return notice;
     }
 
@@ -44,7 +46,7 @@ public class NoticeUtil {
      */
     public Notice getLikeNotice(int entityType, int entityId, String posterId){
         // 点赞通知
-        Notice notice = new Notice(posterId, Constant.ACTION_LIKE, entityType, entityId);
+        Notice notice = new Notice(posterId, entityType, entityId, Constant.ACTION_LIKE);
         // 被点赞实体的所有者即为接收通知的人
         notice.setReceivingUserId(entityUtil.getOwnerStuId(entityType, entityId));
         return notice;
@@ -60,11 +62,11 @@ public class NoticeUtil {
         for (Notice notice : notices) {
             NoticeInfo noticeInfo = new NoticeInfo();
             noticeInfo.setId(notice.getId());
+            noticeInfo.setCreateTime(notice.getCreateTime());
             noticeInfos.add(noticeInfo);
             // 动作发出者信息
-            Map<String, String> ownerInfo = entityUtil.getOwnerInfo(notice.getEntityType(), notice.getEntityId());
-            noticeInfo.setActionUsername(ownerInfo.get("ownerName"));
-            noticeInfo.setActionUserHeadUrl(ownerInfo.get("ownerHeadUrl"));
+            UserDTO userDTO = entityUtil.getOwnerInfo(notice.getEntityType(), notice.getEntityId());
+            noticeInfo.setActionUser(userDTO);
             // 被动作指向实体的类型
             noticeInfo.setEntityType(Constant.getEntityTyeName(notice.getEntityType()));
             // 被动作指向实体的内容，如果是帖子为标题，评论则为内容
@@ -73,7 +75,12 @@ public class NoticeUtil {
             }else {
                 noticeInfo.setEntityContent(postService.getPostById(notice.getEntityId()).getTitle());
             }
-        }
+            // 动作内容
+            if (notice.getActionType() == Constant.ACTION_COMMENT){
+                Comment comment = commentService.getCommentById(notice.getActionId());
+                noticeInfo.setActionContent(comment.getContent());
+            }
+            }
         return noticeInfos;
     }
 }

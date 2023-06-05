@@ -22,8 +22,12 @@ public class Notice {
     private int entityId;
     @Schema(description = "动作类型（C的类型）")
     private int actionType;
+    @Schema(description = "动作id")
+    private int actionId;
     @Schema(description = "通知状态：0-未读，1-已读，2-删除")
     private int status = 0;
+    @Schema(description = "通知创建时间")
+    private String createTime;
 
     public Notice() {
     }

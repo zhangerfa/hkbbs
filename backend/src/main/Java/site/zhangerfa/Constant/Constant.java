@@ -16,13 +16,13 @@ public class Constant {
      */
     public static String getEntityTyeName(int type){
         if (type == ENTITY_TYPE_POST){
-            return "卡片";
+            return "post";
         }
         if (type == ENTITY_TYPE_HOLE){
-            return "树洞";
+            return "hole";
         }
         if (type == ENTITY_TYPE_COMMENT){
-            return "评论";
+            return "comment";
         }
         throw new RuntimeException("传入实体类型不存在");
     }
