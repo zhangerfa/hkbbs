@@ -38,7 +38,7 @@ public class LikeController {
         // 点赞
         likeService.like(stuId, entityType, entityId);
         // 通知被点赞实体的作者
-
+        // TODO 取消点赞不通知——————点赞后先查询是否已有点赞通知，有则不通知
         Notice likeNotice = noticeUtil.getLikeNotice(entityType, entityId, stuId);
         noticeService.add(Constant.NOTICE_TYPE_LIKE, likeNotice);
         // 查询点赞数量
