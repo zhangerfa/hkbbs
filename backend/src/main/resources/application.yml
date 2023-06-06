@@ -1,14 +1,11 @@
 server:
-  port: 80
+  port: 8021
   # 开发阶段浏览器不设置缓存，静态资源更新后立马就能访问到
   tomcat:
     processor-cache: 0
 
-
 servlet:
   context-path: /
-
-
 
 spring:
   # Redis配置信息
@@ -41,8 +38,6 @@ spring:
     # 设置连接信息
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/friends
-    username: root
-    password: M202271503
   # 开发阶段关闭浏览器缓存
   thymeleaf:
     cache: false
@@ -51,9 +46,6 @@ spring:
     default-encoding: utf-8
     # 邮箱主机
     host: smtp.qq.com
-    # 发送邮件的邮箱的账号密码
-    username: 877319363@qq.com
-    password: ehypoybrqxbebdjf # 这里设置开启SMTP的激活码
     protocol: smtps # smtps 是加了SSL的smtp
     properties:
       mail:
@@ -61,6 +53,11 @@ spring:
           ssl:
             enable: true # 开启SSL
 
+# 腾讯云图床
+cos:
+  bucket: zhangerfa-1316526930
+  region: ap-guangzhou
+  path: header/
 
 mybatis:
   # 设置映射文件（mapper.xml）的路径
@@ -76,15 +73,6 @@ mybatis:
 logging:
   level:
     web: error
-
-# 腾讯云图床
-cos:
-  secretId: AKIDgEZlmeMtBYlmbHbie5MUQAlEhVFxY1Tm
-  secretKey: BE53pU3Sgiqxx8B3vdDgy90qTvENn2Af
-  bucket: zhangerfa-1316526930
-  appId: 1316526930
-  region: ap-guangzhou
-  path: header/
 
 # springdoc-openapi项目配置
 springdoc:
@@ -108,7 +96,3 @@ knife4j:
     language: zh-CN
   basic:
     enable: true
-    # Basic认证用户名
-    username: admin
-    # Basic认证密码
-    password: hkbbs

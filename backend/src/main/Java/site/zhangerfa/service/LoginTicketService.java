@@ -1,9 +1,6 @@
 package site.zhangerfa.service;
 
 import site.zhangerfa.pojo.LoginTicket;
-import site.zhangerfa.pojo.User;
-
-import java.util.Date;
 
 public interface LoginTicketService {
     /**
