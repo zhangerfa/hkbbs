@@ -1,6 +1,5 @@
 create database if not exists friends;
 use friends;
-
 CREATE TABLE `card` (
                         `id` int NOT NULL AUTO_INCREMENT,
                         `about_me` text NOT NULL COMMENT '关于我',
@@ -31,10 +30,11 @@ CREATE TABLE `comment` (
                            `entity_id` int NOT NULL COMMENT '被评论对象的id',
                            `content` text NOT NULL COMMENT '回帖内容',
                            `create_time` timestamp NOT NULL COMMENT '回帖时间',
+                           `owner_type` int DEFAULT NULL COMMENT '评论所属实体的类型',
                            PRIMARY KEY (`id`),
                            KEY `stu_id` (`poster_id`),
                            CONSTRAINT `comment_ibfk_1` FOREIGN KEY (`poster_id`) REFERENCES `user` (`stu_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8mb3 COMMENT='评论表'
+) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8mb3 COMMENT='评论表'
 
 CREATE TABLE `hole_nickname` (
                                  `hole_id` int NOT NULL COMMENT '树洞帖子的id',
@@ -96,12 +96,13 @@ CREATE TABLE `notice` (
                           `status` int NOT NULL DEFAULT '0' COMMENT '通知状态：0-未读，1-已读，2-删除',
                           `action_id` int DEFAULT NULL COMMENT '动作id',
                           `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '通知创建时间',
+                          `owner_type` int DEFAULT NULL COMMENT '动作发生所属实体的类型',
                           PRIMARY KEY (`id`),
                           KEY `action_user_id` (`action_user_id`),
                           KEY `receiving_user_id` (`receiving_user_id`),
                           CONSTRAINT `notice_ibfk_1` FOREIGN KEY (`receiving_user_id`) REFERENCES `user` (`stu_id`),
                           CONSTRAINT `notice_ibfk_2` FOREIGN KEY (`action_user_id`) REFERENCES `user` (`stu_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb3 COMMENT='通知数据表：通知谁，通知内容（哪个实体对另一个实体做了什么动作）'
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8mb3 COMMENT='通知数据表：通知谁，通知内容（哪个实体对另一个实体做了什么动作）'
 
 CREATE TABLE `post` (
                         `id` int NOT NULL AUTO_INCREMENT,
