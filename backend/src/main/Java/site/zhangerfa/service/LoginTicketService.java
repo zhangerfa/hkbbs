@@ -21,15 +21,13 @@ public interface LoginTicketService {
     LoginTicket getLoginTicketByTicket(String ticket);
 
     /**
-     * 根据传入的登录凭证码修改登录凭证状态
-     *
-     * @param stuId 学号
-     * @param status 状态：1有效，0无效
+     * 更新登录凭证状态:
+     *    当改为有效时，还需修改有效时间
+     *    当改为无效时，还需修改无效时间
+     * @param loginTicket
      * @return
      */
-    boolean updateStatus(String stuId, int status);
-
-    boolean updateExpired(String stuId, Date expired);
+    boolean update(LoginTicket loginTicket);
 
     /**
      * 检查登陆凭证是否有效

@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
@@ -20,13 +21,13 @@ import site.zhangerfa.pojo.LoginTicket;
 import site.zhangerfa.pojo.User;
 import site.zhangerfa.service.LoginTicketService;
 import site.zhangerfa.service.UserService;
+import site.zhangerfa.util.CookieUtil;
 import site.zhangerfa.util.HostHolder;
 import site.zhangerfa.util.ImgShackUtil;
 import site.zhangerfa.util.UserUtil;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @Tag(name = "用户")
@@ -58,21 +59,19 @@ public class UserController {
     @PostMapping("/login")
     public Result<Boolean> login(@Parameter(hidden = true) User user,
                                  @RequestParam(required = false, defaultValue = "false") boolean rememberMe,
-                                 HttpServletResponse response){
-        Map<String, Object> map = userService.login(user, rememberMe);
-        if (!(boolean) map.get("result")){
-            return new Result<>(Code.SAVE_ERR, false, (String) map.get("msg"));
-        }
+                                 HttpServletResponse response, HttpServletRequest request) {
+        // 判断学号是否合法、密码、验证码是否正确，正确则为第一次登录用户生成登录凭证，为之前登录过的用户更新登录凭证
+        LoginTicket loginTicket = userService.login(user, rememberMe);
+        if (loginTicket == null) return new Result<>(Code.GET_ERR, false, "学号或密码错误");
         // 登录凭证作为cookie凭证发送给客户端
-        LoginTicket ticket = (LoginTicket) map.get("ticket");
-        Cookie cookie = new Cookie("ticket", ticket.getTicket());
-        // 计算登录凭证有效时间（秒）
-        long expired = (ticket.getExpired().getTime() - new Date(System.currentTimeMillis()).getTime()) / 1000;
+        Cookie cookie = new Cookie("ticket", loginTicket.getTicket());
+        // 计算携带登录凭证的cookie有效时间（秒）
+        long expired = (loginTicket.getExpired().getTime() - new Date(System.currentTimeMillis()).getTime()) / 1000;
         cookie.setMaxAge((int) expired);
         cookie.setPath("/"); // 访问所有页面需要携带登录凭证
         response.addCookie(cookie);
         hostHolder.setUser(user);
-        return new Result<>(Code.SAVE_OK, true, (String) map.get("msg"));
+        return new Result<>(Code.SAVE_OK, true, "登录成功");
     }
 
     @Operation(summary = "退出登录", description = "将用户登录凭证的有效状态设置为不可用")
@@ -80,7 +79,7 @@ public class UserController {
     public Result<Boolean> logout() {
         User user = hostHolder.getUser();
         if (user == null) return new Result<>(Code.UPDATE_ERR, false, "用户未登录");
-        loginTicketService.updateStatus(user.getStuId(), 0);
+        loginTicketService.update(new LoginTicket(user.getStuId(), 0));
         return new Result<>(Code.DELETE_OK, true);
     }
 

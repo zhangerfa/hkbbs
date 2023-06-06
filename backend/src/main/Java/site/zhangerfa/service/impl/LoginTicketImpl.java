@@ -28,14 +28,8 @@ public class LoginTicketImpl implements LoginTicketService {
     }
 
     @Override
-    public boolean updateStatus(String stuId, int status) {
-        return loginTicketMapper.updateById(new LoginTicket(stuId, status)) != 0;
-    }
-
-    @Override
-    public boolean updateExpired(String stuId, Date expired) {
-        loginTicketMapper.update(new LoginTicket(stuId, expired), null);
-        return false;
+    public boolean update(LoginTicket loginTicket) {
+        return loginTicketMapper.updateById(loginTicket) != 0;
     }
 
     @Override
@@ -49,7 +43,8 @@ public class LoginTicketImpl implements LoginTicketService {
                 return true;
             }else {
                 // 过期，更改登录凭证状态
-                updateStatus(loginTicket.getStuId(), 0);
+                loginTicket.setStatus(0);
+                update(loginTicket);
             }
         }
         return false;

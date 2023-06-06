@@ -1,6 +1,7 @@
 package site.zhangerfa.service;
 
 import site.zhangerfa.controller.tool.Result;
+import site.zhangerfa.pojo.LoginTicket;
 import site.zhangerfa.pojo.User;
 
 import java.util.List;
@@ -58,14 +59,11 @@ public interface UserService {
 
     /**
      * 检查指定学号的用户的输入密码、图像验证码是否正确
-     *      如果正确生成登录凭证返回
+     *      如果正确则为第一次登录用户生成登录凭证，为之前登录过的用户更新登录凭证
      * @param rememberMe 是否勾选记住密码
-     * @return {"result": boolean, // 存储是否登录成功
-     *          ”msg“: String      // 存储给用户反馈的信息
-     *          "ticket": LoginTicket // 如果登录成功存储ticket对象
-     *          }
+     * @return 如果学号或密码错误返回null，否则返回登录凭证
      */
-    Map<String, Object> login(User user, boolean rememberMe);
+    LoginTicket login(User user, boolean rememberMe);
 
     /**
      * 检查用户注册时传入的验证码是否正确

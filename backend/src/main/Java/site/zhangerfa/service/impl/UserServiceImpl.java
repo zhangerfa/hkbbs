@@ -33,13 +33,8 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public Map<String, Object> login(User user, boolean rememberMe) {
-        Map<String, Object> res = new HashMap<>();
-        if (!checkPassword(user.getStuId(), user.getPassword())){
-            res.put("result", false);
-            res.put("msg", "密码错误");
-            return res;
-        }
+    public LoginTicket login(User user, boolean rememberMe) {
+        if (!checkPassword(user.getStuId(), user.getPassword())) return null;
         // 密码正确，查询是否有登录凭证
         LoginTicket loginTicket = loginTicketService.getLoginTicketByStuId(user.getStuId());
         // 计算登录凭证到期时间
@@ -64,14 +59,11 @@ public class UserServiceImpl implements UserService {
             loginTicketService.add(loginTicket);
         }else {
             // 非首次登录，将登录验证状态改为有效，并更新过期时间
-            loginTicketService.updateStatus(user.getStuId(), 1);
             loginTicket.setExpired(new Date(expired));
-            loginTicketService.updateExpired(user.getStuId(), new Date(expired));
+            loginTicket.setStatus(1);
+            loginTicketService.update(loginTicket);
         }
-        res.put("result", true);
-        res.put("msg", "登录成功");
-        res.put("ticket", loginTicket);
-        return res;
+        return loginTicket;
     }
 
     @Override
