@@ -2,6 +2,7 @@ package site.zhangerfa.controller.tool;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import site.zhangerfa.pojo.Notice;
 
 @Data
 @Schema(description = "谁对一个实体进行了什么动作" +
@@ -13,6 +14,8 @@ public class NoticeInfo {
     private int id;
     @Schema(description = "动作发起者")
     private UserDTO actionUser;
+    @Schema(description = "动作类型，如评论，点赞等")
+    private int actionType;
     @Schema(description = "被动作指向实体的类型，如树洞，评论等")
     private String entityType;
     @Schema(description = "被动作指向实体的内容，如树洞、评论的内容")
@@ -21,4 +24,12 @@ public class NoticeInfo {
     private String actionContent;
     @Schema(description = "创建时间")
     private String createTime;
+
+    public NoticeInfo(){}
+
+    public NoticeInfo(Notice notice){
+        id = notice.getId();
+        createTime = notice.getCreateTime();
+        actionType = notice.getActionType();
+    }
 }

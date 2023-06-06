@@ -62,9 +62,7 @@ public class NoticeUtil {
     public List<NoticeInfo> getNoticeInfos(List<Notice> notices){
         List<NoticeInfo> noticeInfos = new ArrayList<>();
         for (Notice notice : notices) {
-            NoticeInfo noticeInfo = new NoticeInfo();
-            noticeInfo.setId(notice.getId());
-            noticeInfo.setCreateTime(notice.getCreateTime());
+            NoticeInfo noticeInfo = new NoticeInfo(notice);
             noticeInfos.add(noticeInfo);
             // 动作发出者信息
             UserDTO userDTO = entityUtil.getUserDTO(notice.getOwnerType(), notice.getActionUserId());
