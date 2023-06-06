@@ -75,17 +75,12 @@ public class UserController {
         return new Result<>(Code.SAVE_OK, true, (String) map.get("msg"));
     }
 
-    @Operation(summary = "退出登录", description = "将用户登录凭证的有效状态设置为不可用，并重定向到首页")
+    @Operation(summary = "退出登录", description = "将用户登录凭证的有效状态设置为不可用")
     @PutMapping("/logout")
-    public Result<Boolean> logout(HttpServletResponse response) {
+    public Result<Boolean> logout() {
         User user = hostHolder.getUser();
         if (user == null) return new Result<>(Code.UPDATE_ERR, false, "用户未登录");
         loginTicketService.updateStatus(user.getStuId(), 0);
-        try {
-            response.sendRedirect("/");
-        } catch (Exception e) {
-            logger.error("注销登录后重定向错误-->" + e.getMessage());
-        }
         return new Result<>(Code.DELETE_OK, true);
     }
 
@@ -143,7 +138,7 @@ public class UserController {
 
     @Operation(summary = "向指定学号的邮箱发送验证码")
     @GetMapping("/sendCode")
-    public Result<Boolean> sendCode(String stuId, HttpSession session){
+    public Result<Boolean> sendCode(String stuId){
         // 验证学号是否合法
         if (!UserUtil.isStuIdValid(stuId))
             return new Result<>(Code.GET_ERR, "学号错误");
