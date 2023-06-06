@@ -4,10 +4,13 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
+import site.zhangerfa.Constant.Constant;
 import site.zhangerfa.dao.NoticeMapper;
 import site.zhangerfa.event.NoticeProducer;
+import site.zhangerfa.pojo.Comment;
 import site.zhangerfa.service.NoticeService;
 import site.zhangerfa.pojo.Notice;
+import site.zhangerfa.util.NoticeUtil;
 
 import java.util.List;
 
@@ -17,10 +20,19 @@ public class NoticeServiceImpl implements NoticeService {
     private NoticeMapper noticeMapper;
     @Resource
     private NoticeProducer noticeProducer;
+    @Resource
+    private NoticeUtil noticeUtil;
 
     @Override
-    public void add(String noticeType, Notice notice) {
-        noticeProducer.addNotice(noticeType, notice);
+    public void addCommentNotice(Comment comment) {
+        Notice notice = noticeUtil.getNotice(comment); // 将评论数据包装为notice对象
+        noticeProducer.addNotice(Constant.NOTICE_TYPE_COMMENT, notice); // 将notice对象放入消息队列
+    }
+
+    @Override
+    public void addLikeNotice(int entityType, int entityId, String stuId) {
+        Notice likeNotice = noticeUtil.getLikeNotice(entityType, entityId, stuId);
+        noticeProducer.addNotice(Constant.NOTICE_TYPE_LIKE, likeNotice);
     }
 
     @Override

@@ -12,12 +12,9 @@ import site.zhangerfa.controller.tool.Code;
 import site.zhangerfa.controller.tool.PostDetails;
 import site.zhangerfa.controller.tool.PostInfo;
 import site.zhangerfa.controller.tool.Result;
-import site.zhangerfa.event.NoticeProducer;
-import site.zhangerfa.service.NoticeService;
-import site.zhangerfa.util.NoticeUtil;
 import site.zhangerfa.pojo.Comment;
-import site.zhangerfa.pojo.Notice;
 import site.zhangerfa.pojo.Post;
+import site.zhangerfa.service.NoticeService;
 import site.zhangerfa.service.PostService;
 import site.zhangerfa.service.UserService;
 import site.zhangerfa.util.HostHolder;
@@ -37,8 +34,6 @@ public class PostController {
     private PostUtil postUtil;
     @Resource
     private NoticeService noticeService;
-    @Resource
-    private NoticeUtil noticeUtil;
     @Resource
     private UserService userService;
     @Resource
@@ -130,8 +125,7 @@ public class PostController {
         Comment comment = new Comment(entityType, entityId, content);
         postService.addComment(comment, postId);
         // 发布评论通知
-        Notice notice = noticeUtil.getNotice(comment); // 将评论数据包装为notice对象
-        noticeService.add(Constant.NOTICE_TYPE_COMMENT, notice);
+        noticeService.addCommentNotice(comment);
         return new Result<>(Code.SAVE_OK, true, "发布成功");
     }
 

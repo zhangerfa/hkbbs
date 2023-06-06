@@ -1,17 +1,24 @@
 package site.zhangerfa.service;
 
+import site.zhangerfa.pojo.Comment;
 import site.zhangerfa.pojo.Notice;
 
 import java.util.List;
 
 public interface NoticeService {
     /**
-     * 添加通知
-     * @param noticeType 通知类型
-     * @param notice 通知内容
-     * @return
+     * 添加评论通知
+     * @param comment 评论
      */
-    void add(String noticeType, Notice notice);
+    void addCommentNotice(Comment comment);
+
+    /**
+     * 添加点赞通知
+     * @param entityType 被点赞实体的类型
+     * @param entityId 被点赞实体的id
+     * @param stuId 点赞者的学号
+     */
+    void addLikeNotice(int entityType, int entityId, String stuId);
 
     Notice getNoticeById(int id);
 
