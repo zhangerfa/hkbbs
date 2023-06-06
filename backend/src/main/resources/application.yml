@@ -1,5 +1,5 @@
 server:
-  port: 8021
+  port: 80
   # 开发阶段浏览器不设置缓存，静态资源更新后立马就能访问到
   tomcat:
     processor-cache: 0
@@ -107,7 +107,7 @@ knife4j:
   setting:
     language: zh-CN
   basic:
-    enable: false
+    enable: true
     # Basic认证用户名
     username: admin
     # Basic认证密码
