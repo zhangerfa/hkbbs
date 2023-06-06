@@ -26,6 +26,8 @@ public class Notice {
     private int actionId;
     @Schema(description = "通知状态：0-未读，1-已读，2-删除")
     private int status = 0;
+    @Schema(description = "动作所属实体的类型")
+    private int ownerType;
     @Schema(description = "通知创建时间")
     private String createTime;
 
@@ -37,5 +39,10 @@ public class Notice {
         this.entityType = entityType;
         this.entityId = entityId;
         this.actionType = actionType;
+    }
+
+    public Notice(String actionUserId, int entityType, int entityId, int actionType, int ownerType){
+        this(actionUserId, entityType, entityId, actionType);
+        this.ownerType = ownerType;
     }
 }

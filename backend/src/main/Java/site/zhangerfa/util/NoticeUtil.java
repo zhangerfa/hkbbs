@@ -28,7 +28,9 @@ public class NoticeUtil {
      * @return
      */
     public Notice getNotice(Comment comment) {
-        Notice notice = new Notice(comment.getPosterId(), comment.getEntityType(), comment.getEntityId(), Constant.ACTION_COMMENT);
+        Notice notice = new Notice(comment.getPosterId(),
+                comment.getEntityType(), comment.getEntityId(),
+                Constant.ACTION_COMMENT, comment.getOwnerType());
         // 被评论人的学号
         String receivingUserId = entityUtil.getOwnerStuId(comment.getEntityType(), comment.getEntityId());
         notice.setReceivingUserId(receivingUserId);
@@ -65,7 +67,7 @@ public class NoticeUtil {
             noticeInfo.setCreateTime(notice.getCreateTime());
             noticeInfos.add(noticeInfo);
             // 动作发出者信息
-            UserDTO userDTO = entityUtil.getOwnerInfo(notice.getEntityType(), notice.getEntityId());
+            UserDTO userDTO = entityUtil.getUserDTO(notice.getOwnerType(), notice.getActionUserId());
             noticeInfo.setActionUser(userDTO);
             // 被动作指向实体的类型
             noticeInfo.setEntityType(Constant.getEntityTyeName(notice.getEntityType()));
