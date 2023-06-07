@@ -6,18 +6,16 @@ import jakarta.annotation.Resource;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
-import site.zhangerfa.Constant.RedisConstant;
 import site.zhangerfa.controller.tool.Code;
 import site.zhangerfa.controller.tool.Result;
 import site.zhangerfa.dao.UserMapper;
-import site.zhangerfa.service.LoginTicketService;
-import site.zhangerfa.service.UserService;
-import site.zhangerfa.pojo.LoginTicket;
 import site.zhangerfa.pojo.User;
+import site.zhangerfa.service.UserService;
 import site.zhangerfa.util.MailClient;
-import site.zhangerfa.util.RedisKeyUtil;
+import site.zhangerfa.util.RedisUtil;
 
-import java.util.*;
+import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -27,42 +25,17 @@ public class UserServiceImpl implements UserService {
     @Resource
     private MailClient mailClient;
     @Resource
-    private LoginTicketService loginTicketService;
-    @Resource
     private StringRedisTemplate stringRedisTemplate;
 
 
     @Override
-    public LoginTicket login(User user, boolean rememberMe) {
+    public String login(User user, boolean rememberMe) {
         if (!checkPassword(user.getStuId(), user.getPassword())) return null;
-        // 密码正确，查询是否有登录凭证
-        LoginTicket loginTicket = loginTicketService.getLoginTicketByStuId(user.getStuId());
-        // 计算登录凭证到期时间
-        long expired;
-        if (rememberMe){
-            // 记住密码有效时间设为两个月
-            expired = System.currentTimeMillis() + 1000L * 60 * 60 * 24 * 60;
-        }else {
-            // 默认状态有效时间设为一天
-            expired = System.currentTimeMillis() + 1000L * 60 * 60 * 24;
-        }
-        if (loginTicket == null){
-            // 首次登录添加登录验证
-            loginTicket = new LoginTicket();
-            loginTicket.setStuId(user.getStuId());
-            // 生成登录凭证码
-            String ticket = UUID.randomUUID().toString().replace("-", "");
-            loginTicket.setTicket(ticket);
-            loginTicket.setStatus(1); // 设置登录凭证状态为有效
-            loginTicket.setExpired(new Date(expired));
-            // 保存登录凭证码
-            loginTicketService.add(loginTicket);
-        }else {
-            // 非首次登录，将登录验证状态改为有效，并更新过期时间
-            loginTicket.setExpired(new Date(expired));
-            loginTicket.setStatus(1);
-            loginTicketService.update(loginTicket);
-        }
+        // 生成登录凭证
+        String loginTicket = UUID.randomUUID().toString().replace("-", "");
+        // 将登录凭证存入redis
+        stringRedisTemplate.opsForValue().set(RedisUtil.getLoginTicketKey(loginTicket),
+                user.getStuId(), RedisUtil.LOGIN_TICKET_EXPIRE_DAY, TimeUnit.DAYS);
         return loginTicket;
     }
 
@@ -114,9 +87,14 @@ public class UserServiceImpl implements UserService {
     public boolean checkCode(String code, String stuId){
         // 从Redis中获取验证码
         String sendCode = stringRedisTemplate.opsForValue().get(
-                RedisKeyUtil.getRegisterCodeKey(stuId));
+                RedisUtil.getRegisterCodeKey(stuId));
         if (sendCode != null) return sendCode.equals(code);
         return false;
+    }
+
+    @Override
+    public void logout(String ticket) {
+        stringRedisTemplate.delete(RedisUtil.getLoginTicketKey(ticket));
     }
 
     @Override
@@ -145,8 +123,8 @@ public class UserServiceImpl implements UserService {
         String code = UUID.randomUUID().toString().substring(0, 6);
         // 将验证码存入Redis中
         stringRedisTemplate.opsForValue().set(
-                RedisKeyUtil.getRegisterCodeKey(stuId), code,
-                RedisConstant.LOGIN_CODE_EXPIRE_MINUTE, TimeUnit.MINUTES);
+                RedisUtil.getRegisterCodeKey(stuId), code,
+                RedisUtil.LOGIN_CODE_EXPIRE_MINUTE, TimeUnit.MINUTES);
         // 发送邮件
         return mailClient.send(stuId + "@hust.edu.cn", subject, code);
     }
