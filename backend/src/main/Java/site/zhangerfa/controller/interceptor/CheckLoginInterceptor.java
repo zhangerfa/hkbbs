@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import site.zhangerfa.controller.tool.Code;
 import site.zhangerfa.service.UserService;
+import site.zhangerfa.service.WebDataService;
 import site.zhangerfa.util.HostHolder;
 import site.zhangerfa.util.RedisUtil;
 
@@ -24,6 +25,8 @@ public class CheckLoginInterceptor implements HandlerInterceptor {
     private HostHolder hostHolder;
     @Resource
     private UserService userService;
+    @Resource
+    private WebDataService webDataService;
 
     /**
      * 当用户访问登录、注册页面时如果没有携带登录凭证码放行，
@@ -40,6 +43,8 @@ public class CheckLoginInterceptor implements HandlerInterceptor {
     public boolean preHandle(jakarta.servlet.http.HttpServletRequest request,
                              jakarta.servlet.http.HttpServletResponse response,
                              Object handler) throws Exception {
+        // 访问量加一
+        webDataService.addPvForToday();
         // 注册、登录接口、API文档页面放行
         String url = request.getRequestURL().toString();
         String[] pass = {"Code", "isExist", "login", "register", "doc", "swagger"};

@@ -39,9 +39,9 @@ public class ManagerController {
         return new Result<>(code, managerList);
     }
 
-    @Operation(summary = "获取访问量", description = "获取访问量")
+    @Operation(summary = "获取今天访问量", description = "获取今天访问量")
     @GetMapping("/pv")
-    public Result<Integer> getPv(){
+    public Result<Integer> getPvForToday(){
         return new Result<>(Code.GET_OK, managerService.getPv());
     }
 }
