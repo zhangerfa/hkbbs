@@ -17,16 +17,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import site.zhangerfa.controller.tool.Code;
 import site.zhangerfa.controller.tool.Result;
-import site.zhangerfa.pojo.LoginTicket;
 import site.zhangerfa.pojo.User;
-import site.zhangerfa.service.LoginTicketService;
 import site.zhangerfa.service.UserService;
-import site.zhangerfa.util.CookieUtil;
-import site.zhangerfa.util.HostHolder;
-import site.zhangerfa.util.ImgShackUtil;
-import site.zhangerfa.util.UserUtil;
+import site.zhangerfa.util.*;
 
-import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -36,8 +30,6 @@ public class UserController {
     private static Logger logger = LoggerFactory.getLogger(UserController.class);
     @Resource
     private UserService userService;
-    @Resource
-    private LoginTicketService loginTicketService;
     @Resource
     private HostHolder hostHolder;
     @Resource
@@ -59,27 +51,27 @@ public class UserController {
     @PostMapping("/login")
     public Result<Boolean> login(@Parameter(hidden = true) User user,
                                  @RequestParam(required = false, defaultValue = "false") boolean rememberMe,
-                                 HttpServletResponse response, HttpServletRequest request) {
+                                 HttpServletResponse response) {
         // 判断学号是否合法、密码、验证码是否正确，正确则为第一次登录用户生成登录凭证，为之前登录过的用户更新登录凭证
-        LoginTicket loginTicket = userService.login(user, rememberMe);
+        String loginTicket = userService.login(user, rememberMe);
         if (loginTicket == null) return new Result<>(Code.GET_ERR, false, "学号或密码错误");
         // 登录凭证作为cookie凭证发送给客户端
-        Cookie cookie = new Cookie("ticket", loginTicket.getTicket());
+        Cookie cookie = new Cookie("ticket", loginTicket);
         // 计算携带登录凭证的cookie有效时间（秒）
-        long expired = (loginTicket.getExpired().getTime() - new Date(System.currentTimeMillis()).getTime()) / 1000;
-        cookie.setMaxAge((int) expired);
-        cookie.setPath("/"); // 访问所有页面需要携带登录凭证
+        cookie.setMaxAge(RedisUtil.LOGIN_TICKET_EXPIRE_DAY * 24 * 60 * 60);
+        // 访问所有页面需要携带登录凭证
+        cookie.setPath("/");
         response.addCookie(cookie);
+        // 将用户信息存入线程本地变量
         hostHolder.setUser(user);
         return new Result<>(Code.SAVE_OK, true, "登录成功");
     }
 
     @Operation(summary = "退出登录", description = "将用户登录凭证的有效状态设置为不可用")
     @PutMapping("/logout")
-    public Result<Boolean> logout() {
-        User user = hostHolder.getUser();
-        if (user == null) return new Result<>(Code.UPDATE_ERR, false, "用户未登录");
-        loginTicketService.update(new LoginTicket(user.getStuId(), 0));
+    public Result<Boolean> logout(HttpServletRequest request) {
+        // 将用户登录凭证从redis中删除
+        userService.logout(CookieUtil.getValue(request, "ticket"));
         return new Result<>(Code.DELETE_OK, true);
     }
 

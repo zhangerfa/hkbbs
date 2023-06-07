@@ -4,7 +4,7 @@ import jakarta.annotation.Resource;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import site.zhangerfa.service.LikeService;
-import site.zhangerfa.util.RedisKeyUtil;
+import site.zhangerfa.util.RedisUtil;
 
 @Service
 public class LikeServiceImpl implements LikeService {
@@ -14,7 +14,7 @@ public class LikeServiceImpl implements LikeService {
     @Override
     public void like(String stuId, int entityType, int entityId) {
         // 判断该用户是否已经点赞
-        String userLikedSetKey = RedisKeyUtil.getUserLikedSetKey(entityType, entityId);
+        String userLikedSetKey = RedisUtil.getUserLikedSetKey(entityType, entityId);
         Boolean isMember = stringRedisTemplate.opsForSet().isMember(userLikedSetKey, stuId);
         if (isMember != null && isMember) {
             // 如果已经点赞，则取消点赞
@@ -27,14 +27,14 @@ public class LikeServiceImpl implements LikeService {
 
     @Override
     public int getLikedCount(int entityType, int entityId) {
-        String userLikedSetKey = RedisKeyUtil.getUserLikedSetKey(entityType, entityId);
+        String userLikedSetKey = RedisUtil.getUserLikedSetKey(entityType, entityId);
         return stringRedisTemplate.opsForSet().size(userLikedSetKey).intValue();
     }
 
     @Override
     public int getLikedStatus(String stuId, int entityType, int entityId) {
         // 判断该用户是否已经点赞
-        String userLikedSetKey = RedisKeyUtil.getUserLikedSetKey(entityType, entityId);
+        String userLikedSetKey = RedisUtil.getUserLikedSetKey(entityType, entityId);
         Boolean isMember = stringRedisTemplate.opsForSet().isMember(userLikedSetKey, stuId);
         return isMember != null && isMember ? 1 : 0;
     }

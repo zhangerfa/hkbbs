@@ -13,10 +13,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        // 设置放行路径
-        String[] excludePath = {"/**/*.css", "/**/*.png", "/**/*.jpg",
-                                "/**/*.svg", "/**/*.js"};
-        registry.addInterceptor(checkLoginInterceptor)
-                .excludePathPatterns(excludePath);
+        // 添加登录检测拦截器
+        registry.addInterceptor(checkLoginInterceptor);
     }
 }

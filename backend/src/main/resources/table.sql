@@ -1,5 +1,6 @@
 create database if not exists friends;
 use friends;
+
 CREATE TABLE `card` (
                         `id` int NOT NULL AUTO_INCREMENT,
                         `about_me` text NOT NULL COMMENT '关于我',
@@ -54,15 +55,6 @@ CREATE TABLE `image` (
                          PRIMARY KEY (`id`),
                          KEY `image_post_null_fk` (`entity_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='存储帖子中的图片'
-
-CREATE TABLE `login_ticket` (
-                                `stu_id` varchar(10) NOT NULL COMMENT '学号',
-                                `ticket` char(32) NOT NULL COMMENT '登录凭证（唯一标识符）',
-                                `status` int NOT NULL COMMENT '登录凭证状态： 1 可用， 0 不可用',
-                                `expired` timestamp NOT NULL COMMENT '登录凭证过期时间',
-                                PRIMARY KEY (`stu_id`),
-                                CONSTRAINT `login_ticket_ibfk_1` FOREIGN KEY (`stu_id`) REFERENCES `user` (`stu_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='登录凭证表'
 
 CREATE TABLE `manager` (
                            `stu_id` varchar(10) NOT NULL COMMENT '学号',
@@ -128,4 +120,3 @@ CREATE TABLE `user` (
                         `gender` int DEFAULT NULL COMMENT '性别: 0-男 1-女',
                         PRIMARY KEY (`stu_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3
-

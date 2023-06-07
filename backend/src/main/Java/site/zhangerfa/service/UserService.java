@@ -1,11 +1,9 @@
 package site.zhangerfa.service;
 
 import site.zhangerfa.controller.tool.Result;
-import site.zhangerfa.pojo.LoginTicket;
 import site.zhangerfa.pojo.User;
 
 import java.util.List;
-import java.util.Map;
 
 public interface UserService {
 
@@ -59,11 +57,10 @@ public interface UserService {
 
     /**
      * 检查指定学号的用户的输入密码、图像验证码是否正确
-     *      如果正确则为第一次登录用户生成登录凭证，为之前登录过的用户更新登录凭证
      * @param rememberMe 是否勾选记住密码
-     * @return 如果学号或密码错误返回null，否则返回登录凭证
+     * @return 如果学号或密码错误返回null，否则返回登录凭证码
      */
-    LoginTicket login(User user, boolean rememberMe);
+    String login(User user, boolean rememberMe);
 
     /**
      * 检查用户注册时传入的验证码是否正确
@@ -74,9 +71,29 @@ public interface UserService {
      */
     boolean checkCode(String code, String stuId);
 
+    /**
+     * 退出登录
+     * @param ticket
+     */
+    void logout(String ticket);
+
+    /**
+     * 获取用户总数
+     * @return
+     */
     Integer getUserCount();
 
+    /**
+     * 获取用户列表
+     * @param currentPage
+     * @param pageSize
+     * @return
+     */
     Result<List<User>> getUserList(int currentPage, int pageSize);
 
+    /**
+     * 获取用户性别比例
+     * @return
+     */
     String getGenderRatio();
 }
