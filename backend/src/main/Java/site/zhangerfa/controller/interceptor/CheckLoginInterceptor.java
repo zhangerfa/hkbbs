@@ -48,7 +48,7 @@ public class CheckLoginInterceptor implements HandlerInterceptor {
         webDataService.addPvForToday();
         // 注册、登录接口、API文档页面放行
         String url = request.getRequestURL().toString();
-        String[] pass = {"Code", "isExist", "login", "register", "doc", "swagger"};
+        String[] pass = {"Code", "isExist", "login", "register", "doc", "swagger", "css", "js"};
         for (String s : pass)
             if (url.contains(s)) return true;
         // 获取cookie中携带的登录凭证
@@ -61,7 +61,7 @@ public class CheckLoginInterceptor implements HandlerInterceptor {
                     RedisUtil.LOGIN_TICKET_EXPIRE_DAY, TimeUnit.MINUTES);
             // 将用户信息放入hostHolder中
             String stuId = stringRedisTemplate.opsForValue().get(loginTicketKey);
-            // 用户信息存在则方向
+            // 用户信息存在则放行
             if (stuId != null){
                 hostHolder.setUser(userService.getUserByStuId(stuId));
                 return true;
