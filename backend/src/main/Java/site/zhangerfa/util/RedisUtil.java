@@ -29,39 +29,37 @@ public class RedisUtil {
     /**
      * 被点赞指定用户的其他用户学号集合
      */
-    public static final String LIKE_USER_SET = "like:userSet:";
-
-    /**
-     * 被点赞指定实体的点赞数
-     */
-    public static final String USER_LIKED_COUNT = "like:count:";
+    public static final String LIKE_USER_SET_PREFIX = "likeUserSet:entityType:";
 
     public static String getRegisterCodeKey(String stuId){
         return LOGIN_CODE_PREFIX + stuId;
     }
 
     /**
-     * 获取被点赞指定用户的其他用户学号集合的key
-     * @param entityType 实体类型
-     * @param entityId 实体id
+     * 获取点赞指定实体的其他用户学号集合的key
      * @return
      */
-    public static String getUserLikedSetKey(int entityType, int entityId){
-        String entityTyeName = Constant.getEntityTyeName(entityType);
-        // like:userSet:entityType:entityId --> set(stuId)
-        return LIKE_USER_SET + entityTyeName + ":" + entityId;
+    public static String getLikeUserSetKey(int entityType, int entityId){
+        // likeUserSet:entityType:entityId --> set(stuId)
+        String entityTyeName;
+        // 帖子和树洞统一为post
+        if (entityType == Constant.ENTITY_TYPE_POST || entityType == Constant.ENTITY_TYPE_HOLE) {
+            entityTyeName = Constant.getEntityTyeName(Constant.ENTITY_TYPE_POST);
+        }else {
+            entityTyeName = Constant.getEntityTyeName(entityType);
+        }
+        return LIKE_USER_SET_PREFIX + entityTyeName + ":" + entityId;
     }
 
     /**
-     * 获取被点赞指定实体的点赞数的key
-     * @param entityType 实体类型
-     * @param entityId 实体id
+     * 获取点踩指定实体的其他用户学号集合的key
+     * @param entityType
+     * @param entityId
      * @return
      */
-    public static String getUserLikedCountKey(int entityType, int entityId) {
-        String entityTyeName = Constant.getEntityTyeName(entityType);
-        // like:count:entityType:entityId --> int
-        return USER_LIKED_COUNT + entityTyeName + ":" + entityId;
+    public static String getUnLikeUserSetKey(int entityType, int entityId){
+        // unLikeUserSet:entityType:entityId --> set(stuId)
+        return "un" + getLikeUserSetKey(entityType, entityId);
     }
 
     /**

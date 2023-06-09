@@ -23,6 +23,8 @@ public class Constant {
         }
         if (type == ENTITY_TYPE_COMMENT){
             return "comment";
+        } if (type == ENTITY_TYPE_CARD){
+            return "card";
         }
         throw new RuntimeException("传入实体类型不存在");
     }

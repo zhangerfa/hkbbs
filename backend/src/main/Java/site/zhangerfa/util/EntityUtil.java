@@ -63,7 +63,7 @@ public class EntityUtil {
     }
 
     /**
-     * 获取用户在不同类型帖子中的基本信息，包括昵称、头像URL
+     * 获取用户在不同类型实体中的基本信息，包括昵称、头像URL
      * @param postType 帖子类型
      * @param stuId 用户学号
      * @return

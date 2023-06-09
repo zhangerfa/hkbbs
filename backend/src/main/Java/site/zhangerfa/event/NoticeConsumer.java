@@ -46,7 +46,7 @@ public class NoticeConsumer {
         Notice notice = getNotice(record);
         if (notice == null) return;
         // 取消点赞不通知
-        int likedStatus = likeService.getLikedStatus(notice.getActionUserId(), notice.getEntityType(), notice.getEntityId());
+        int likedStatus = likeService.getLikeStatus(notice.getActionUserId(), notice.getEntityType(), notice.getEntityId());
         if (likedStatus == 0) return;
         // 如果点赞的是自己的实体，不通知
         if (notice.getActionUserId().equals(notice.getReceivingUserId())) return;

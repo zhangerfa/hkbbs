@@ -37,7 +37,7 @@ public class PostUtil {
             postInfo.setPosterName(userDTO.getUsername());
             postInfo.setPosterHeaderUrl(userDTO.getHeaderUrl());
             // 补充点赞数量
-            postInfo.setLikeNum(likeService.getLikedCount(post.getPostType(), post.getId()));
+            postInfo.setLikeNum(likeService.getLikeCount(post.getPostType(), post.getId()));
 
             postInfos.add(postInfo);
         }
@@ -57,7 +57,7 @@ public class PostUtil {
         if (post == null) return new Result<>(Code.GET_ERR, null, "您访问的帖子已被删除");
         PostDetails postDetails = new PostDetails(post);
         // 帖子点赞数量
-        postDetails.setLikeNum(likeService.getLikedCount(post.getPostType(), postId));
+        postDetails.setLikeNum(likeService.getLikeCount(post.getPostType(), postId));
         // 作者信息
         UserDTO userDTO = entityUtil.getUserDTO(post.getPostType(), post.getPosterId());
         postDetails.setPosterName(userDTO.getUsername());
@@ -109,7 +109,7 @@ public class PostUtil {
             Page page = pageUtil.generatePage();
             commentDetails.setPage(page);
             // 评论点赞数量
-            commentDetails.setLikeNum(likeService.getLikedCount(Constant.ENTITY_TYPE_COMMENT, comment.getId()));
+            commentDetails.setLikeNum(likeService.getLikeCount(Constant.ENTITY_TYPE_COMMENT, comment.getId()));
             // 子评论详细信息
             // 子评论集合
             int[] fromTo = pageUtil.getFromTo();
