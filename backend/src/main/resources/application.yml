@@ -38,9 +38,6 @@ spring:
     # 设置连接信息
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/friends
-  # 开发阶段关闭浏览器缓存
-  thymeleaf:
-    cache: false
   # 邮箱配置
   mail:
     default-encoding: utf-8
@@ -86,7 +83,7 @@ springdoc:
   group-configs:
     - group: 'hkbbs' # 定义一个文档 group
       # 注释文档包含的包列表
-      packages-to-scan: site.zhangerfa.controller, site.zhangerfa.pojo
+      packages-to-scan: site.zhangerfa.controller
       # 注释文档要包含的路径列表
       paths-to-match: '/**'
 
