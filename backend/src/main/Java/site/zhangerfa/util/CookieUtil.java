@@ -28,4 +28,17 @@ public class CookieUtil {
         }
         return null;
     }
+
+    /**
+     * 删除cookie
+     * @param name
+     * @param path
+     * @param response
+     */
+    public static void deleteCookie(String name, String path, jakarta.servlet.http.HttpServletResponse response){
+        Cookie cookie = new Cookie(name, null);
+        cookie.setMaxAge(0);
+        cookie.setPath(path);
+        response.addCookie(cookie);
+    }
 }

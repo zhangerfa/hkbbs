@@ -9,6 +9,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import site.zhangerfa.controller.tool.Code;
 import site.zhangerfa.service.UserService;
 import site.zhangerfa.service.WebDataService;
+import site.zhangerfa.util.CookieUtil;
 import site.zhangerfa.util.HostHolder;
 import site.zhangerfa.util.RedisUtil;
 
@@ -60,10 +61,13 @@ public class CheckLoginInterceptor implements HandlerInterceptor {
                     RedisUtil.LOGIN_TICKET_EXPIRE_DAY, TimeUnit.MINUTES);
             // 将用户信息放入hostHolder中
             String stuId = stringRedisTemplate.opsForValue().get(loginTicketKey);
-            // 如果没有学号信息，返回false
+            // 用户信息存在则方向
             if (stuId != null){
                 hostHolder.setUser(userService.getUserByStuId(stuId));
                 return true;
+            }else {
+                // 有登录凭证，但是没有学号信息，删除cookie中的登录凭证
+                CookieUtil.deleteCookie("ticket", "/", response);
             }
         }
         // 没有登录凭证，不放行，提示用户登录
