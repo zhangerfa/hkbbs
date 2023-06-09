@@ -72,13 +72,13 @@ public class EntityUtil {
         String username;
         String headerUrl;
         User user = userService.getUserByStuId(stuId);
-        if (postType == Constant.ENTITY_TYPE_POST){
-            username = user.getUsername();
-            headerUrl = user.getHeaderUrl();
-        }else if (postType == Constant.ENTITY_TYPE_HOLE) {
+        if (postType == Constant.ENTITY_TYPE_HOLE){
             username = holeNicknameService.getHoleNickname(0, stuId);
             headerUrl = "https://zhangerfa-1316526930.cos.ap-guangzhou.myqcloud.com/hkbbs/default.jpg";
-        }else return null;
+        }else{
+            username = user.getUsername();
+            headerUrl = user.getHeaderUrl();
+        }
         return new UserDTO(username, headerUrl);
     }
 }

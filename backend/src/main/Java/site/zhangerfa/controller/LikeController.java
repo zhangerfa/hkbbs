@@ -54,9 +54,9 @@ public class LikeController {
     }
 
     @Operation(summary = "查询点赞用户列表", description = "查询指定实体的点赞用户列表")
-    @GetMapping("/userList/{cardId}")
-    public Result<List<UserDTO>> getLikeUserListForCard(@PathVariable int cardId) {
-        List<UserDTO> likeUsers = likeService.getLikeUsers(Constant.ENTITY_TYPE_CARD, cardId);
+    @GetMapping("/userList")
+    public Result<List<UserDTO>> getLikeUserListForCard(int entityType, int entityI) {
+        List<UserDTO> likeUsers = likeService.getLikeUsers(entityType, entityI);
         return new Result<>(Code.GET_OK, likeUsers);
     }
 
