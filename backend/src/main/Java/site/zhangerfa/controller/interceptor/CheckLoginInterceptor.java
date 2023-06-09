@@ -60,8 +60,11 @@ public class CheckLoginInterceptor implements HandlerInterceptor {
                     RedisUtil.LOGIN_TICKET_EXPIRE_DAY, TimeUnit.MINUTES);
             // 将用户信息放入hostHolder中
             String stuId = stringRedisTemplate.opsForValue().get(loginTicketKey);
-            hostHolder.setUser(userService.getUserByStuId(stuId));
-            return true;
+            // 如果没有学号信息，返回false
+            if (stuId != null){
+                hostHolder.setUser(userService.getUserByStuId(stuId));
+                return true;
+            }
         }
         // 没有登录凭证，不放行，提示用户登录
         response.setContentType("application/json;charset=UTF-8");
