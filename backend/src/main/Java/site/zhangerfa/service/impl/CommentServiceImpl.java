@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import site.zhangerfa.dao.CommentMapper;
-import site.zhangerfa.pojo.Comment;
+import site.zhangerfa.entity.Comment;
 import site.zhangerfa.service.CommentService;
 import site.zhangerfa.Constant.Constant;
 import site.zhangerfa.util.HostHolder;

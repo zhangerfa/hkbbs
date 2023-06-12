@@ -7,9 +7,9 @@ import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
 import site.zhangerfa.Constant.Constant;
 import site.zhangerfa.controller.tool.Code;
-import site.zhangerfa.controller.tool.LikeDTO;
+import site.zhangerfa.controller.vo.LikeVo;
 import site.zhangerfa.controller.tool.Result;
-import site.zhangerfa.controller.tool.UserDTO;
+import site.zhangerfa.controller.vo.UserVo;
 import site.zhangerfa.service.LikeService;
 import site.zhangerfa.service.NoticeService;
 import site.zhangerfa.util.HostHolder;
@@ -29,7 +29,7 @@ public class LikeController {
 
     @Operation(summary = "点赞帖子", description = "调用此接口后改变当前登录用户对实体的点赞状态")
     @PutMapping("post/{postId}")
-    public Result<LikeDTO> likePost(int postType, @PathVariable int postId) {
+    public Result<LikeVo> likePost(int postType, @PathVariable int postId) {
         String stuId = hostHolder.getUser().getStuId();
         // 点赞
         likeService.like(postType, postId, stuId);
@@ -40,7 +40,7 @@ public class LikeController {
         // 查询当前用户对此实体的点赞状态
         int likeStatus = likeService.getLikeStatus(stuId, postType, postId);
         // 封装返回
-        return new Result<>(Code.UPDATE_OK, new LikeDTO(likeCount, likeStatus));
+        return new Result<>(Code.UPDATE_OK, new LikeVo(likeCount, likeStatus));
     }
 
     @Operation(summary = "点赞卡片", description = "更改当前用户对卡片的感兴趣或不感兴趣的状态")
@@ -55,8 +55,8 @@ public class LikeController {
 
     @Operation(summary = "查询点赞用户列表", description = "查询指定实体的点赞用户列表")
     @GetMapping("/userList")
-    public Result<List<UserDTO>> getLikeUserListForCard(int entityType, int entityI) {
-        List<UserDTO> likeUsers = likeService.getLikeUsers(entityType, entityI);
+    public Result<List<UserVo>> getLikeUserListForCard(int entityType, int entityI) {
+        List<UserVo> likeUsers = likeService.getLikeUsers(entityType, entityI);
         return new Result<>(Code.GET_OK, likeUsers);
     }
 

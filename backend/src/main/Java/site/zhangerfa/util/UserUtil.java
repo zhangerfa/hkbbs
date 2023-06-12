@@ -1,5 +1,8 @@
 package site.zhangerfa.util;
 
+import site.zhangerfa.entity.User;
+
+import java.util.Calendar;
 import java.util.regex.Pattern;
 
 /**
@@ -34,5 +37,22 @@ public class UserUtil {
     public static boolean isMatchRegex(String regex, String text){
         Pattern pattern = Pattern.compile(regex);
         return pattern.matcher(text).matches();
+    }
+
+    /**
+     * 由学号推出年级（如果本科毕业两年称为大六）
+     */
+    public static String getAge(User user){
+        StringBuilder age = new StringBuilder();
+        String stuId = user.getStuId();
+        switch (stuId.charAt(0)) {
+            case 'U' -> age.append("大");
+            case 'M' -> age.append("研");
+            case 'D' -> age.append("博");
+        }
+        // 目前是上学的第几年
+        int years = Calendar.getInstance().get(Calendar.YEAR) - Integer.parseInt(stuId.substring(1, 5));
+        age.append(years);
+        return age.toString();
     }
 }

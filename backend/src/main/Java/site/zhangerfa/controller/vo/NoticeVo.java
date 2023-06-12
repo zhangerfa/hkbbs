@@ -1,19 +1,19 @@
-package site.zhangerfa.controller.tool;
+package site.zhangerfa.controller.vo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import site.zhangerfa.pojo.Notice;
+import site.zhangerfa.entity.Notice;
 
 @Data
 @Schema(description = "谁对一个实体进行了什么动作" +
         "actionUsername + actionType + \"了您的\" + entityType + \"(\" +\n" +
         "        entityContent + \"):\" + actionContent" +
         "举例：东九小韭菜评论了您的帖子（今晚三国杀）:约呀")
-public class NoticeInfo {
+public class NoticeVo {
     @Schema(description = "通知Id")
     private int id;
     @Schema(description = "动作发起者")
-    private UserDTO actionUser;
+    private UserVo actionUser;
     @Schema(description = "动作类型，如评论，点赞等")
     private int actionType;
     @Schema(description = "被动作指向实体的类型，如树洞，评论等")
@@ -25,9 +25,9 @@ public class NoticeInfo {
     @Schema(description = "创建时间")
     private String createTime;
 
-    public NoticeInfo(){}
+    public NoticeVo(){}
 
-    public NoticeInfo(Notice notice){
+    public NoticeVo(Notice notice){
         id = notice.getId();
         createTime = notice.getCreateTime();
         actionType = notice.getActionType();

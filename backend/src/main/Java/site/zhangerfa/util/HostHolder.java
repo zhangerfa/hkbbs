@@ -1,7 +1,7 @@
 package site.zhangerfa.util;
 
 import org.springframework.stereotype.Component;
-import site.zhangerfa.pojo.User;
+import site.zhangerfa.entity.User;
 
 // 使用ThreadLocal实现每个线程有一个在服务器本地的空间
 // 对于每个客户端会话服务器使用一个单独线程处理

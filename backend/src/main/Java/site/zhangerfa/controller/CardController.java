@@ -10,7 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import site.zhangerfa.Constant.Goal;
 import site.zhangerfa.controller.tool.*;
-import site.zhangerfa.pojo.Card;
+import site.zhangerfa.controller.vo.CardVo;
+import site.zhangerfa.entity.Card;
 import site.zhangerfa.service.CardService;
 import site.zhangerfa.service.UserService;
 import site.zhangerfa.util.HostHolder;
@@ -83,11 +84,11 @@ public class CardController {
 
     @Operation(summary = "获取卡片", description = "获取指定id的卡片信息，包含其发布者的信息")
     @GetMapping("/{cardId}")
-    public Result<CardInfo> getCard(@PathVariable int cardId){
-        CardInfo cardInfo = cardService.getById(cardId);
-        if (cardInfo == null)
+    public Result<CardVo> getCard(@PathVariable int cardId){
+        CardVo cardVo = cardService.getById(cardId);
+        if (cardVo == null)
             return new Result<>(Code.GET_ERR, null, "您要查看的卡片不存在");
-        return new Result<>(Code.GET_OK, cardInfo);
+        return new Result<>(Code.GET_OK, cardVo);
     }
 
     @Operation(summary = "获取一页卡片", description = "获取一页卡片")
@@ -95,7 +96,7 @@ public class CardController {
     @Parameters({@Parameter(name = "currentPage", description = "当前页码"),
             @Parameter(name = "pageSize", description = "每页大小"),
             @Parameter(name = "posterId", description = "当要获取指定用户发送的卡片时，传入其学号，当要获取最新发布的一页帖子时，传入'0'")})
-    public Result<List<CardInfo>> getOnePageCards(int currentPage, int pageSize, String posterId, Goal goal){
+    public Result<List<CardVo>> getOnePageCards(int currentPage, int pageSize, String posterId, Goal goal){
         // 判断用户是否存在, 学号为0时，表示获取最新发布的一页卡片
         if (!posterId.equals("0") && !userService.isExist(posterId))
             return new Result<>(Code.GET_ERR, "用户不存在");

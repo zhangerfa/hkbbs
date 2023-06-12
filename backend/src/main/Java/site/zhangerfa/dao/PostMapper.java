@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
-import site.zhangerfa.pojo.Post;
+import site.zhangerfa.entity.Post;
 
 /**
  * 帖子的数据层接口

@@ -1,7 +1,6 @@
 package site.zhangerfa.service;
 
-import site.zhangerfa.pojo.Comment;
-import site.zhangerfa.pojo.Page;
+import site.zhangerfa.entity.Comment;
 
 import java.util.List;
 import java.util.Map;

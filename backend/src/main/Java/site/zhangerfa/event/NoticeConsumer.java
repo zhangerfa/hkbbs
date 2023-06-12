@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 import site.zhangerfa.dao.NoticeMapper;
-import site.zhangerfa.pojo.Notice;
+import site.zhangerfa.entity.Notice;
 import site.zhangerfa.Constant.Constant;
 import site.zhangerfa.service.LikeService;
 

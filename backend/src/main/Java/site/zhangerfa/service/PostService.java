@@ -1,8 +1,8 @@
 package site.zhangerfa.service;
 
 import site.zhangerfa.controller.tool.Result;
-import site.zhangerfa.pojo.Comment;
-import site.zhangerfa.pojo.Post;
+import site.zhangerfa.entity.Comment;
+import site.zhangerfa.entity.Post;
 
 import java.util.List;
 import java.util.Map;

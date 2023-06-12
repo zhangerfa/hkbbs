@@ -6,7 +6,7 @@ import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
 import site.zhangerfa.controller.tool.Code;
 import site.zhangerfa.controller.tool.Result;
-import site.zhangerfa.pojo.Manager;
+import site.zhangerfa.entity.Manager;
 import site.zhangerfa.service.ManagerService;
 
 import java.util.List;

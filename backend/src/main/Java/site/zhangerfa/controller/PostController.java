@@ -9,11 +9,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import site.zhangerfa.Constant.Constant;
 import site.zhangerfa.controller.tool.Code;
-import site.zhangerfa.controller.tool.PostDetails;
-import site.zhangerfa.controller.tool.PostInfo;
+import site.zhangerfa.controller.vo.PostDetailsVo;
+import site.zhangerfa.controller.vo.PostVo;
 import site.zhangerfa.controller.tool.Result;
-import site.zhangerfa.pojo.Comment;
-import site.zhangerfa.pojo.Post;
+import site.zhangerfa.entity.Comment;
+import site.zhangerfa.entity.Post;
 import site.zhangerfa.service.NoticeService;
 import site.zhangerfa.service.PostService;
 import site.zhangerfa.service.UserService;
@@ -56,8 +56,8 @@ public class PostController {
             @Parameter(name = "type", description = "要查询的类型：1-帖子，2-树洞")
     })
     @GetMapping("/posts/{stuId}")
-    public Result<List<PostInfo>> getOnePagePosts(int currentPage, int pageSize, int type,
-                                                  @PathVariable String stuId){
+    public Result<List<PostVo>> getOnePagePosts(int currentPage, int pageSize, int type,
+                                                @PathVariable String stuId){
         // 验证学号是否正确
         if (stuId == null || (!stuId.equals("0") && !userService.isExist(stuId)))
             return new Result<>(Code.GET_ERR, null, "学号错误");
@@ -68,8 +68,8 @@ public class PostController {
         Result<List<Post>> result = postService.getOnePagePosts(stuId, type, currentPage, pageSize);
         if (result.getCode() == Code.GET_ERR) return new Result<>(Code.GET_ERR, null, result.getMsg());
         // 补全发帖人信息
-        List<PostInfo> postInfos = postUtil.completePostInfo(result);
-        return new Result<>(Code.GET_OK, postInfos, "查询成功");
+        List<PostVo> postVos = postUtil.completePostInfo(result);
+        return new Result<>(Code.GET_OK, postVos, "查询成功");
     }
 
     @Operation(summary = "发布帖子或树洞", description = "传入标题和内容，图片是可选的，可以传入若干张图片")
@@ -109,8 +109,8 @@ public class PostController {
     @GetMapping("/details/{postId}")
     @Parameters({@Parameter(name = "currentPage", description = "当前页码"),
             @Parameter(name = "pageSize", description = "每页大小")})
-    public Result<PostDetails> getDetails(@PathVariable @Parameter(description = "帖子或树洞id") int postId,
-                                          int currentPage, int pageSize){
+    public Result<PostDetailsVo> getDetails(@PathVariable @Parameter(description = "帖子或树洞id") int postId,
+                                            int currentPage, int pageSize){
         return postUtil.getPostAndPosterDetails(postId, currentPage, pageSize);
     }
 

@@ -1,10 +1,10 @@
 package site.zhangerfa.service;
 
 import site.zhangerfa.controller.tool.Result;
-import site.zhangerfa.pojo.Card;
-import site.zhangerfa.pojo.Manager;
-import site.zhangerfa.pojo.Post;
-import site.zhangerfa.pojo.User;
+import site.zhangerfa.entity.Card;
+import site.zhangerfa.entity.Manager;
+import site.zhangerfa.entity.Post;
+import site.zhangerfa.entity.User;
 
 import java.util.List;
 import java.util.Map;

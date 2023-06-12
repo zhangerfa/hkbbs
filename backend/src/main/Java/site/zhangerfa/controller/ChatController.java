@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import site.zhangerfa.controller.tool.Code;
 import site.zhangerfa.controller.tool.Result;
-import site.zhangerfa.controller.tool.ChatInfo;
+import site.zhangerfa.controller.vo.ChatVo;
 import site.zhangerfa.service.ChatService;
 import site.zhangerfa.service.UserService;
 import site.zhangerfa.util.HostHolder;
@@ -46,13 +46,13 @@ public class ChatController {
     @GetMapping("/{chatToStuId}")
     @Parameters({@Parameter(name = "currentPage", description = "当前页码"),
             @Parameter(name = "pageSize", description = "每页大小")})
-    public Result<ChatInfo> getOnePageMessagesForChat(int currentPage, int pageSize,
-                                                      @PathVariable @Parameter(description = "聊天对象的学号") String chatToStuId){
+    public Result<ChatVo> getOnePageMessagesForChat(int currentPage, int pageSize,
+                                                    @PathVariable @Parameter(description = "聊天对象的学号") String chatToStuId){
         String stuId = hostHolder.getUser().getStuId();
         if (!userService.isExist(chatToStuId))
             return new Result<>(Code.GET_ERR, "聊天对象不存在");
-        ChatInfo chatInfo = chatService.selectOnePageMessagesForChat(stuId, chatToStuId, currentPage, pageSize);
-        return new Result<>(Code.GET_OK, chatInfo);
+        ChatVo chatVo = chatService.selectOnePageMessagesForChat(stuId, chatToStuId, currentPage, pageSize);
+        return new Result<>(Code.GET_OK, chatVo);
     }
 
     @Operation(summary = "获取当前用户的一页聊天列表",
@@ -61,10 +61,10 @@ public class ChatController {
     @GetMapping("/")
     @Parameters({@Parameter(name = "currentPage", description = "当前页码"),
             @Parameter(name = "pageSize", description = "每页大小")})
-    public Result<List<ChatInfo>> getLatestMessages(int currentPage, int pageSize){
+    public Result<List<ChatVo>> getLatestMessages(int currentPage, int pageSize){
         String stuId = hostHolder.getUser().getStuId();
-        List<ChatInfo> chatInfos = chatService.selectLatestMessages(stuId, currentPage, pageSize);
-        return new Result<>(Code.GET_OK, chatInfos);
+        List<ChatVo> chatVos = chatService.selectLatestMessages(stuId, currentPage, pageSize);
+        return new Result<>(Code.GET_OK, chatVos);
     }
 
     @Operation(summary = "发布一条文字消息")

@@ -1,7 +1,7 @@
 package site.zhangerfa.service;
 
 import site.zhangerfa.controller.tool.Result;
-import site.zhangerfa.pojo.Image;
+import site.zhangerfa.entity.Image;
 
 import java.util.List;
 

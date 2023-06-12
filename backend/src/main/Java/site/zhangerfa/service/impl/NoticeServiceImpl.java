@@ -7,9 +7,9 @@ import org.springframework.stereotype.Service;
 import site.zhangerfa.Constant.Constant;
 import site.zhangerfa.dao.NoticeMapper;
 import site.zhangerfa.event.NoticeProducer;
-import site.zhangerfa.pojo.Comment;
+import site.zhangerfa.entity.Comment;
 import site.zhangerfa.service.NoticeService;
-import site.zhangerfa.pojo.Notice;
+import site.zhangerfa.entity.Notice;
 import site.zhangerfa.util.NoticeUtil;
 
 import java.util.List;

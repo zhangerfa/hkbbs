@@ -8,10 +8,10 @@ import site.zhangerfa.dao.ManagerMapper;
 import site.zhangerfa.dao.PostMapper;
 import site.zhangerfa.dao.UserMapper;
 import site.zhangerfa.service.ManagerService;
-import site.zhangerfa.pojo.Card;
-import site.zhangerfa.pojo.Manager;
-import site.zhangerfa.pojo.Post;
-import site.zhangerfa.pojo.User;
+import site.zhangerfa.entity.Card;
+import site.zhangerfa.entity.Manager;
+import site.zhangerfa.entity.Post;
+import site.zhangerfa.entity.User;
 import site.zhangerfa.util.UserUtil;
 
 import java.util.List;

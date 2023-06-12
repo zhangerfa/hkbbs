@@ -7,9 +7,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
 import site.zhangerfa.controller.tool.Code;
-import site.zhangerfa.controller.tool.NoticeInfo;
+import site.zhangerfa.controller.vo.NoticeVo;
 import site.zhangerfa.controller.tool.Result;
-import site.zhangerfa.pojo.Notice;
+import site.zhangerfa.entity.Notice;
 import site.zhangerfa.service.NoticeService;
 import site.zhangerfa.util.HostHolder;
 import site.zhangerfa.util.NoticeUtil;
@@ -36,15 +36,15 @@ public class NoticeController {
             "举例：东九小韭菜评论了您的帖子（今晚三国杀）:约呀")
     @Parameters({@Parameter(name = "currentPage", description = "当前页码"),
             @Parameter(name = "pageSize", description = "每页大小")})
-    public Result<List<NoticeInfo>> getNotices(int currentPage, int pageSize){
+    public Result<List<NoticeVo>> getNotices(int currentPage, int pageSize){
         // 判断是否登录
         if (hostHolder.getUser() == null) return new Result<>(Code.GET_ERR, null, "用户未登录");
         String stuId = hostHolder.getUser().getStuId();
         // 获取未读通知数量
         List<Notice> notices = noticeService.getUnreadNoticesForUser(stuId, -1, currentPage, pageSize);
         // 补充通知信息
-        List<NoticeInfo> noticeInfos = noticeUtil.getNoticeInfos(notices);
-        return new Result<>(Code.GET_OK, noticeInfos, "查询成功");
+        List<NoticeVo> noticeVos = noticeUtil.getNoticeInfos(notices);
+        return new Result<>(Code.GET_OK, noticeVos, "查询成功");
     }
 
     @Operation(summary = "通知已读", description = "传入的通知都将被标记为已读")

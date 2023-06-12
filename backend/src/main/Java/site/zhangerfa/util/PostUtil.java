@@ -4,9 +4,13 @@ import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
 import site.zhangerfa.Constant.Constant;
 import site.zhangerfa.controller.tool.*;
-import site.zhangerfa.pojo.Comment;
-import site.zhangerfa.pojo.Page;
-import site.zhangerfa.pojo.Post;
+import site.zhangerfa.controller.vo.CommentDetailsVo;
+import site.zhangerfa.controller.vo.PostDetailsVo;
+import site.zhangerfa.controller.vo.PostVo;
+import site.zhangerfa.controller.vo.UserVo;
+import site.zhangerfa.entity.Comment;
+import site.zhangerfa.entity.Page;
+import site.zhangerfa.entity.Post;
 import site.zhangerfa.service.*;
 
 import java.util.ArrayList;
@@ -28,20 +32,19 @@ public class PostUtil {
      * @param result
      * @return
      */
-    public List<PostInfo> completePostInfo(Result<List<Post>> result){
-        List<PostInfo> postInfos = new ArrayList<>();
+    public List<PostVo> completePostInfo(Result<List<Post>> result){
+        List<PostVo> postVos = new ArrayList<>();
         for (Post post : result.getData()) {
-            PostInfo postInfo = new PostInfo(post);
+            PostVo postVo = new PostVo(post);
             // 补充发帖人信息
-            UserDTO userDTO = entityUtil.getUserDTO(post.getPostType(), post.getPosterId());
-            postInfo.setPosterName(userDTO.getUsername());
-            postInfo.setPosterHeaderUrl(userDTO.getHeaderUrl());
+            UserVo userVo = entityUtil.getUserVo(post.getPostType(), post.getPosterId());
+            postVo.setPoster(userVo);
             // 补充点赞数量
-            postInfo.setLikeNum(likeService.getLikeCount(post.getPostType(), post.getId()));
+            postVo.setLikeNum(likeService.getLikeCount(post.getPostType(), post.getId()));
 
-            postInfos.add(postInfo);
+            postVos.add(postVo);
         }
-        return postInfos;
+        return postVos;
     }
 
     /**
@@ -51,30 +54,29 @@ public class PostUtil {
      * @param pageSize 当前页展示评论数量
      * @return
      */
-    public Result<PostDetails> getPostAndPosterDetails(int postId, int currentPage, int pageSize){
+    public Result<PostDetailsVo> getPostAndPosterDetails(int postId, int currentPage, int pageSize){
         // 帖子信息
         Post post = postService.getPostById(postId);
         if (post == null) return new Result<>(Code.GET_ERR, null, "您访问的帖子已被删除");
-        PostDetails postDetails = new PostDetails(post);
+        PostDetailsVo postDetailsVo = new PostDetailsVo(post);
         // 帖子点赞数量
-        postDetails.setLikeNum(likeService.getLikeCount(post.getPostType(), postId));
+        postDetailsVo.setLikeNum(likeService.getLikeCount(post.getPostType(), postId));
         // 作者信息
-        UserDTO userDTO = entityUtil.getUserDTO(post.getPostType(), post.getPosterId());
-        postDetails.setPosterName(userDTO.getUsername());
-        postDetails.setPosterHeaderUrl(userDTO.getHeaderUrl());
+        UserVo userVo = entityUtil.getUserVo(post.getPostType(), post.getPosterId());
+        postDetailsVo.setPoster(userVo);
         // 分页信息
         PageUtil pageUtil = new PageUtil(currentPage, pageSize,
                 commentService.getNumOfCommentsForEntity(Constant.ENTITY_TYPE_POST, postId));
         Page page = pageUtil.generatePage();
-        postDetails.setPage(page);
+        postDetailsVo.setPage(page);
         // 获取评论集合
         int[] fromTo = pageUtil.getFromTo();
         List<Comment> comments = postService.getComments(Constant.ENTITY_TYPE_POST, postId, fromTo[0], fromTo[1]);
         // 获取每个评论的详细信息
-        List<CommentDetails> commentsDetails;
+        List<CommentDetailsVo> commentsDetails;
         commentsDetails = getCommentsDetails(comments, page.getPageSize(), postId);
-        postDetails.setCommentDetails(commentsDetails);
-        return new Result<>(Code.GET_OK, postDetails, "查询成功");
+        postDetailsVo.setCommentDetailVos(commentsDetails);
+        return new Result<>(Code.GET_OK, postDetailsVo, "查询成功");
     }
 
     /**
@@ -84,42 +86,42 @@ public class PostUtil {
      * @param pageSize
      * @return
      */
-    private List<CommentDetails> getCommentsDetails(List<Comment> comments, int pageSize, int postId){
+    private List<CommentDetailsVo> getCommentsDetails(List<Comment> comments, int pageSize, int postId){
         return getCommentsDetails(comments, 0, pageSize, postId);
     }
 
-    private List<CommentDetails> getCommentsDetails(List<Comment> comments, int deep, int pageSize, int postId){
+    private List<CommentDetailsVo> getCommentsDetails(List<Comment> comments, int deep, int pageSize, int postId){
         if (comments == null || comments.size() == 0){
             return new ArrayList<>();
         }
-        List<CommentDetails> res = new ArrayList<>();
+        List<CommentDetailsVo> res = new ArrayList<>();
         for (Comment comment : comments) {
             // 评论信息
-            CommentDetails commentDetails = new CommentDetails(comment);
+            CommentDetailsVo commentDetailsVo = new CommentDetailsVo(comment);
             // 记录当前评论深度
-            commentDetails.setDeep(deep);
+            commentDetailsVo.setDeep(deep);
             // 评论发布者信息
-            UserDTO userDTO = entityUtil.getUserDTO(comment.getOwnerType(), comment.getPosterId());
-            commentDetails.setPosterName(userDTO.getUsername());
-            commentDetails.setPosterHeaderUrl(userDTO.getHeaderUrl());
+            UserVo userVo = entityUtil.getUserVo(comment.getOwnerType(), comment.getPosterId());
+            commentDetailsVo.setPosterName(userVo.getUsername());
+            commentDetailsVo.setPosterHeaderUrl(userVo.getHeaderUrl());
             // 分页信息
             PageUtil pageUtil = new PageUtil(1, pageSize,
                     commentService.getNumOfCommentsForEntity(
                             Constant.ENTITY_TYPE_COMMENT, comment.getId()));
             Page page = pageUtil.generatePage();
-            commentDetails.setPage(page);
+            commentDetailsVo.setPage(page);
             // 评论点赞数量
-            commentDetails.setLikeNum(likeService.getLikeCount(Constant.ENTITY_TYPE_COMMENT, comment.getId()));
+            commentDetailsVo.setLikeNum(likeService.getLikeCount(Constant.ENTITY_TYPE_COMMENT, comment.getId()));
             // 子评论详细信息
             // 子评论集合
             int[] fromTo = pageUtil.getFromTo();
             List<Comment> subComments = commentService.getCommentsForEntity(Constant.ENTITY_TYPE_COMMENT,
                     comment.getId(), fromTo[0], fromTo[1]);
             // 获取子评论的详细信息
-            List<CommentDetails> subCommentsDetails = getCommentsDetails(subComments, deep + 1, pageSize);
-            commentDetails.setCommentDetails(subCommentsDetails);
+            List<CommentDetailsVo> subCommentsDetails = getCommentsDetails(subComments, deep + 1, pageSize);
+            commentDetailsVo.setCommentDetailVos(subCommentsDetails);
 
-            res.add(commentDetails);
+            res.add(commentDetailsVo);
         }
         return res;
     }

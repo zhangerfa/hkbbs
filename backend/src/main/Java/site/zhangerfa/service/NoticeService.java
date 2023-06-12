@@ -1,7 +1,7 @@
 package site.zhangerfa.service;
 
-import site.zhangerfa.pojo.Comment;
-import site.zhangerfa.pojo.Notice;
+import site.zhangerfa.entity.Comment;
+import site.zhangerfa.entity.Notice;
 
 import java.util.List;
 

@@ -1,7 +1,7 @@
 package site.zhangerfa.service;
 
 import site.zhangerfa.controller.tool.Result;
-import site.zhangerfa.pojo.User;
+import site.zhangerfa.entity.User;
 
 import java.util.List;
 

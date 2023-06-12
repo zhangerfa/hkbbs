@@ -3,7 +3,7 @@ package site.zhangerfa.dao;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Update;
-import site.zhangerfa.pojo.Message;
+import site.zhangerfa.entity.Message;
 
 @Mapper
 public interface MessageMapper extends BaseMapper<Message> {

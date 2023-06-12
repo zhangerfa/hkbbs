@@ -1,16 +1,16 @@
-package site.zhangerfa.controller.tool;
+package site.zhangerfa.controller.vo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import site.zhangerfa.pojo.Comment;
-import site.zhangerfa.pojo.Page;
+import site.zhangerfa.entity.Comment;
+import site.zhangerfa.entity.Page;
 
 import java.util.Date;
 import java.util.List;
 
 @Data
 @Schema(description = "封装评论的详细数据，包括评论内容，发布者信息，评论信息，评论的分页信息")
-public class CommentDetails {
+public class CommentDetailsVo {
     @Schema(description = "评论Id")
     private int id;
     @Schema(description = "内容")
@@ -22,7 +22,7 @@ public class CommentDetails {
     @Schema(description = "发布者头像url")
     private String posterHeaderUrl;
     @Schema(description = "评论详细信息集合")
-    private List<CommentDetails> commentDetails;
+    private List<CommentDetailsVo> commentDetailVos;
     @Schema(description = "评论深度")
     private int deep;
     @Schema(description = "点赞数量")
@@ -30,9 +30,9 @@ public class CommentDetails {
     @Schema(description = "评论中评论的分页信息")
     private Page page;
 
-    public CommentDetails(){}
+    public CommentDetailsVo(){}
 
-    public CommentDetails(Comment comment){
+    public CommentDetailsVo(Comment comment){
         id = comment.getId();
         content = comment.getContent();
         createTime = comment.getCreateTime();

@@ -1,4 +1,4 @@
-package site.zhangerfa.pojo;
+package site.zhangerfa.entity;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonIgnore;

@@ -3,7 +3,7 @@ package site.zhangerfa.dao;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
-import site.zhangerfa.pojo.Chat;
+import site.zhangerfa.entity.Chat;
 
 @Mapper
 public interface ChatMapper extends BaseMapper<Chat> {

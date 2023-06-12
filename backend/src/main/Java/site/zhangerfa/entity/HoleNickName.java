@@ -1,11 +1,8 @@
-package site.zhangerfa.pojo;
+package site.zhangerfa.entity;
 
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import org.apache.ibatis.annotations.Arg;
-import org.apache.ibatis.annotations.ConstructorArgs;
 
 @Schema(description = "树洞中用户的匿名昵称")
 @TableName("hole_nickname")

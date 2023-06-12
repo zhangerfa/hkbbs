@@ -3,7 +3,7 @@ package site.zhangerfa.service.impl;
 import jakarta.annotation.Resource;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
-import site.zhangerfa.controller.tool.UserDTO;
+import site.zhangerfa.controller.vo.UserVo;
 import site.zhangerfa.service.LikeService;
 import site.zhangerfa.util.EntityUtil;
 import site.zhangerfa.util.RedisUtil;
@@ -56,15 +56,15 @@ public class LikeServiceImpl implements LikeService {
     }
 
     @Override
-    public List<UserDTO> getLikeUsers(int entityType, int entityId) {
+    public List<UserVo> getLikeUsers(int entityType, int entityId) {
         String likeUserSetKey = RedisUtil.getLikeUserSetKey(entityType, entityId);
         // 获取点赞用户的id集合
         Set<String> stuIds = stringRedisTemplate.opsForSet().members(likeUserSetKey);
         // 根据id查询用户信息
         if (stuIds == null) return null;
-        List<UserDTO> res = new ArrayList<>(stuIds.size());
+        List<UserVo> res = new ArrayList<>(stuIds.size());
         for (String stuId : stuIds) {
-            res.add(entityUtil.getUserDTO(entityType, stuId));
+            res.add(entityUtil.getUserVo(entityType, stuId));
         }
         return res;
     }

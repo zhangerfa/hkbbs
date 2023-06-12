@@ -1,6 +1,6 @@
 package site.zhangerfa.service;
 
-import site.zhangerfa.controller.tool.UserDTO;
+import site.zhangerfa.controller.vo.UserVo;
 
 import java.util.List;
 
@@ -40,5 +40,5 @@ public interface LikeService {
      */
     int getLikeStatus(String stuId, int entityType, int entityId);
 
-    List<UserDTO> getLikeUsers(int entityType, int entityId);
+    List<UserVo> getLikeUsers(int entityType, int entityId);
 }

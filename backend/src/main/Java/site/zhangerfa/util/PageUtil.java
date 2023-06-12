@@ -1,7 +1,7 @@
 package site.zhangerfa.util;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import site.zhangerfa.pojo.Page;
+import site.zhangerfa.entity.Page;
 
 /**
  * 分页数据处理工具类

@@ -1,7 +1,7 @@
 package site.zhangerfa.service;
 
-import site.zhangerfa.controller.tool.CardInfo;
-import site.zhangerfa.pojo.Card;
+import site.zhangerfa.controller.vo.CardVo;
+import site.zhangerfa.entity.Card;
 
 import java.util.List;
 
@@ -32,7 +32,7 @@ public interface CardService {
      * @param id
      * @return
      */
-    CardInfo getById(int id);
+    CardVo getById(int id);
 
     /**
      * 获取一页卡片
@@ -40,7 +40,7 @@ public interface CardService {
      * @param goal 当传入-1时查询所有类型的卡片，否则查询指定类型的卡片
      * @return
      */
-    List<CardInfo> getOnePageCards(String posterId, int goal, int currentPage, int pageSize);
+    List<CardVo> getOnePageCards(String posterId, int goal, int currentPage, int pageSize);
 
     /**
      * 获取卡片总数

@@ -9,7 +9,7 @@ import org.springframework.util.DigestUtils;
 import site.zhangerfa.controller.tool.Code;
 import site.zhangerfa.controller.tool.Result;
 import site.zhangerfa.dao.UserMapper;
-import site.zhangerfa.pojo.User;
+import site.zhangerfa.entity.User;
 import site.zhangerfa.service.UserService;
 import site.zhangerfa.util.MailClient;
 import site.zhangerfa.util.RedisUtil;

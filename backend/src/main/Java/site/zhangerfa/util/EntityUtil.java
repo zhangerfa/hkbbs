@@ -3,8 +3,8 @@ package site.zhangerfa.util;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
 import site.zhangerfa.Constant.Constant;
-import site.zhangerfa.controller.tool.UserDTO;
-import site.zhangerfa.pojo.User;
+import site.zhangerfa.controller.vo.UserVo;
+import site.zhangerfa.entity.User;
 import site.zhangerfa.service.*;
 
 @Component
@@ -42,7 +42,7 @@ public class EntityUtil {
      * @param entityId 实体id
      * @return
      */
-    public UserDTO getOwnerInfo(int entityType, int entityId) {
+    public UserVo getOwnerInfo(int entityType, int entityId) {
         // 获取实体所有者学号
         String ownerStuId = getOwnerStuId(entityType, entityId);
         // 如果实体为树洞，或如果实体为评论且评论属于树洞，评论者信息改为匿名
@@ -59,7 +59,7 @@ public class EntityUtil {
             username = userService.getUserByStuId(ownerStuId).getUsername();
             headerUrl = userService.getUserByStuId(ownerStuId).getHeaderUrl();
         }
-        return new UserDTO(username, headerUrl);
+        return new UserVo(username, headerUrl);
     }
 
     /**
@@ -68,7 +68,7 @@ public class EntityUtil {
      * @param stuId 用户学号
      * @return
      */
-    public UserDTO getUserDTO(int postType, String stuId) {
+    public UserVo getUserVo(int postType, String stuId) {
         String username;
         String headerUrl;
         User user = userService.getUserByStuId(stuId);
@@ -79,6 +79,15 @@ public class EntityUtil {
             username = user.getUsername();
             headerUrl = user.getHeaderUrl();
         }
-        return new UserDTO(username, headerUrl);
+        return new UserVo(username, headerUrl);
+    }
+
+    /**
+     * 将user对象转换为UserVo对象
+     * @param user
+     * @return
+     */
+    public static UserVo getUserVo(User user){
+        return new UserVo(user.getUsername(), user.getHeaderUrl());
     }
 }

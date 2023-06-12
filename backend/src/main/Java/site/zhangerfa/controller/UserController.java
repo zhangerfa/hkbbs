@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import site.zhangerfa.controller.tool.Code;
 import site.zhangerfa.controller.tool.Result;
-import site.zhangerfa.pojo.User;
+import site.zhangerfa.entity.User;
 import site.zhangerfa.service.UserService;
 import site.zhangerfa.util.*;
 

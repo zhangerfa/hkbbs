@@ -7,7 +7,7 @@ import site.zhangerfa.controller.tool.Code;
 import site.zhangerfa.controller.tool.Result;
 import site.zhangerfa.dao.ImageMapper;
 import site.zhangerfa.service.ImageService;
-import site.zhangerfa.pojo.Image;
+import site.zhangerfa.entity.Image;
 
 import java.util.List;
 

@@ -3,10 +3,10 @@ package site.zhangerfa.util;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
 import site.zhangerfa.Constant.Constant;
-import site.zhangerfa.controller.tool.NoticeInfo;
-import site.zhangerfa.controller.tool.UserDTO;
-import site.zhangerfa.pojo.Comment;
-import site.zhangerfa.pojo.Notice;
+import site.zhangerfa.controller.vo.NoticeVo;
+import site.zhangerfa.controller.vo.UserVo;
+import site.zhangerfa.entity.Comment;
+import site.zhangerfa.entity.Notice;
 import site.zhangerfa.service.CommentService;
 import site.zhangerfa.service.PostService;
 
@@ -59,28 +59,28 @@ public class NoticeUtil {
      * @param notices
      * @return
      */
-    public List<NoticeInfo> getNoticeInfos(List<Notice> notices){
-        List<NoticeInfo> noticeInfos = new ArrayList<>();
+    public List<NoticeVo> getNoticeInfos(List<Notice> notices){
+        List<NoticeVo> noticeVos = new ArrayList<>();
         for (Notice notice : notices) {
-            NoticeInfo noticeInfo = new NoticeInfo(notice);
-            noticeInfos.add(noticeInfo);
+            NoticeVo noticeVo = new NoticeVo(notice);
+            noticeVos.add(noticeVo);
             // 动作发出者信息
-            UserDTO userDTO = entityUtil.getUserDTO(notice.getOwnerType(), notice.getActionUserId());
-            noticeInfo.setActionUser(userDTO);
+            UserVo userVo = entityUtil.getUserVo(notice.getOwnerType(), notice.getActionUserId());
+            noticeVo.setActionUser(userVo);
             // 被动作指向实体的类型
-            noticeInfo.setEntityType(Constant.getEntityTyeName(notice.getEntityType()));
+            noticeVo.setEntityType(Constant.getEntityTyeName(notice.getEntityType()));
             // 被动作指向实体的内容，如果是帖子为标题，评论则为内容
             if (notice.getEntityType() == Constant.ENTITY_TYPE_COMMENT){
-                noticeInfo.setEntityContent(commentService.getCommentById(notice.getEntityId()).getContent());
+                noticeVo.setEntityContent(commentService.getCommentById(notice.getEntityId()).getContent());
             }else {
-                noticeInfo.setEntityContent(postService.getPostById(notice.getEntityId()).getTitle());
+                noticeVo.setEntityContent(postService.getPostById(notice.getEntityId()).getTitle());
             }
             // 动作内容
             if (notice.getActionType() == Constant.ACTION_COMMENT){
                 Comment comment = commentService.getCommentById(notice.getActionId());
-                noticeInfo.setActionContent(comment.getContent());
+                noticeVo.setActionContent(comment.getContent());
             }
             }
-        return noticeInfos;
+        return noticeVos;
     }
 }

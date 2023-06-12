@@ -4,7 +4,7 @@ import com.alibaba.fastjson2.JSON;
 import jakarta.annotation.Resource;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
-import site.zhangerfa.pojo.Notice;
+import site.zhangerfa.entity.Notice;
 
 /**
  * 事件生产者，用于发布系统通知
