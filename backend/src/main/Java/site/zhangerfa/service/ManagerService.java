@@ -31,12 +31,6 @@ public interface ManagerService {
     List<Manager> getManagerList();
 
     /**
-     * 获取访问量
-     * @return
-     */
-    Integer getPv();
-
-    /**
      * 获取用户数量
      * @return
      */

@@ -44,8 +44,6 @@ public class CheckLoginInterceptor implements HandlerInterceptor {
     public boolean preHandle(jakarta.servlet.http.HttpServletRequest request,
                              jakarta.servlet.http.HttpServletResponse response,
                              Object handler) throws Exception {
-        // 访问量加一
-        webDataService.addPvForToday();
         // 注册、登录接口、API文档页面放行
         String url = request.getRequestURL().toString();
         String[] pass = {"Code", "isExist", "login", "register", "doc", "swagger", "css", "js"};
@@ -64,6 +62,9 @@ public class CheckLoginInterceptor implements HandlerInterceptor {
             // 用户信息存在则放行
             if (stuId != null){
                 hostHolder.setUser(userService.getUserByStuId(stuId));
+                // 统计网站访问量
+                webDataService.addPv();
+                webDataService.addUv(stuId);
                 return true;
             }else {
                 // 有登录凭证，但是没有学号信息，删除cookie中的登录凭证

@@ -8,6 +8,7 @@ import site.zhangerfa.controller.tool.Code;
 import site.zhangerfa.controller.tool.Result;
 import site.zhangerfa.entity.Manager;
 import site.zhangerfa.service.ManagerService;
+import site.zhangerfa.service.WebDataService;
 
 import java.util.List;
 
@@ -17,6 +18,8 @@ import java.util.List;
 public class ManagerController {
     @Resource
     private ManagerService managerService;
+    @Resource
+    private WebDataService webDataService;
 
 
     @Operation(summary = "添加管理员", description = "添加管理员")
@@ -39,9 +42,15 @@ public class ManagerController {
         return new Result<>(code, managerList);
     }
 
-    @Operation(summary = "获取今天访问量", description = "获取今天访问量")
+    @Operation(summary = "获取今日PV", description = "获取今日PV数")
     @GetMapping("/pv")
     public Result<Integer> getPvForToday(){
-        return new Result<>(Code.GET_OK, managerService.getPv());
+        return new Result<>(Code.GET_OK, webDataService.getPv());
+    }
+
+    @Operation(summary = "获取今日UV", description = "获取今日UV数")
+    @GetMapping("/uv")
+    public Result<Integer> getUvForToday(){
+        return new Result<>(Code.GET_OK, webDataService.getUv());
     }
 }

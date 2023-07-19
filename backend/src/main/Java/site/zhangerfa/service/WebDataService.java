@@ -5,13 +5,26 @@ package site.zhangerfa.service;
  */
 public interface WebDataService {
     /**
-     * 获取网站今日访问量
-     * @return 网站访问量
+     * pv+1
+     * @param
+     * @return
      */
-    public int getPv();
+    void addPv();
 
     /**
-     * 增加网站今日访问量
+     * 获取访问量
+     * @return
      */
-    public void addPvForToday();
+    Integer getPv();
+
+    /**
+     * 获取访客数量
+     * @return
+     */
+    Integer getUv();
+
+    /**
+     * 增加访问量
+     */
+    void addUv(String stuId);
 }

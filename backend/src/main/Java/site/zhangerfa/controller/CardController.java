@@ -18,9 +18,7 @@ import site.zhangerfa.util.HostHolder;
 import site.zhangerfa.util.ImgShackUtil;
 import site.zhangerfa.util.UserUtil;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @Tag(name = "卡片")
