@@ -8,6 +8,8 @@ import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import site.zhangerfa.Constant.Constant;
+import site.zhangerfa.controller.in.CommentIn;
+import site.zhangerfa.controller.in.PostIn;
 import site.zhangerfa.controller.tool.Code;
 import site.zhangerfa.controller.vo.PostDetailsVo;
 import site.zhangerfa.controller.vo.PostVo;
@@ -49,36 +51,13 @@ public class PostController {
         return new Result<>(result? Code.DELETE_OK: Code.DELETE_ERR, result, (String) map.get("msg"));
     }
 
-    @Operation(summary = "获取一页帖子或树洞", description = "返回一页帖子，包含id,标题，内容和作者id，发帖时间，评论数量，热度")
-    @Parameters({@Parameter(name = "currentPage", description = "当前页码"),
-            @Parameter(name = "pageSize", description = "每页大小"),
-            @Parameter(name = "stuId", description = "当要获取指定用户发送的帖子时，传入其学号，当要获取最新发布的一页帖子时，传入'0'"),
-            @Parameter(name = "type", description = "要查询的类型：1-帖子，2-树洞")
-    })
-    @GetMapping("/posts/{stuId}")
-    public Result<List<PostVo>> getOnePagePosts(int currentPage, int pageSize, int type,
-                                                @PathVariable String stuId){
-        // 验证学号是否正确
-        if (stuId == null || (!stuId.equals("0") && !userService.isExist(stuId)))
-            return new Result<>(Code.GET_ERR, null, "学号错误");
-        // 验证帖子类型是否正确
-        if (!postUtil.isPostTypeValid(type))
-            return new Result<>(Code.GET_ERR, "帖子类型错误");
-        // 查询帖子基本信息
-        Result<List<Post>> result = postService.getOnePagePosts(stuId, type, currentPage, pageSize);
-        if (result.getCode() == Code.GET_ERR) return new Result<>(Code.GET_ERR, null, result.getMsg());
-        // 补全发帖人信息
-        List<PostVo> postVos = postUtil.completePostInfo(result);
-        return new Result<>(Code.GET_OK, postVos, "查询成功");
-    }
-
     @Operation(summary = "发布帖子或树洞", description = "传入标题和内容，图片是可选的，可以传入若干张图片")
     @PostMapping(value = "/posts/")
-    @Parameters({@Parameter(name = "title", description = "标题", required = true),
-            @Parameter(name = "content", description = "内容", required = true),
-            @Parameter(name = "type", description = "发布类型：1-帖子，2-树洞")})
-    public Result<Boolean> addPost(String title, String content, int type,
-                                   @RequestPart(required = false)@Parameter(description = "图片集合，可选") List<MultipartFile> images){
+    public Result<Boolean> addPost(@RequestBody PostIn postIn){
+        String title = postIn.getTitle();
+        String content = postIn.getContent();
+        List<MultipartFile> images = postIn.getImages();
+        int type = postIn.getPostType();
         // 验证学号是否登录
         if (hostHolder.getUser() == null)
             return new Result<>(Code.SAVE_ERR, false, "用户未登录");
@@ -116,21 +95,48 @@ public class PostController {
 
     @Operation(summary = "发布评论（包括对评论评论）", description = "当前登录用户为指定帖子发布一条评论。需要传入被评论实体的类型和id，以及被评论实体所属的帖子id")
     @PostMapping("/posts/comment")
-    @Parameters({@Parameter(name = "entityType", description = "被评论实体的类型"),
-                @Parameter(name = "entityId", description = "被评论实体的id"),
-                @Parameter(name = "content", description = "评论内容"),
-                @Parameter(name = "postId", description = "被评论实体所属帖子或树洞的id")})
-    public Result<Boolean> addComment(int entityType, int entityId, String content, int postId){
+    public Result<Boolean> addComment(@RequestBody CommentIn commentIn){
         // 增加评论
-        Comment comment = new Comment(entityType, entityId, content);
-        postService.addComment(comment, postId);
+        Comment comment = new Comment(commentIn.getEntity(), commentIn.getContent());
+        postService.addComment(comment, commentIn.getPostId());
         // 发布评论通知
         noticeService.addCommentNotice(comment);
         return new Result<>(Code.SAVE_OK, true, "发布成功");
     }
 
-    @Operation(summary = "获取指定用户的帖子或树洞数量", description = "返回指定用户的帖子或树洞数量，以map形式返回，key为postCount或holeCount")
+    // ---------------------------- 以下接口部分或全部功能需要管理员权限才可以调用
+    @Operation(summary = "获取一页帖子或树洞",
+            description = "返回一页帖子，包含id,标题，内容和作者id，发帖时间，评论数量，热度" +
+                    "当要获取最新发布的一页帖子时，传入'0'" +
+                    "管理员可以传入指定学号，获取指定用户发送的帖子时")
+    @Parameters({@Parameter(name = "currentPage", description = "当前页码"),
+            @Parameter(name = "pageSize", description = "每页大小"),
+            @Parameter(name = "stuId", description = "当要获取指定用户发送的帖子时，传入其学号，当要获取最新发布的一页帖子时，传入'0'"),
+            @Parameter(name = "type", description = "要查询的类型：1-帖子，2-树洞")
+    })
+    @GetMapping("/posts/{stuId}")
+    public Result<List<PostVo>> getOnePagePosts(int currentPage, int pageSize, int type,
+                                                @PathVariable String stuId){
+        // 验证学号是否正确
+        if (stuId == null || (!stuId.equals("0") && !userService.isExist(stuId)))
+            return new Result<>(Code.GET_ERR, null, "学号错误");
+        // 验证帖子类型是否正确
+        if (!postUtil.isPostTypeValid(type))
+            return new Result<>(Code.GET_ERR, "帖子类型错误");
+        // 查询帖子基本信息
+        Result<List<Post>> result = postService.getOnePagePosts(stuId, type, currentPage, pageSize);
+        if (result.getCode() == Code.GET_ERR) return new Result<>(Code.GET_ERR, null, result.getMsg());
+        // 补全发帖人信息
+        List<PostVo> postVos = postUtil.completePostInfo(result);
+        return new Result<>(Code.GET_OK, postVos, "查询成功");
+    }
+
+    @Operation(summary = "获取用户的帖子或树洞数量",
+            description = "当传入学号为0，返回当前用户的帖子数量；" +
+                    "如果当前用户为管理员，可以传入指定学号则返回指定用户的帖子或树洞数量" +
+                    "以map形式返回，key为postCount或holeCount")
     @GetMapping("/posts/count/{stuId}")
+    @Tag(name = "管理员")
     public Result<Map<String, Integer>> getPostCount(@PathVariable String stuId){
         // 验证学号是否正确
         if (stuId == null || (!stuId.equals("0") && !userService.isExist(stuId)))
@@ -142,7 +148,6 @@ public class PostController {
         return new Result<>(Code.GET_OK, map);
     }
 
-    // ---------------------------- 以下接口需要管理员权限才可以调用
     @Tag(name = "管理员")
     @Operation(summary = "获取帖子、树洞总数量", description = "返回帖子、树洞的总数量，以map形式返回，key为postCount或holeCount")
     @GetMapping("/posts/count")

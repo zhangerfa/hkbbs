@@ -9,6 +9,7 @@ import site.zhangerfa.controller.vo.PostDetailsVo;
 import site.zhangerfa.controller.vo.PostVo;
 import site.zhangerfa.controller.vo.UserVo;
 import site.zhangerfa.entity.Comment;
+import site.zhangerfa.entity.Entity;
 import site.zhangerfa.entity.Page;
 import site.zhangerfa.entity.Post;
 import site.zhangerfa.service.*;
@@ -40,7 +41,8 @@ public class PostUtil {
             UserVo userVo = entityUtil.getUserVo(post.getPostType(), post.getPosterId());
             postVo.setPoster(userVo);
             // 补充点赞数量
-            postVo.setLikeNum(likeService.getLikeCount(post.getPostType(), post.getId()));
+            Entity entity = new Entity(post.getPostType(), post.getId());
+            postVo.setLikeNum(likeService.getLikeCount(entity));
 
             postVos.add(postVo);
         }
@@ -60,18 +62,19 @@ public class PostUtil {
         if (post == null) return new Result<>(Code.GET_ERR, null, "您访问的帖子已被删除");
         PostDetailsVo postDetailsVo = new PostDetailsVo(post);
         // 帖子点赞数量
-        postDetailsVo.setLikeNum(likeService.getLikeCount(post.getPostType(), postId));
+        Entity entity = new Entity(post.getPostType(), postId);
+        postDetailsVo.setLikeNum(likeService.getLikeCount(entity));
         // 作者信息
         UserVo userVo = entityUtil.getUserVo(post.getPostType(), post.getPosterId());
         postDetailsVo.setPoster(userVo);
         // 分页信息
         PageUtil pageUtil = new PageUtil(currentPage, pageSize,
-                commentService.getNumOfCommentsForEntity(Constant.ENTITY_TYPE_POST, postId));
+                commentService.getNumOfCommentsForEntity(entity));
         Page page = pageUtil.generatePage();
         postDetailsVo.setPage(page);
         // 获取评论集合
         int[] fromTo = pageUtil.getFromTo();
-        List<Comment> comments = postService.getComments(Constant.ENTITY_TYPE_POST, postId, fromTo[0], fromTo[1]);
+        List<Comment> comments = postService.getComments(entity, fromTo[0], fromTo[1]);
         // 获取每个评论的详细信息
         List<CommentDetailsVo> commentsDetails;
         commentsDetails = getCommentsDetails(comments, page.getPageSize(), postId);
@@ -105,18 +108,19 @@ public class PostUtil {
             commentDetailsVo.setPosterName(userVo.getUsername());
             commentDetailsVo.setPosterHeaderUrl(userVo.getHeaderUrl());
             // 分页信息
+            Entity entity = new Entity(Constant.ENTITY_TYPE_COMMENT, comment.getId());
             PageUtil pageUtil = new PageUtil(1, pageSize,
-                    commentService.getNumOfCommentsForEntity(
-                            Constant.ENTITY_TYPE_COMMENT, comment.getId()));
+                    commentService.getNumOfCommentsForEntity(entity));
             Page page = pageUtil.generatePage();
             commentDetailsVo.setPage(page);
             // 评论点赞数量
-            commentDetailsVo.setLikeNum(likeService.getLikeCount(Constant.ENTITY_TYPE_COMMENT, comment.getId()));
+            Entity ownEntity = new Entity(comment.getOwnerType(), comment.getId());
+            commentDetailsVo.setLikeNum(likeService.getLikeCount(ownEntity));
             // 子评论详细信息
             // 子评论集合
             int[] fromTo = pageUtil.getFromTo();
-            List<Comment> subComments = commentService.getCommentsForEntity(Constant.ENTITY_TYPE_COMMENT,
-                    comment.getId(), fromTo[0], fromTo[1]);
+            List<Comment> subComments = commentService.getCommentsForEntity(entity,
+                    fromTo[0], fromTo[1]);
             // 获取子评论的详细信息
             List<CommentDetailsVo> subCommentsDetails = getCommentsDetails(subComments, deep + 1, pageSize);
             commentDetailsVo.setCommentDetailVos(subCommentsDetails);

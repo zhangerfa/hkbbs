@@ -1,9 +1,11 @@
 package site.zhangerfa.controller;
 
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
+import site.zhangerfa.controller.in.ManagerIn;
 import site.zhangerfa.controller.tool.Code;
 import site.zhangerfa.controller.tool.Result;
 import site.zhangerfa.entity.Manager;
@@ -24,8 +26,9 @@ public class ManagerController {
 
     @Operation(summary = "添加管理员", description = "添加管理员")
     @PostMapping("/add")
-    public Result<Boolean> addManager(String stuId, int level){
-        return managerService.addManager(new Manager(stuId, level));
+    @ApiImplicitParam(name = "stuId", value = "学号", required = true, paramType = "query", dataType = "String")
+    public Result<Boolean> addManager(@RequestBody ManagerIn managerIn){
+        return managerService.addManager(new Manager(managerIn));
     }
 
     @Operation(summary = "删除管理员", description = "删除管理员")

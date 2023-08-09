@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import site.zhangerfa.controller.tool.Code;
 import site.zhangerfa.controller.tool.Result;
 import site.zhangerfa.dao.ImageMapper;
+import site.zhangerfa.entity.Entity;
 import site.zhangerfa.service.ImageService;
 import site.zhangerfa.entity.Image;
 
@@ -22,10 +23,12 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public List<String> getImagesForEntity(int entityType, int entityId) {
+    public List<String> getImagesForEntity(Entity entity) {
+        int entityType = entity.getEntityType();
+        int entityId = entity.getEntityId();
         return imageMapper.selectList(new LambdaQueryWrapper<Image>()
                 .eq(Image::getEntityType, entityType).
-                        eq(Image::getEntityId, entityId)).stream().map(Image::getUrl).toList();
+                eq(Image::getEntityId, entityId)).stream().map(Image::getUrl).toList();
     }
 
     @Override
@@ -39,10 +42,10 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public Result<Integer> deleteImagesForEntity(int entityType, int entityId) {
+    public Result<Integer> deleteImagesForEntity(Entity entity) {
         return new Result<>(Code.DELETE_OK,
                 imageMapper.delete(new LambdaQueryWrapper<Image>()
-                        .eq(Image::getEntityType, entityType).
-                        eq(Image::getEntityId, entityId)));
+                        .eq(Image::getEntityType, entity.getEntityType()).
+                        eq(Image::getEntityId, entity.getEntityId())));
     }
 }

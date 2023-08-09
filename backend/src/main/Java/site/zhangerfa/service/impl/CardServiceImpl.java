@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import site.zhangerfa.controller.vo.CardVo;
 import site.zhangerfa.controller.vo.UserVo;
 import site.zhangerfa.dao.CardMapper;
+import site.zhangerfa.entity.Entity;
 import site.zhangerfa.entity.User;
 import site.zhangerfa.service.ImageService;
 import site.zhangerfa.service.UserService;
@@ -36,7 +37,8 @@ public class CardServiceImpl implements CardService {
         cardMapper.insert(card);
         // 将帖子中图片放入image表中
         for (String imageUrl : card.getImageUrls()) {
-            imageService.add(new Image(Constant.ENTITY_TYPE_CARD, card.getId(), imageUrl));
+            Entity entity = new Entity(Constant.ENTITY_TYPE_CARD, card.getId());
+            imageService.add(new Image(entity, imageUrl));
         }
         return true;
     }
@@ -60,7 +62,8 @@ public class CardServiceImpl implements CardService {
         User poster = userService.getUserByStuId(card.getPosterId());
         UserVo posterVo = EntityUtil.getUserVo(poster);
         // 补充卡片中的图片url
-        card.setImageUrls(imageService.getImagesForEntity(Constant.ENTITY_TYPE_CARD, id));
+        Entity entity = new Entity(Constant.ENTITY_TYPE_CARD, id);
+        card.setImageUrls(imageService.getImagesForEntity(entity));
         return new CardVo(card, posterVo, UserUtil.getAge(poster));
     }
 
@@ -77,7 +80,8 @@ public class CardServiceImpl implements CardService {
         List<CardVo> cardVos = new ArrayList<>();
         for (Card card : cardPage.getRecords()) {
             // 补充卡片中的图片url
-            card.setImageUrls(imageService.getImagesForEntity(Constant.ENTITY_TYPE_CARD, card.getId()));
+            Entity entity = new Entity(Constant.ENTITY_TYPE_CARD, card.getId());
+            card.setImageUrls(imageService.getImagesForEntity(entity));
             User poster = userService.getUserByStuId(card.getPosterId());
             UserVo posterVo = EntityUtil.getUserVo(poster);
             cardVos.add(new CardVo(card, posterVo, UserUtil.getAge(poster)));

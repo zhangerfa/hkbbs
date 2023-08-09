@@ -4,6 +4,9 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
+import site.zhangerfa.controller.in.MessageIn;
+import site.zhangerfa.controller.tool.Code;
+import site.zhangerfa.controller.tool.Result;
 import site.zhangerfa.controller.vo.ChatVo;
 import site.zhangerfa.dao.ChatMapper;
 import site.zhangerfa.dao.MessageMapper;
@@ -94,7 +97,9 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public boolean addMessage(String fromId, String toId, int type, String content) {
+    public boolean addMessage(MessageIn messageIn) {
+        String fromId = messageIn.getPosterId();
+        String toId = messageIn.getReceiverId();
         // 查询两人聊天id
         Integer chatId = chatMapper.selectChatId(fromId, toId);
         if (chatId == null){
@@ -102,7 +107,16 @@ public class ChatServiceImpl implements ChatService {
             chatId = chatMapper.selectChatId(fromId, toId);
         }
         // 发布新消息
-        return messageMapper.insert(new Message(chatId, fromId, type, content)) > 0;
+        return messageMapper.insert(new Message(chatId, messageIn)) > 0;
+    }
+
+    @Override
+    public Result<Boolean> canSendMessage(String posterId, String receiverId){
+        if (posterId.equals(receiverId))
+            return new Result<>(Code.SAVE_ERR, false, "不能给自己发消息");
+        if (userService.getUserByStuId(receiverId) == null)
+            return new Result<>(Code.SAVE_ERR, false, "该用户不存在");
+        return new Result<>(Code.UPDATE_OK, true);
     }
 
     @Override

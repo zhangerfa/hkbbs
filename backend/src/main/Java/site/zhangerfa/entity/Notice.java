@@ -34,15 +34,15 @@ public class Notice {
     public Notice() {
     }
 
-    public Notice(String actionUserId, int entityType, int entityId, int actionType) {
+    public Notice(String actionUserId, Entity entity, int actionType) {
         this.actionUserId = actionUserId;
-        this.entityType = entityType;
-        this.entityId = entityId;
+        this.entityType = entity.getEntityType();
+        this.entityId = entity.getEntityId();
         this.actionType = actionType;
     }
 
-    public Notice(String actionUserId, int entityType, int entityId, int actionType, int ownerType){
-        this(actionUserId, entityType, entityId, actionType);
+    public Notice(String actionUserId, Entity entity, int actionType, int ownerType){
+        this(actionUserId, entity, actionType);
         this.ownerType = ownerType;
     }
 }

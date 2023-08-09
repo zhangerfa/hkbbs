@@ -9,6 +9,8 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import site.zhangerfa.Constant.Goal;
+import site.zhangerfa.controller.in.CardIn;
+import site.zhangerfa.controller.in.UpdateCard;
 import site.zhangerfa.controller.tool.*;
 import site.zhangerfa.controller.vo.CardVo;
 import site.zhangerfa.entity.Card;
@@ -33,24 +35,21 @@ public class CardController {
     @Resource
     private UserService userService;
 
-    @Operation(summary = "发布卡片", description = "图片至少上传一张")
+    @Operation(summary = "发布卡片", description = "发布卡片，包括卡片的文字内容和图片")
     @PostMapping(value = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public Result<Boolean> addCard(String aboutMe, String expected, @Parameter(description = "交友目标：") @RequestParam Goal goal,
-                                   @RequestPart @Parameter(description = "图片文件集合，至少发布一张图片") List<MultipartFile> images){
+    public Result<Boolean> addCard(@RequestBody CardIn cardIn){
         // 判断用户是否登录
         if (!UserUtil.isLogin(hostHolder))
             return new Result<>(Code.SAVE_ERR, "用户未登录");
         // 获取用户学号
         String posterId = hostHolder.getUser().getStuId();
-        Card card = new Card();
+        Card card = new Card(cardIn);
         card.setPosterId(posterId);
         // 检查是否上传照片
+        List<MultipartFile> images = cardIn.getImages();
         if (images.size() == 0)
             return new Result<>(Code.SAVE_ERR, false, "请至少上床一张图片");
         // 将图片上传到图床
-        card.setGoal(goal.getCode());
-        card.setAboutMe(aboutMe);
-        card.setExpected(expected);
         card.setImageUrls(imgShackUtil.getImageUrls(images));
         // 发布卡片
         cardService.add(card);
@@ -68,13 +67,10 @@ public class CardController {
 
     @Operation(summary = "修改卡片", description = "修改卡片的文字内容，包括修改 关于我 期望中的TA。只需为需要修改值的字段传入新值")
     @PutMapping("/{cardId}")
-    public Result<Boolean> updateCard(@PathVariable int cardId, @RequestParam(required = false) String aboutMe,
-                                      @RequestParam(required = false) String expected){
+    public Result<Boolean> updateCard(@PathVariable int cardId, @RequestBody UpdateCard cardIn){
         if (cardService.getById(cardId) == null)
             return new Result<>(Code.UPDATE_ERR, false, "您要修改的卡片不存在");
-        Card card = new Card();
-        card.setAboutMe(aboutMe);
-        card.setExpected(expected);
+        Card card = new Card(cardIn);
         card.setId(cardId);
         cardService.update(card);
         return new Result<>(Code.UPDATE_OK, true);
@@ -89,6 +85,7 @@ public class CardController {
         return new Result<>(Code.GET_OK, cardVo);
     }
 
+    @Tag(name = "管理员")
     @Operation(summary = "获取一页卡片", description = "获取一页卡片")
     @GetMapping(value = "/")
     @Parameters({@Parameter(name = "currentPage", description = "当前页码"),
@@ -104,13 +101,19 @@ public class CardController {
         return new Result<>(Code.GET_OK, cardService.getOnePageCards(posterId, goal.getCode(), currentPage, pageSize));
     }
 
-    @Operation(summary = "获取用户的卡片数量", description = "获取用户的卡片数量，包括不同类型的卡片数量和总卡片数量")
+    @Operation(summary = "获取用户的卡片数量",
+            description = "获取用户的卡片数量，包括不同类型的卡片数量和总卡片数量" +
+                    "当posterId为0时，或许当前用户的卡片数量" +
+                    "如果要获取指定用户的卡片数量，则传入指定用户学号，此时需要管理员权限")
     @GetMapping("/count")
+    @Tag(name = "管理员")
     public Result<Map<String, Integer>> getCardCount(String posterId){
         // 判断用户是否存在
-        if (!userService.isExist(posterId))
+        if (!posterId.equals("0") && !userService.isExist(posterId))
             return new Result<>(Code.GET_ERR, "用户不存在");
         HashMap<String, Integer> map = new HashMap<>();
+        if (posterId.equals("0"))
+            posterId = hostHolder.getUser().getStuId();
         // 获取不同类型的卡片数量
         for (Goal goal : Goal.values())
             map.put(goal.getDesc(), cardService.getNumOfCards(posterId, goal.getCode()));

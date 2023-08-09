@@ -1,6 +1,7 @@
 package site.zhangerfa.service;
 
 import site.zhangerfa.controller.tool.Result;
+import site.zhangerfa.entity.Entity;
 import site.zhangerfa.entity.Image;
 
 import java.util.List;
@@ -14,7 +15,7 @@ public interface ImageService {
      * @param
      * @return
      */
-    List<String> getImagesForEntity(int entityType, int entityId);
+    List<String> getImagesForEntity(Entity entity);
 
     boolean deleteImageById(int id);
 
@@ -25,5 +26,5 @@ public interface ImageService {
      * @param
      * @return
      */
-    Result<Integer> deleteImagesForEntity(int entityType, int entityId);
+    Result<Integer> deleteImagesForEntity(Entity entity);
 }

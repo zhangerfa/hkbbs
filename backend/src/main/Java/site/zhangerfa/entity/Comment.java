@@ -30,9 +30,9 @@ public class Comment {
 
     public Comment(){}
 
-    public Comment(int entityType, int entityId, String content) {
-        this.entityType = entityType;
-        this.entityId = entityId;
+    public Comment(Entity entity, String content) {
+        this.entityType = entity.getEntityType();
+        this.entityId = entity.getEntityId();
         this.content = content;
     }
 }

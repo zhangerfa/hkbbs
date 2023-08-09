@@ -6,7 +6,8 @@ import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
+import site.zhangerfa.controller.in.ImgMessageIn;
+import site.zhangerfa.controller.in.MessageIn;
 import site.zhangerfa.controller.tool.Code;
 import site.zhangerfa.controller.tool.Result;
 import site.zhangerfa.controller.vo.ChatVo;
@@ -69,26 +70,35 @@ public class ChatController {
 
     @Operation(summary = "发布一条文字消息")
     @PostMapping("/")
-    @Parameters({@Parameter(name = "fromStuId", description = "消息发布者学号"),
-            @Parameter(name = "toStuId", description = "消息接收者学号", required = true),
-            @Parameter(name = "content", description = "消息内容", required = true)})
-    public Result<Boolean> sendMessage(String fromStuId, String toStuId, String content){
+    public Result<Boolean> sendMessage(@RequestBody MessageIn messageIn){
+        messageIn.setType(0);
+        // 判断能否发送消息
+        messageIn.setPosterId(hostHolder.getUser().getStuId());
+        Result<Boolean> result = chatService.canSendMessage(messageIn.getPosterId(),
+                messageIn.getReceiverId());
+        if (!result.getData())
+            return result;
         // 发布消息
-        boolean flag = chatService.addMessage(fromStuId, toStuId, 0, content);
+        messageIn.setPosterId(hostHolder.getUser().getStuId());
+        boolean flag = chatService.addMessage(messageIn);
         int code = flag? Code.SAVE_OK: Code.SAVE_ERR;
         return new Result<>(code, flag);
     }
 
     @Operation(summary = "发布一条图片消息")
-    @PostMapping("/image")
-    @Parameters({@Parameter(name = "fromStuId", description = "消息发布者学号"),
-        @Parameter(name = "toStuId", description = "消息接收者学号", required = true),
-        @Parameter(name = "image", description = "图片文件", required = true)})
-    public Result<Boolean> sendImage(String fromStuId, String toStuId,
-                                     MultipartFile image){
+    @PostMapping(value = "/image", consumes = "multipart/form-data")
+    public Result<Boolean> sendImage(@RequestBody ImgMessageIn imgMessageIn){
+        imgMessageIn.setType(1);
+        // 判断能否发送消息
+        imgMessageIn.setPosterId(hostHolder.getUser().getStuId());
+        Result<Boolean> result = chatService.canSendMessage(imgMessageIn.getPosterId(),
+                imgMessageIn.getReceiverId());
+        if (!result.getData())
+            return result;
         // 发布消息
-        String imageUrl = imgShackUtil.add(image);
-        boolean flag = chatService.addMessage(fromStuId, toStuId, 1, imageUrl);
+        String imageUrl = imgShackUtil.add(imgMessageIn.getImage());
+        imgMessageIn.setContent(imageUrl);
+        boolean flag = chatService.addMessage(imgMessageIn);
         int code = flag? Code.SAVE_OK: Code.SAVE_ERR;
         return new Result<>(code, flag);
     }

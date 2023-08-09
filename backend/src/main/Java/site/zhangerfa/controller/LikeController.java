@@ -10,6 +10,7 @@ import site.zhangerfa.controller.tool.Code;
 import site.zhangerfa.controller.vo.LikeVo;
 import site.zhangerfa.controller.tool.Result;
 import site.zhangerfa.controller.vo.UserVo;
+import site.zhangerfa.entity.Entity;
 import site.zhangerfa.service.LikeService;
 import site.zhangerfa.service.NoticeService;
 import site.zhangerfa.util.HostHolder;
@@ -28,17 +29,17 @@ public class LikeController {
     private NoticeService noticeService;
 
     @Operation(summary = "点赞帖子", description = "调用此接口后改变当前登录用户对实体的点赞状态")
-    @PutMapping("post/{postId}")
-    public Result<LikeVo> likePost(int postType, @PathVariable int postId) {
+    @PutMapping("post")
+    public Result<LikeVo> likePost(@RequestBody Entity entity) {
         String stuId = hostHolder.getUser().getStuId();
         // 点赞
-        likeService.like(postType, postId, stuId);
+        likeService.like(entity, stuId);
         // 通知被点赞实体的作者
-        noticeService.addLikeNotice(postType, postId, stuId);
+        noticeService.addLikeNotice(entity, stuId);
         // 查询点赞数量
-        int likeCount = likeService.getLikeCount(postType, postId);
+        int likeCount = likeService.getLikeCount(entity);
         // 查询当前用户对此实体的点赞状态
-        int likeStatus = likeService.getLikeStatus(stuId, postType, postId);
+        int likeStatus = likeService.getLikeStatus(stuId, entity);
         // 封装返回
         return new Result<>(Code.UPDATE_OK, new LikeVo(likeCount, likeStatus));
     }
@@ -49,27 +50,28 @@ public class LikeController {
                                     @Parameter(description = "点赞状态：1-感兴趣，0-不感兴趣") int likeStatus) {
         String stuId = hostHolder.getUser().getStuId();
         // 点赞
-        likeService.likeWithStatus(Constant.ENTITY_TYPE_CARD, cardId, stuId, likeStatus);
+        likeService.likeWithStatus(new Entity(Constant.ENTITY_TYPE_CARD, cardId),
+                stuId, likeStatus);
         return new Result<>(Code.UPDATE_OK, true);
     }
 
     @Operation(summary = "查询点赞用户列表", description = "查询指定实体的点赞用户列表")
     @GetMapping("/userList")
-    public Result<List<UserVo>> getLikeUserListForCard(int entityType, int entityI) {
-        List<UserVo> likeUsers = likeService.getLikeUsers(entityType, entityI);
+    public Result<List<UserVo>> getLikeUserListForCard(Entity entity) {
+        List<UserVo> likeUsers = likeService.getLikeUsers(entity);
         return new Result<>(Code.GET_OK, likeUsers);
     }
 
     @Operation(summary = "查询实体的点赞数量", description = "查询指定实体的被点赞数量")
     @GetMapping("/count")
-    public Result<Integer> getLikeCountForPost(int entityType, int entityId) {
-        return new Result<>(Code.GET_OK, likeService.getLikeCount(entityType, entityId));
+    public Result<Integer> getLikeCountForPost(Entity entity) {
+        return new Result<>(Code.GET_OK, likeService.getLikeCount(entity));
     }
 
     @Operation(summary = "查询用户对实体的点赞状态", description = "查询用户对特定实体的点赞状态")
     @GetMapping("/status")
-    public Result<Integer> getLikeStatusForPost(int entityType, int entityId) {
+    public Result<Integer> getLikeStatusForPost(Entity entity) {
         String stuId = hostHolder.getUser().getStuId();
-        return new Result<>(Code.GET_OK, likeService.getLikeStatus(stuId, entityType, entityId));
+        return new Result<>(Code.GET_OK, likeService.getLikeStatus(stuId, entity));
     }
 }

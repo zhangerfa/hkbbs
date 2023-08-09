@@ -6,6 +6,7 @@ import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import site.zhangerfa.dao.CommentMapper;
 import site.zhangerfa.entity.Comment;
+import site.zhangerfa.entity.Entity;
 import site.zhangerfa.service.CommentService;
 import site.zhangerfa.Constant.Constant;
 import site.zhangerfa.util.HostHolder;
@@ -22,19 +23,19 @@ public class CommentServiceImpl implements CommentService {
     private HostHolder hostHolder;
 
     @Override
-    public List<Comment> getCommentsForEntity(int entityType, int entityId, int offset, int limit) {
+    public List<Comment> getCommentsForEntity(Entity entity, int offset, int limit) {
         LambdaQueryWrapper<Comment> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(Comment::getEntityType, entityType)
-                .eq(Comment::getEntityId, entityId);
+        wrapper.eq(Comment::getEntityType, entity.getEntityType())
+                .eq(Comment::getEntityId, entity.getEntityId());
         Page<Comment> commentPage = commentMapper.selectPage(new Page<>(offset, limit), wrapper);
         return commentPage.getRecords();
     }
 
     @Override
-    public int getNumOfCommentsForEntity(int entityType, int entityId) {
+    public int getNumOfCommentsForEntity(Entity entity) {
         return commentMapper.selectCount(new LambdaQueryWrapper<Comment>()
-                .eq(Comment::getEntityType, entityType)
-                .eq(Comment::getEntityId, entityId)).intValue();
+                .eq(Comment::getEntityType, entity.getEntityType())
+                .eq(Comment::getEntityId, entity.getEntityId())).intValue();
     }
 
     @Override
@@ -60,8 +61,8 @@ public class CommentServiceImpl implements CommentService {
         Map<String, Object> map1 = checkLogin(hostHolder, comment.getPosterId());
         if (map1 != null) return map1;
         // 删除所有评论的评论
-
-        List<Comment> comments = getCommentsForEntity(Constant.ENTITY_TYPE_COMMENT, commentId);
+        Entity entity = new Entity(Constant.ENTITY_TYPE_COMMENT, commentId);
+        List<Comment> comments = getCommentsForEntity(entity);
         for (Comment cur : comments) {
             deleteComment(cur.getId());
         }
@@ -76,14 +77,13 @@ public class CommentServiceImpl implements CommentService {
 
     /**
      * 获取所有指向传入实体的评论
-     * @param entityType
-     * @param entityId
+     * @param entity
      * @return
      */
-    List<Comment> getCommentsForEntity(int entityType, int entityId){
+    List<Comment> getCommentsForEntity(Entity entity){
         return commentMapper.selectList(new LambdaQueryWrapper<Comment>()
-                .eq(Comment::getEntityType, entityType)
-                .eq(Comment::getEntityId, entityId));
+                .eq(Comment::getEntityType, entity.getEntityType())
+                .eq(Comment::getEntityId, entity.getEntityId()));
     }
 
     // 权限验证 只有发帖者可以删除自己发的帖子

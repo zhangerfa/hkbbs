@@ -1,4 +1,4 @@
-package site.zhangerfa.event;
+package site.zhangerfa.controller.exception.event;
 
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 import site.zhangerfa.dao.NoticeMapper;
+import site.zhangerfa.entity.Entity;
 import site.zhangerfa.entity.Notice;
 import site.zhangerfa.Constant.Constant;
 import site.zhangerfa.service.LikeService;
@@ -46,7 +47,8 @@ public class NoticeConsumer {
         Notice notice = getNotice(record);
         if (notice == null) return;
         // 取消点赞不通知
-        int likedStatus = likeService.getLikeStatus(notice.getActionUserId(), notice.getEntityType(), notice.getEntityId());
+        Entity entity = new Entity(notice.getEntityType(), notice.getEntityId());
+        int likedStatus = likeService.getLikeStatus(notice.getActionUserId(), entity);
         if (likedStatus == 0) return;
         // 如果点赞的是自己的实体，不通知
         if (notice.getActionUserId().equals(notice.getReceivingUserId())) return;

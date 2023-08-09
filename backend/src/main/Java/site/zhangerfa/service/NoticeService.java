@@ -1,6 +1,7 @@
 package site.zhangerfa.service;
 
 import site.zhangerfa.entity.Comment;
+import site.zhangerfa.entity.Entity;
 import site.zhangerfa.entity.Notice;
 
 import java.util.List;
@@ -18,7 +19,7 @@ public interface NoticeService {
      * @param entityId 被点赞实体的id
      * @param stuId 点赞者的学号
      */
-    void addLikeNotice(int entityType, int entityId, String stuId);
+    void addLikeNotice(Entity entity, String stuId);
 
     Notice getNoticeById(int id);
 

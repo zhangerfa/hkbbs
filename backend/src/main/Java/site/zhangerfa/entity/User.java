@@ -1,65 +1,33 @@
 package site.zhangerfa.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
+import site.zhangerfa.controller.in.RegistUser;
 
 import java.util.Date;
 
 @Schema(description = "用户信息")
-public class User {
-    @TableId
-    @Schema(description = "学号") @NotNull
-    @Pattern(regexp = "[UMD][0-9]{9}", message = "学号第一位为学历缩写，后九位为数字")
-    private String stuId;
-    @NotBlank
-    @Schema(description = "用户名")
-    private String username;
-    @NotBlank @Pattern(regexp = "[a-zA-Z0-9]{6,16}", message = "密码由6到16位的数字和字母组成")
-    @JsonIgnore
-    private String password; // 密码
+public class User extends RegistUser {
     @Schema(description = "头像地址")
     private String headerUrl = "https://zhangerfa-1316526930.cos.ap-guangzhou.myqcloud.com/hkbbs/default.jpg";
-    @Schema(description = "用户性别")
-    private int gender;
-    @JsonIgnore
     @TableField("create_at")
     private Date createTime; // 创建时间
     @JsonIgnore
     private String salt;
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "stuId='" + stuId + '\'' +
-                ", username='" + username + '\'' +
-                ", gender=" + gender +
-                '}';
-    }
-
     public User(){}
 
     public User(String stuId, String username, String password, int gender){
-        this(stuId, username, password);
-        this.gender = gender;
+        super(stuId, username, password, gender);
+    }
+
+    public User (RegistUser registUser){
+        super(registUser.getStuId(), registUser.getUsername(), registUser.getPassword(), registUser.getGender());
     }
 
     public User(String stuId, String username, String password){
-        this.password = password;
-        this.username = username;
-        this.stuId = stuId;
-    }
-
-    public int getGender() {
-        return gender;
-    }
-
-    public void setGender(int gender) {
-        this.gender = gender;
+        super(stuId, username, password);
     }
 
     public String getSalt() {
@@ -80,31 +48,6 @@ public class User {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
-    }
-
-    public void setStuId(String stuId) {
-        this.stuId = stuId;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getStuId() {
-        return stuId;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    // 修改密码
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getUsername() {
-        return username;
     }
 
     public Date getCreateTime() {

@@ -6,6 +6,7 @@ import site.zhangerfa.Constant.Constant;
 import site.zhangerfa.controller.vo.NoticeVo;
 import site.zhangerfa.controller.vo.UserVo;
 import site.zhangerfa.entity.Comment;
+import site.zhangerfa.entity.Entity;
 import site.zhangerfa.entity.Notice;
 import site.zhangerfa.service.CommentService;
 import site.zhangerfa.service.PostService;
@@ -28,11 +29,12 @@ public class NoticeUtil {
      * @return
      */
     public Notice getNotice(Comment comment) {
-        Notice notice = new Notice(comment.getPosterId(),
-                comment.getEntityType(), comment.getEntityId(),
+        // 被评论的实体
+        Entity entity = new Entity(comment.getEntityType(), comment.getEntityId());
+        Notice notice = new Notice(comment.getPosterId(), entity,
                 Constant.ACTION_COMMENT, comment.getOwnerType());
         // 被评论人的学号
-        String receivingUserId = entityUtil.getOwnerStuId(comment.getEntityType(), comment.getEntityId());
+        String receivingUserId = entityUtil.getOwnerStuId(entity);
         notice.setReceivingUserId(receivingUserId);
         // 评论的id
         notice.setActionId(comment.getId());
@@ -41,16 +43,15 @@ public class NoticeUtil {
 
     /**
      * 获取点赞notice
-     * @param entityType 被点赞实体类型
-     * @param entityId 被点赞实体id
+     * @param entity 被点赞实体
      * @param posterId 点赞者学号
      * @return
      */
-    public Notice getLikeNotice(int entityType, int entityId, String posterId){
+    public Notice getLikeNotice(Entity entity, String posterId){
         // 点赞通知
-        Notice notice = new Notice(posterId, entityType, entityId, Constant.ACTION_LIKE);
+        Notice notice = new Notice(posterId, entity, Constant.ACTION_LIKE);
         // 被点赞实体的所有者即为接收通知的人
-        notice.setReceivingUserId(entityUtil.getOwnerStuId(entityType, entityId));
+        notice.setReceivingUserId(entityUtil.getOwnerStuId(entity));
         return notice;
     }
 
@@ -68,12 +69,13 @@ public class NoticeUtil {
             UserVo userVo = entityUtil.getUserVo(notice.getOwnerType(), notice.getActionUserId());
             noticeVo.setActionUser(userVo);
             // 被动作指向实体的类型
-            noticeVo.setEntityType(Constant.getEntityTyeName(notice.getEntityType()));
+            int entityType = notice.getEntityType();
+            noticeVo.setEntityType(Constant.getEntityTyeName(entityType));
             // 被动作指向实体的内容，如果是帖子为标题，评论则为内容
-            if (notice.getEntityType() == Constant.ENTITY_TYPE_COMMENT){
-                noticeVo.setEntityContent(commentService.getCommentById(notice.getEntityId()).getContent());
+            if (entityType == Constant.ENTITY_TYPE_COMMENT){
+                noticeVo.setEntityContent(commentService.getCommentById(entityType).getContent());
             }else {
-                noticeVo.setEntityContent(postService.getPostById(notice.getEntityId()).getTitle());
+                noticeVo.setEntityContent(postService.getPostById(entityType).getTitle());
             }
             // 动作内容
             if (notice.getActionType() == Constant.ACTION_COMMENT){

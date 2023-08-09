@@ -11,6 +11,7 @@ import org.springframework.web.util.HtmlUtils;
 import site.zhangerfa.controller.tool.Code;
 import site.zhangerfa.controller.tool.Result;
 import site.zhangerfa.dao.PostMapper;
+import site.zhangerfa.entity.Entity;
 import site.zhangerfa.service.HoleNicknameService;
 import site.zhangerfa.service.ImageService;
 import site.zhangerfa.service.PostService;
@@ -59,8 +60,9 @@ public class PostServiceImpl implements PostService {
         // post表中添加post
         int addNum = postMapper.insert(post);
         // 将帖子中的图片url插入image表
+        Entity entity = new Entity(Constant.ENTITY_TYPE_POST, post.getId());
         for (String image : post.getImages()) {
-            imageService.add(new Image(Constant.ENTITY_TYPE_POST, post.getId(), image));
+            imageService.add(new Image(entity, image));
         }
         return addNum != 0;
     }
@@ -70,7 +72,8 @@ public class PostServiceImpl implements PostService {
         Post post = postMapper.selectById(id);
         if (post == null) return null;
         // 获取帖子中图片
-        post.setImages(imageService.getImagesForEntity(Constant.ENTITY_TYPE_POST, id));
+        Entity entity = new Entity(Constant.ENTITY_TYPE_POST, id);
+        post.setImages(imageService.getImagesForEntity(entity));
         return post;
     }
 
@@ -87,12 +90,14 @@ public class PostServiceImpl implements PostService {
         Map<String, Object> checkLoginMap = CommentServiceImpl.checkLogin(hostHolder, post.getPosterId());
         if (checkLoginMap != null) return checkLoginMap;
         // 删除帖子的评论
-        List<Comment> comments = commentService.getCommentsForEntity(Constant.ENTITY_TYPE_POST, id, 0, Integer.MAX_VALUE);
+        Entity entity = new Entity(Constant.ENTITY_TYPE_POST, id);
+        List<Comment> comments = commentService.getCommentsForEntity(entity,
+                0, Integer.MAX_VALUE);
         for (Comment comment : comments) {
             deleteComment(comment.getId());
         }
         // 删除帖子中的所有图片
-        imageService.deleteImagesForEntity(Constant.ENTITY_TYPE_POST, post.getId());
+        imageService.deleteImagesForEntity(entity);
         // 如果删除的帖子为树洞，删除该树洞中所有随机昵称
         if (postMapper.getPostType(id) == Constant.ENTITY_TYPE_HOLE)
             holeNicknameService.deleteNicknamesForHole(id);
@@ -134,8 +139,8 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<Comment> getComments(int entityType, int entityId, int from, int to) {
-        return commentService.getCommentsForEntity(entityType, entityId, from, to);
+    public List<Comment> getComments(Entity entity, int from, int to) {
+        return commentService.getCommentsForEntity(entity, from, to);
     }
 
     @Override
@@ -158,7 +163,8 @@ public class PostServiceImpl implements PostService {
                         .orderByDesc(Post::getCreateTime));
         // 补充帖子中的图片
         for (Post post : postPage.getRecords()) {
-            post.setImages(imageService.getImagesForEntity(Constant.ENTITY_TYPE_POST, post.getId()));
+            Entity entity = new Entity(Constant.ENTITY_TYPE_POST, post.getId());
+            post.setImages(imageService.getImagesForEntity(entity));
         }
         return new Result<>(Code.GET_OK, postPage.getRecords(), "获取成功");
     }

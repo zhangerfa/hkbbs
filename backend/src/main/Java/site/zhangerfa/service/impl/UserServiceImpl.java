@@ -9,6 +9,8 @@ import org.springframework.util.DigestUtils;
 import site.zhangerfa.controller.tool.Code;
 import site.zhangerfa.controller.tool.Result;
 import site.zhangerfa.dao.UserMapper;
+import site.zhangerfa.controller.in.LoginUser;
+import site.zhangerfa.controller.in.RegistUser;
 import site.zhangerfa.entity.User;
 import site.zhangerfa.service.UserService;
 import site.zhangerfa.util.MailClient;
@@ -29,7 +31,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public String login(User user, boolean rememberMe) {
+    public String login(LoginUser user, boolean rememberMe) {
         if (!checkPassword(user.getStuId(), user.getPassword())) return null;
         // 生成登录凭证
         String loginTicket = UUID.randomUUID().toString().replace("-", "");
@@ -54,7 +56,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean add(User user) {
+    public boolean add(RegistUser registUser) {
+        User user = new User(registUser);
         // 生成6位随机数作为salt
         String salt = UUID.randomUUID().toString().substring(0, 6);
         user.setSalt(salt);

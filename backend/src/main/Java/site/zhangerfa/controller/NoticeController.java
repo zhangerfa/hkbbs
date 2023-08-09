@@ -50,7 +50,7 @@ public class NoticeController {
     @Operation(summary = "通知已读", description = "传入的通知都将被标记为已读")
     @PutMapping("/read")
     @Parameter(name = "ids", description = "已读通知的id集合")
-    public Result<Boolean> readNotices(int[] ids){
+    public Result<Boolean> readNotices(@RequestBody int[] ids){
         for (int id : ids) {
             noticeService.updateNoticeById(id);
         }

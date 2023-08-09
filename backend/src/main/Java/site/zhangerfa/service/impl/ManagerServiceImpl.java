@@ -1,7 +1,6 @@
 package site.zhangerfa.service.impl;
 
 import jakarta.annotation.Resource;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import site.zhangerfa.controller.tool.Code;
 import site.zhangerfa.controller.tool.Result;
@@ -17,7 +16,6 @@ import site.zhangerfa.util.UserUtil;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 @Service
 public class ManagerServiceImpl implements ManagerService {

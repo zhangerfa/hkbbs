@@ -2,21 +2,21 @@ package site.zhangerfa.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
+import site.zhangerfa.controller.in.UpdateUser;
 import site.zhangerfa.controller.tool.Code;
 import site.zhangerfa.controller.tool.Result;
+import site.zhangerfa.controller.vo.RegistVo;
+import site.zhangerfa.controller.in.LoginUser;
+import site.zhangerfa.controller.in.RegistUser;
 import site.zhangerfa.entity.User;
 import site.zhangerfa.service.UserService;
 import site.zhangerfa.util.*;
@@ -44,12 +44,8 @@ public class UserController {
     }
 
     @Operation(summary = "登录", description = "检查用户输入的密码是否正确，如果正确生成登录凭证以cookie返回给用户")
-    @Parameters({
-            @Parameter(name = "rememberMe", description = "用户是否勾选记住密码"),
-            @Parameter(name = "stuId", description = "学号", required = true),
-            @Parameter(name = "password", description = "用户输入密码", required = true)})
-    @PostMapping("/login")
-    public Result<Boolean> login(@Parameter(hidden = true) User user,
+    @PostMapping(value = "/login")
+    public Result<Boolean> login(@RequestBody LoginUser user,
                                  @RequestParam(required = false, defaultValue = "false") boolean rememberMe,
                                  HttpServletResponse response) {
         // 判断学号是否合法、密码、验证码是否正确，正确则为第一次登录用户生成登录凭证，为之前登录过的用户更新登录凭证
@@ -63,7 +59,7 @@ public class UserController {
         cookie.setPath("/");
         response.addCookie(cookie);
         // 将用户信息存入线程本地变量
-        hostHolder.setUser(user);
+        hostHolder.setUser(userService.getUserByStuId(user.getStuId()));
         return new Result<>(Code.SAVE_OK, true, "登录成功");
     }
 
@@ -76,16 +72,10 @@ public class UserController {
     }
 
     @Operation(summary = "注册新用户")
-    @Parameters({
-            @Parameter(name = "code", description = "用户输入验证码"),
-            @Parameter(name = "stuId", description = "学号", required = true,
-                    schema = @Schema(pattern = "[UMD][0-9]{9}")),
-            @Parameter(name = "username", description = "用户名", required = true),
-            @Parameter(name = "password", description = "密码", required = true,
-                    schema = @Schema(pattern = "[a-zA-Z0-9]{6,16}")),
-            @Parameter(name = "gender", description = "性别：0-男，1-女", required = true)})
     @PostMapping("/register")
-    public Result<Boolean> register(@Parameter(hidden = true) User user, String code, HttpSession session){
+    public Result<Boolean> register(@RequestBody RegistVo registVo){
+        RegistUser user = registVo.getUser();
+        String code = registVo.getCode();
         // 判断学号是否合法
         String stuId = user.getStuId();
         if (!UserUtil.isStuIdValid(stuId))
@@ -106,23 +96,18 @@ public class UserController {
     }
 
     @Operation(summary = "修改用户信息", description = "用户名、密码、头像传入非空则进行修改")
-    @PutMapping(value = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @Parameters({@Parameter(name = "newPassword", description = "新密码", schema = @Schema(pattern = "[a-zA-Z0-9]{6,16}")),
-            @Parameter(name = "username",description = "新用户名")})
-    public Result<Boolean> updateUser(@RequestParam(required = false) String newPassword,
-                                      @RequestParam(required = false) String username,
-                                      @Parameter(description = "新头像") @RequestPart(required = false)
-                                          MultipartFile headerImage){
+    @PutMapping(value = "/", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public Result<Boolean> updateUser(@RequestBody UpdateUser updateUser){
         User user = hostHolder.getUser();
         if (user == null) return new Result<>(Code.UPDATE_ERR, false, "用户未登录");
         String stuId = user.getStuId();
-        user.setUsername(username);
-        user.setPassword(newPassword);
-        if (headerImage != null){
+        user.setUsername(updateUser.getUsername());
+        user.setPassword(updateUser.getPassword());
+        if (updateUser.getHeaderImage() != null){
             // 头像文件上传到图床中
             // 文件命名为 学号_header
             String imageName = stuId + "_header";
-            user.setHeaderUrl(imgShackUtil.add(headerImage, imageName));
+            user.setHeaderUrl(imgShackUtil.add(updateUser.getHeaderImage(), imageName));
         }
         return new Result<>(Code.UPDATE_OK, true);
     }

@@ -1,4 +1,4 @@
-package site.zhangerfa.event;
+package site.zhangerfa.controller.exception.event;
 
 import com.alibaba.fastjson2.JSON;
 import jakarta.annotation.Resource;

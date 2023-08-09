@@ -1,6 +1,8 @@
 package site.zhangerfa.service;
 
 import site.zhangerfa.controller.tool.Result;
+import site.zhangerfa.controller.in.LoginUser;
+import site.zhangerfa.controller.in.RegistUser;
 import site.zhangerfa.entity.User;
 
 import java.util.List;
@@ -31,7 +33,7 @@ public interface UserService {
      *
      * @param user
      */
-    boolean add(User user);
+    boolean add(RegistUser user);
 
     /**
      * 删除指定学号的用户
@@ -60,7 +62,7 @@ public interface UserService {
      * @param rememberMe 是否勾选记住密码
      * @return 如果学号或密码错误返回null，否则返回登录凭证码
      */
-    String login(User user, boolean rememberMe);
+    String login(LoginUser user, boolean rememberMe);
 
     /**
      * 检查用户注册时传入的验证码是否正确

@@ -1,6 +1,7 @@
 package site.zhangerfa.util;
 
 import site.zhangerfa.Constant.Constant;
+import site.zhangerfa.entity.Entity;
 
 /**
  * Redis常量及RedisKey生成工具
@@ -39,7 +40,9 @@ public class RedisUtil {
      * 获取点赞指定实体的其他用户学号集合的key
      * @return
      */
-    public static String getLikeUserSetKey(int entityType, int entityId){
+    public static String getLikeUserSetKey(Entity entity){
+        int entityType = entity.getEntityType();
+        int entityId = entity.getEntityId();
         // likeUserSet:entityType:entityId --> set(stuId)
         String entityTyeName;
         // 帖子和树洞统一为post
@@ -53,13 +56,12 @@ public class RedisUtil {
 
     /**
      * 获取点踩指定实体的其他用户学号集合的key
-     * @param entityType
-     * @param entityId
+     * @param entity
      * @return
      */
-    public static String getUnLikeUserSetKey(int entityType, int entityId){
+    public static String getUnLikeUserSetKey(Entity entity){
         // unLikeUserSet:entityType:entityId --> set(stuId)
-        return "un" + getLikeUserSetKey(entityType, entityId);
+        return "un" + getLikeUserSetKey(entity);
     }
 
     /**

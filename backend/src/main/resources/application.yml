@@ -88,7 +88,7 @@ springdoc:
       paths-to-match: '/**'
 
 knife4j:
-  enable: true
+  enable: false
   setting:
     language: zh-CN
   basic:

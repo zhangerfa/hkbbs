@@ -2,6 +2,7 @@ package site.zhangerfa.service;
 
 import site.zhangerfa.controller.tool.Result;
 import site.zhangerfa.entity.Comment;
+import site.zhangerfa.entity.Entity;
 import site.zhangerfa.entity.Post;
 
 import java.util.List;
@@ -34,11 +35,10 @@ public interface PostService {
 
     /**
      * 获取该实体的指定范围的评论
-     * @param entityType
-     * @param entityId
+     * @param entity
      * @return
      */
-    List<Comment> getComments(int entityType, int entityId, int from, int to);
+    List<Comment> getComments(Entity entity, int from, int to);
 
     /**
      * 获取指定 id 的帖子数据

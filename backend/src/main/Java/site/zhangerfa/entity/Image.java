@@ -25,9 +25,16 @@ public class Image {
         this.url = url;
     }
 
-    public Image(int entityType, int entityId, String url){
-        this.entityId = entityId;
-        this.entityType = entityType;
+    public Image(int id, Entity entity, String url) {
+        this.id = id;
+        this.entityType = entity.getEntityType();
+        this.entityId = entity.getEntityId();
+        this.url = url;
+    }
+
+    public Image(Entity entity, String url){
+        this.entityId = entity.getEntityId();
+        this.entityType = entity.getEntityType();
         this.url = url;
     }
 

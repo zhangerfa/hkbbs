@@ -1,5 +1,7 @@
 package site.zhangerfa.service;
 
+import site.zhangerfa.controller.in.MessageIn;
+import site.zhangerfa.controller.tool.Result;
 import site.zhangerfa.controller.vo.ChatVo;
 import site.zhangerfa.entity.Chat;
 
@@ -32,13 +34,17 @@ public interface ChatService {
 
     /**
      * 发布消息
-     * @param fromId
-     * @param toId
-     * @param type
-     * @param content
      * @return
      */
-    boolean addMessage(String fromId, String toId, int type, String content);
+    boolean addMessage(MessageIn messageIn);
+
+    /**
+     * 判断是否可以发送消息
+     * @param posterId 发送者学号
+     * @param receiverId 接收者学号
+     * @return
+     */
+    Result<Boolean> canSendMessage(String posterId, String receiverId);
 
     /**
      * 已读消息的id

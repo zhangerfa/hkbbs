@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
+import site.zhangerfa.controller.in.ManagerIn;
 
 @Data
 @Schema(name = "管理员")
@@ -20,8 +21,8 @@ public class Manager {
     @TableField(exist = false)
     private String headerUrl;
 
-    public Manager(String stuId, int level) {
-        this.stuId = stuId;
-        this.level = level;
+    public Manager(ManagerIn managerIn) {
+        this.stuId = managerIn.getStuId();
+        this.level = managerIn.getLevel();
     }
 }

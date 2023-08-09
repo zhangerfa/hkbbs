@@ -4,6 +4,7 @@ import jakarta.annotation.Resource;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import site.zhangerfa.controller.vo.UserVo;
+import site.zhangerfa.entity.Entity;
 import site.zhangerfa.service.LikeService;
 import site.zhangerfa.util.EntityUtil;
 import site.zhangerfa.util.RedisUtil;
@@ -19,9 +20,9 @@ public class LikeServiceImpl implements LikeService {
     private EntityUtil entityUtil;
 
     @Override
-    public void like(int entityType, int entityId, String stuId) {
+    public void like(Entity entity, String stuId) {
         // 判断该用户是否已经点赞
-        String userLikedSetKey = RedisUtil.getLikeUserSetKey(entityType, entityType);
+        String userLikedSetKey = RedisUtil.getLikeUserSetKey(entity);
         Boolean isMember = stringRedisTemplate.opsForSet().isMember(userLikedSetKey, stuId);
         if (isMember != null && isMember) {
             // 如果已经点赞，则取消点赞
@@ -33,38 +34,38 @@ public class LikeServiceImpl implements LikeService {
     }
 
     @Override
-    public void likeWithStatus(int entityType, int entityId, String stuId, int status) {
+    public void likeWithStatus(Entity entity, String stuId, int status) {
         // 点赞则将用户学号加入到点赞集合中，点踩则将用户学号从点踩集合中
         String userSetKey;
-        if (status == 1) userSetKey = RedisUtil.getLikeUserSetKey(entityType, entityId);
-        else userSetKey = RedisUtil.getUnLikeUserSetKey(entityType, entityId);
+        if (status == 1) userSetKey = RedisUtil.getLikeUserSetKey(entity);
+        else userSetKey = RedisUtil.getUnLikeUserSetKey(entity);
         stringRedisTemplate.opsForSet().add(userSetKey, stuId);
     }
 
     @Override
-    public int getLikeCount(int entityType, int entityId) {
-        String postLikeUserSetKey = RedisUtil.getLikeUserSetKey(entityType, entityId);
+    public int getLikeCount(Entity entity) {
+        String postLikeUserSetKey = RedisUtil.getLikeUserSetKey(entity);
         return stringRedisTemplate.opsForSet().size(postLikeUserSetKey).intValue();
     }
 
     @Override
-    public int getLikeStatus(String stuId, int entityType, int entityId) {
+    public int getLikeStatus(String stuId, Entity entity) {
         // 判断该用户是否已经点赞
-        String userLikedSetKey = RedisUtil.getLikeUserSetKey(entityType, entityId);
+        String userLikedSetKey = RedisUtil.getLikeUserSetKey(entity);
         Boolean isMember = stringRedisTemplate.opsForSet().isMember(userLikedSetKey, stuId);
         return isMember != null && isMember ? 1 : 0;
     }
 
     @Override
-    public List<UserVo> getLikeUsers(int entityType, int entityId) {
-        String likeUserSetKey = RedisUtil.getLikeUserSetKey(entityType, entityId);
+    public List<UserVo> getLikeUsers(Entity entity) {
+        String likeUserSetKey = RedisUtil.getLikeUserSetKey(entity);
         // 获取点赞用户的id集合
         Set<String> stuIds = stringRedisTemplate.opsForSet().members(likeUserSetKey);
         // 根据id查询用户信息
         if (stuIds == null) return null;
         List<UserVo> res = new ArrayList<>(stuIds.size());
         for (String stuId : stuIds) {
-            res.add(entityUtil.getUserVo(entityType, stuId));
+            res.add(entityUtil.getUserVo(entity.getEntityType(), stuId));
         }
         return res;
     }
