@@ -29,9 +29,10 @@ public class LikeController {
     private NoticeService noticeService;
 
     @Operation(summary = "点赞帖子", description = "调用此接口后改变当前登录用户对实体的点赞状态")
-    @PutMapping("post")
-    public Result<LikeVo> likePost(@RequestBody Entity entity) {
+    @PutMapping("post/{postId}")
+    public Result<LikeVo> likePost(int postType, @PathVariable int postId) {
         String stuId = hostHolder.getUser().getStuId();
+        Entity entity = new Entity(postType, postId);
         // 点赞
         likeService.like(entity, stuId);
         // 通知被点赞实体的作者
@@ -50,28 +51,31 @@ public class LikeController {
                                     @Parameter(description = "点赞状态：1-感兴趣，0-不感兴趣") int likeStatus) {
         String stuId = hostHolder.getUser().getStuId();
         // 点赞
-        likeService.likeWithStatus(new Entity(Constant.ENTITY_TYPE_CARD, cardId),
-                stuId, likeStatus);
+        Entity entity = new Entity(Constant.ENTITY_TYPE_CARD, cardId);
+        likeService.likeWithStatus(entity, stuId, likeStatus);
         return new Result<>(Code.UPDATE_OK, true);
     }
 
     @Operation(summary = "查询点赞用户列表", description = "查询指定实体的点赞用户列表")
     @GetMapping("/userList")
-    public Result<List<UserVo>> getLikeUserListForCard(Entity entity) {
+    public Result<List<UserVo>> getLikeUserListForCard(int entityType, int entityId) {
+        Entity entity = new Entity(entityType, entityId);
         List<UserVo> likeUsers = likeService.getLikeUsers(entity);
         return new Result<>(Code.GET_OK, likeUsers);
     }
 
     @Operation(summary = "查询实体的点赞数量", description = "查询指定实体的被点赞数量")
     @GetMapping("/count")
-    public Result<Integer> getLikeCountForPost(Entity entity) {
+    public Result<Integer> getLikeCountForPost(int entityType, int entityId) {
+        Entity entity = new Entity(entityType, entityId);
         return new Result<>(Code.GET_OK, likeService.getLikeCount(entity));
     }
 
     @Operation(summary = "查询用户对实体的点赞状态", description = "查询用户对特定实体的点赞状态")
     @GetMapping("/status")
-    public Result<Integer> getLikeStatusForPost(Entity entity) {
+    public Result<Integer> getLikeStatusForPost(int entityType, int entityId) {
         String stuId = hostHolder.getUser().getStuId();
+        Entity entity = new Entity(entityType, entityId);
         return new Result<>(Code.GET_OK, likeService.getLikeStatus(stuId, entity));
     }
 }
