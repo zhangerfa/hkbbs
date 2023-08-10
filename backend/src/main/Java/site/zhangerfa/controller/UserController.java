@@ -22,6 +22,7 @@ import site.zhangerfa.service.UserService;
 import site.zhangerfa.util.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @Tag(name = "用户")
@@ -180,10 +181,11 @@ public class UserController {
     }
 
     @Tag(name = "管理员")
-    @Operation(summary = "获取用户数量")
+    @Operation(summary = "获取用户总数量，男，女用户数量" +
+            "返回：{sum: 1000, male: 500, female: 500}")
     @GetMapping("/count")
-    public Result<Integer> getUserCount(){
-        return new Result<Integer>(Code.GET_OK, userService.getUserCount());
+    public Result<Map<String, Integer>> getUserCount(){
+        return new Result<Map<String, Integer>>(Code.GET_OK, userService.getUserCount());
     }
 
     @Tag(name = "管理员")
