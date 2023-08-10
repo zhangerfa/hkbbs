@@ -66,12 +66,13 @@ public class PostController {
             return new Result<>(Code.SAVE_ERR, "帖子类型错误");
         // 将传入图片上传到图床，并将url集合添加到post中
         Post post = new Post(title, content);
+        post.setPostType(type);
         if (images != null)
             post.setImages(imgShackUtil.getImageUrls(images));
         // 发布帖子
         String stuId = hostHolder.getUser().getStuId();
         post.setPosterId(stuId);
-        boolean flag = postService.add(post, type);
+        boolean flag = postService.add(post);
         return new Result<>(flag? Code.SAVE_OK: Code.SAVE_ERR, flag);
     }
 

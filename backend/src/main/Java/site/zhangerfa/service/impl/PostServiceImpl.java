@@ -49,14 +49,13 @@ public class PostServiceImpl implements PostService {
      */
     @Override
     @Transactional(isolation= Isolation.READ_COMMITTED, propagation = Propagation.NESTED)
-    public boolean add(Post post, int postType) {
+    public boolean add(Post post) {
         if (post == null){
             throw new IllegalArgumentException("发帖内容为空");
         }
         // 转义HTML标记，防止HTML注入
         post.setTitle(HtmlUtils.htmlEscape(post.getTitle()));
         post.setContent(HtmlUtils.htmlEscape(post.getContent()));
-        post.setPostType(postType);
         // post表中添加post
         int addNum = postMapper.insert(post);
         // 将帖子中的图片url插入image表

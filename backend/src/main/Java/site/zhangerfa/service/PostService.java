@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface PostService {
-    boolean add(Post post, int postType);
+    boolean add(Post post);
 
     /**
      * 删除卡片，并所有该卡片的评论
