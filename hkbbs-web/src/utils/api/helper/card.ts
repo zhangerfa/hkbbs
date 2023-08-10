@@ -35,8 +35,12 @@ export class Card {
   }): Promise<ResultBoolean> {
     return req.post({
       url: this.path,
-      data: {
-        newCard: args,
+      // data: {
+      //   newCard: args,
+      // },
+      data: args,
+      headers: {
+        "Content-Type": "multipart/form-data",
       },
     });
   }

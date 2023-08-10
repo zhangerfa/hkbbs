@@ -1,23 +1,37 @@
 <template>
-  <div class="tree-item">
-    <div class="title"># 寻找有缘人</div>
-    <div class="upload-info">
-      <span class="upload-time">2023.04.04</span>
-      <span class="upload-author">王小明</span>
+  <template v-for="item in props.list" :key="item.id">
+    <div class="tree-item">
+      <div class="title">#{{ item.title }}</div>
+      <div class="upload-info">
+        <span class="upload-time">{{ item.createTime }}</span>
+        <span class="upload-author">{{ item.posterName }}</span>
+        <van-image
+          width="15"
+          height="15"
+          :src="item.posterHeaderUrl"
+        ></van-image>
+      </div>
+      <van-text-ellipsis class="content" :content="item.content" rows="3" />
+      <div class="operation">
+        <van-icon name="like-o" /><span class="text">{{ item.likeNum }}</span>
+        <van-icon name="comment-o" /><span class="text">20</span>
+        <van-icon name="star-o" /><span class="text">25</span>
+      </div>
     </div>
-    <div class="content">
-      可以在帖子中点击用户头像或用户名查看用户的基本资料和历史发帖；但无法查看用户历史发布卡片和历史发布树洞
-    </div>
-    <div class="operation">
-      <van-icon name="like-o" /><span class="text">15</span>
-      <van-icon name="comment-o" /><span class="text">20</span>
-      <van-icon name="star-o" /><span class="text">25</span>
-    </div>
-  </div>
+  </template>
 </template>
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+const props = defineProps({
+  list: {
+    type: Array,
+    required: true,
+  },
+});
+</script>
 <style lang="scss" scoped>
 .tree-item {
+  display: flex;
+  flex-direction: column;
   box-sizing: border-box;
   height: 155px;
   padding: 10px;
@@ -39,6 +53,7 @@
   .content {
     font-size: 14px;
     margin-bottom: 10px;
+    flex: 1;
   }
   .operation {
     font-size: 14px;

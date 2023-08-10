@@ -142,9 +142,9 @@ export interface Page {
 // "响应数据"
 export interface CardContainsPoster {
     "id": number,
-    "imageUrls": string[],
+    "imageUrls": string[] || null,
     // "description": "照片url集合"
-    "age": string,
+    "age?": string,
     // "description": "年级"
     "aboutMe": string,
     // "title": "关于我",
@@ -155,7 +155,7 @@ export interface CardContainsPoster {
     "expected": string,
     // "description": "期望的TA",
     // "default": "描述期望中的理想征友对象",
-    "create_time": string,
+    "createTime": string,
     // "description": "发布时间",
     // "format": "date-time"
     "poster": User

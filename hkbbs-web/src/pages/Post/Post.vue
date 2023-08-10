@@ -1,7 +1,11 @@
 <template>
-  <div></div>
+  <div>
+    <CardPost />
+  </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import CardPost from "./CardPost.vue";
+</script>
 
 <style scoped></style>
