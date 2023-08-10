@@ -116,8 +116,8 @@ public class UserServiceImpl implements UserService {
     public String getGenderRatio() {
         Long femaleNum = userMapper.selectCount(new LambdaQueryWrapper<User>().eq(User::getGender, 1));
         Long maleNum = userMapper.selectCount(new LambdaQueryWrapper<User>().eq(User::getGender, 0));
-        double maleRadio = (double) maleNum / (femaleNum + maleNum);
-        return "男女比例：" + (int)maleRadio * 10 + ":" + (10 - (int)maleRadio * 10);
+        int maleRadio = (int)(10 * (double) maleNum / (femaleNum + maleNum));
+        return "男女比例：" + maleRadio + ":" + (10 - maleRadio);
     }
 
     @Override
