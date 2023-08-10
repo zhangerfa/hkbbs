@@ -16,7 +16,9 @@ import site.zhangerfa.service.UserService;
 import site.zhangerfa.util.MailClient;
 import site.zhangerfa.util.RedisUtil;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -101,8 +103,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Integer getUserCount() {
-        return userMapper.selectCount(null).intValue();
+    public Map<String, Integer> getUserCount() {
+        Map<String, Integer> res = new HashMap<>();
+        res.put("sum", userMapper.selectCount(null).intValue());
+        res.put("male", userMapper.selectCount(
+                new LambdaQueryWrapper<User>().eq(User::getGender, 0)).intValue());
+        res.put("female", userMapper.selectCount(
+                new LambdaQueryWrapper<User>().eq(User::getGender, 1)).intValue());
+        return res;
     }
 
     @Override

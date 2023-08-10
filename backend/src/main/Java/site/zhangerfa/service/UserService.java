@@ -6,6 +6,7 @@ import site.zhangerfa.controller.in.RegistUser;
 import site.zhangerfa.entity.User;
 
 import java.util.List;
+import java.util.Map;
 
 public interface UserService {
 
@@ -80,10 +81,10 @@ public interface UserService {
     void logout(String ticket);
 
     /**
-     * 获取用户总数
+     * 获取用户总数、男、女用户数
      * @return
      */
-    Integer getUserCount();
+    Map<String, Integer> getUserCount();
 
     /**
      * 获取用户列表
