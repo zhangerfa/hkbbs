@@ -6,11 +6,12 @@ import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
-import site.zhangerfa.controller.in.ImgMessageIn;
+import org.springframework.web.multipart.MultipartFile;
 import site.zhangerfa.controller.in.MessageIn;
 import site.zhangerfa.controller.tool.Code;
 import site.zhangerfa.controller.tool.Result;
 import site.zhangerfa.controller.vo.ChatVo;
+import site.zhangerfa.entity.Message;
 import site.zhangerfa.service.ChatService;
 import site.zhangerfa.service.UserService;
 import site.zhangerfa.util.HostHolder;
@@ -69,7 +70,7 @@ public class ChatController {
     }
 
     @Operation(summary = "发布一条文字消息")
-    @PostMapping("/")
+    @PostMapping(value = "/", consumes = "application/json")
     public Result<Boolean> sendMessage(@RequestBody MessageIn messageIn){
         messageIn.setType(0);
         // 判断能否发送消息
@@ -87,18 +88,21 @@ public class ChatController {
 
     @Operation(summary = "发布一条图片消息")
     @PostMapping(value = "/image", consumes = "multipart/form-data")
-    public Result<Boolean> sendImage(@RequestBody ImgMessageIn imgMessageIn){
-        imgMessageIn.setType(1);
+    public Result<Boolean> sendImage(@RequestPart MultipartFile image,
+                                     @RequestPart String receiverId){
+        Message message = new Message();
+        message.setType(1);
+        message.setReceiverId(receiverId);
         // 判断能否发送消息
-        imgMessageIn.setPosterId(hostHolder.getUser().getStuId());
-        Result<Boolean> result = chatService.canSendMessage(imgMessageIn.getPosterId(),
-                imgMessageIn.getReceiverId());
+        message.setPosterId(hostHolder.getUser().getStuId());
+        Result<Boolean> result = chatService.canSendMessage(message.getPosterId(),
+                message.getReceiverId());
         if (!result.getData())
             return result;
         // 发布消息
-        String imageUrl = imgShackUtil.add(imgMessageIn.getImage());
-        imgMessageIn.setContent(imageUrl);
-        boolean flag = chatService.addMessage(imgMessageIn);
+        String imageUrl = imgShackUtil.add(image);
+        message.setContent(imageUrl);
+        boolean flag = chatService.addMessage(message);
         int code = flag? Code.SAVE_OK: Code.SAVE_ERR;
         return new Result<>(code, flag);
     }
