@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import site.zhangerfa.Constant.Constant;
 import site.zhangerfa.controller.in.CommentIn;
-import site.zhangerfa.controller.in.PostIn;
 import site.zhangerfa.controller.tool.Code;
 import site.zhangerfa.controller.vo.PostDetailsVo;
 import site.zhangerfa.controller.vo.PostVo;
@@ -52,12 +51,14 @@ public class PostController {
     }
 
     @Operation(summary = "发布帖子或树洞", description = "传入标题和内容，图片是可选的，可以传入若干张图片")
-    @PostMapping(value = "/posts/")
-    public Result<Boolean> addPost(@RequestBody PostIn postIn){
-        String title = postIn.getTitle();
-        String content = postIn.getContent();
-        List<MultipartFile> images = postIn.getImages();
-        int type = postIn.getPostType();
+    @PostMapping(value = "/posts/", consumes = {"multipart/form-data"})
+    public Result<Boolean> addPost(
+            @Parameter(description = "帖子标题") @RequestPart String title,
+            @Parameter(description = "帖子内容") @RequestPart String content,
+            @Parameter(description = "帖子类型：1-实名, 2-匿名")
+                @RequestPart int type,
+            @Parameter(description = "图片集合")
+                @RequestPart List<MultipartFile> images){
         // 验证学号是否登录
         if (hostHolder.getUser() == null)
             return new Result<>(Code.SAVE_ERR, false, "用户未登录");

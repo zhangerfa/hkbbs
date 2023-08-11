@@ -11,7 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import site.zhangerfa.controller.in.UpdateUser;
+import org.springframework.web.multipart.MultipartFile;
 import site.zhangerfa.controller.tool.Code;
 import site.zhangerfa.controller.tool.Result;
 import site.zhangerfa.controller.vo.RegistVo;
@@ -97,18 +97,27 @@ public class UserController {
     }
 
     @Operation(summary = "修改用户信息", description = "用户名、密码、头像传入非空则进行修改")
-    @PutMapping(value = "/", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public Result<Boolean> updateUser(@RequestBody UpdateUser updateUser){
+    @PutMapping(value = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public Result<Boolean> updateUser(@RequestPart(required = false)
+                                          @Parameter(description = "新用户名")
+                                          String username,
+                                      @RequestPart(required = false)
+                                      @Parameter(description = "新密码")
+                                      String password,
+                                      @RequestPart(required = false)
+                                        @Parameter(description = "新头像")
+                                          MultipartFile headerImage){
         User user = hostHolder.getUser();
         if (user == null) return new Result<>(Code.UPDATE_ERR, false, "用户未登录");
         String stuId = user.getStuId();
-        user.setUsername(updateUser.getUsername());
-        user.setPassword(updateUser.getPassword());
-        if (updateUser.getHeaderImage() != null){
+        user.setUsername(username);
+        user.setPassword(password);
+        System.out.println(username);
+        if (headerImage != null){
             // 头像文件上传到图床中
             // 文件命名为 学号_header
             String imageName = stuId + "_header";
-            user.setHeaderUrl(imgShackUtil.add(updateUser.getHeaderImage(), imageName));
+            user.setHeaderUrl(imgShackUtil.add(headerImage, imageName));
         }
         return new Result<>(Code.UPDATE_OK, true);
     }
