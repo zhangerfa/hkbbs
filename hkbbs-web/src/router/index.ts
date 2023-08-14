@@ -12,7 +12,7 @@ const Profile = () => import("../pages/Profile/Profile.vue");
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
-    redirect: "/cardwall",
+    redirect: "/login",
   },
   {
     path: "/login",
