@@ -15,8 +15,7 @@ public interface NoticeService {
 
     /**
      * 添加点赞通知
-     * @param entityType 被点赞实体的类型
-     * @param entityId 被点赞实体的id
+     * @param entity 被点赞的实体
      * @param stuId 点赞者的学号
      */
     void addLikeNotice(Entity entity, String stuId);
